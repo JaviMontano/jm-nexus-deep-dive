@@ -175,9 +175,12 @@ only the active project's context.
 - **FR-002**: System MUST set the newly created project as the
   operator's active_context_id in their operator profile.
 
-- **FR-003**: System MUST retrieve project context by matching
-  project_name from the intent router's extracted_project_name,
-  filtering by owner_id.
+- **FR-003**: System MUST retrieve project context via two
+  modes: (a) implicit detection from the intent router's
+  extracted_project_name, presented as a suggestion requiring
+  operator confirmation before switching, and (b) explicit
+  command (e.g., "/project <name>") that executes a
+  deterministic transition. Both modes filter by owner_id.
 
 - **FR-004**: System MUST load compressed_context (<=500 tokens)
   and short_term_memory (last 15 turns) into the orchestrator's
@@ -252,3 +255,37 @@ only the active project's context.
 
 - **SC-007**: Disambiguation prompt appears for ambiguous
   project names 100% of the time — zero auto-selections.
+
+### Constraints
+
+- H1 targets assume single-operator usage. Multi-operator
+  concurrency targets deferred to H3 spec (feature 008:
+  Multi-Tenant Isolation).
+
+## Clarifications
+
+### Session 2026-04-03
+
+- Q: How does the operator switch to a project — implicit
+  NLP detection, explicit command, or both? -> A: Both.
+  Implicit detection from router (CU-04) proposes project
+  as suggestion requiring confirmation — never auto-switches.
+  Explicit command (`/project <name>`) executes deterministic
+  transition without confirmation. Both pass through FR-005
+  disambiguation for ambiguous matches.
+  [FR-003, FR-005, US-2, SC-002]
+
+- Q: Should the Project entity have states beyond
+  ACTIVE/ARCHIVED (e.g., SUSPENDED, COMPLETED, DELETED)?
+  -> A: No. Two states (ACTIVE/ARCHIVED) are sufficient for
+  H1 per ADR-005 and canonical data model (A6). FR-008
+  "never delete" is a behavioral constraint, not a state.
+  Additional states deferred to H3 via constitutional
+  amendment (P-VII requires ADR for interface changes).
+  [FR-001, FR-007, FR-008, FR-009, Key Entity: Project]
+
+- Q: What concurrency and scale targets apply? -> A: H1
+  assumes single-operator. No concurrency SC added. Constraint
+  documented: multi-operator targets deferred to feature 008.
+  Satisfies P-VII (no overengineering) and P-VI (traceability).
+  [SC-001, SC-002, FR-004, FR-006]

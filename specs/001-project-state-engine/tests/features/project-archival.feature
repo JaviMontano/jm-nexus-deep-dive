@@ -37,7 +37,7 @@ Feature: Archive Inactive Projects
 
   Rule: Archival preserves all project data
 
-    @TS-013-A @FR-008 @SC-004 @P1 @acceptance
+    @TS-035 @FR-008 @SC-004 @P1 @acceptance
     Scenario: Archived project retains all data
       Given an active project "Data Rich" with compressed_context, knowledge_anchors, open_tasks, and artifacts
       When the project is archived

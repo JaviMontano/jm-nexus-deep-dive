@@ -11,7 +11,7 @@ Generated from .feature files | 2026-04-03
 | FR-005 | TS-007, TS-008, TS-011 | 3 scenarios |
 | FR-006 | TS-023, TS-024, TS-025, TS-026, TS-027 | 5 scenarios |
 | FR-007 | TS-012, TS-018, TS-019, TS-021, TS-022, TS-033 | 6 scenarios |
-| FR-008 | TS-013-A | 1 scenario |
+| FR-008 | TS-035 | 1 scenario |
 | FR-009 | TS-010, TS-020 | 2 scenarios |
 | FR-010 | TS-029, TS-030, TS-031, TS-032, TS-033, TS-034 | 6 scenarios |
 | FR-011 | TS-013, TS-014, TS-015 | 3 scenarios |
@@ -23,7 +23,7 @@ Generated from .feature files | 2026-04-03
 | SC-001 | TS-001, TS-003 | 2 scenarios |
 | SC-002 | TS-004 | 1 scenario |
 | SC-003 | TS-023, TS-024, TS-025, TS-026 | 4 scenarios |
-| SC-004 | TS-012, TS-013-A | 2 scenarios |
+| SC-004 | TS-012, TS-035 | 2 scenarios |
 | SC-005 | TS-010, TS-020 | 2 scenarios |
 | SC-006 | TS-029, TS-030, TS-031, TS-032, TS-033, TS-034 | 6 scenarios |
 | SC-007 | TS-007, TS-008 | 2 scenarios |
@@ -33,4 +33,4 @@ Generated from .feature files | 2026-04-03
 - Total SC: 7 | Covered: 7 | Untested: 0
 - Total Scenarios: 34
 - Coverage: 100%
-- Assertion Hash: 7b86d762032e4eb2a036546e81cdf7aaed5e2828006c1c54f281a96b298a7f02
+- Assertion Hash: 4c5478ba2591482a10fcd3aee2bbc7acbe76281b243a73bbf2a61c34d1580287

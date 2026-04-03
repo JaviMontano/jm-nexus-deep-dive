@@ -58,3 +58,28 @@
 - [x] Is the single-operator assumption documented with a deferral path? [Completeness, Spec Constraints — "multi-operator deferred to H3 feature 008"]
 - [x] Is the dependency on the router's intent classification documented? [Completeness, Spec FR-003, Clarification — "implicit detection from router CU-04"]
 - [x] Is the relationship between this feature and downstream features (HIL, artifacts, memory) documented? [Completeness, Spec US-1 "Why this priority" — "all other features depend on it"]
+
+## Invariant Specification Quality
+- [x] Are all 6 invariants (I-1 through I-6) defined with enforcement mechanism, not just statement? [Completeness, Spec Invariants — each has enforcement column (guard clause, Zod, security rules, triple-filter, audit-logger, transaction)]
+- [x] Is the 500-token cap (I-1) specified with what happens on violation, not just the limit? [Clarity, Spec EC-03 — "triggers immediate re-compression before prompt injection"]
+- [x] Is the 2-state constraint (I-2) specified with exhaustive valid/invalid transition table? [Clarity, Spec data-model.md — 3 valid transitions, 2 explicit rejections]
+- [x] Does the zero-contamination invariant (I-4) specify all three enforcement levels? [Completeness, Spec FR-006 — "query-level, assertion-level, defensive-level" triple-filter]
+- [x] Is the atomic transition invariant (I-6) scoped to specific operations? [Clarity, Spec FR-002, FR-003, FR-007, FR-009 — all cross-collection writes transactional]
+
+## Runtime Principle Coverage
+- [x] Is RP-3 (context compression) addressed with specific token limits and thresholds? [Completeness, Spec FR-004 — "<=500 tokens", I-1, EC-03]
+- [x] Is RP-7 (fail-open reads / fail-closed writes) addressed for both read and write paths? [Completeness, Spec NFR-003 — "transactions max 3 retries fail-closed; reads degrade gracefully", US-2 SC-3]
+- [x] Are RP-1, RP-2, RP-4, RP-5, RP-6, RP-8 correctly assessed as N/A for this feature? [Consistency, Spec Constitutional Alignment — "not in webhook path; no agent execution; no LLM calls"]
+- [x] Is the zero-LLM-cost assertion (NFR-002) consistent with RP-8 token budget exemption? [Consistency, Spec NFR-002 — "zero LLM token cost; Firestore operations only"]
+
+## Security & Risk Assessment
+- [x] Are security checkpoints (CP1/CP2/CP3) assessed with explicit N/A justification? [Completeness, Spec Constitutional Alignment — "no direct user input parsing, no prompt composition, no LLM output"]
+- [x] Is risk R-13 (context bloat, score 9) explicitly mitigated with measurable controls? [Coverage, Spec SC-004, I-1, FR-007 — "500-token cap + CRON + archival"]
+- [x] Is the Firestore "delete: NEVER" security rule specified as a data integrity control? [Completeness, Spec FR-008, Key Entities Security section]
+- [x] Is input validation (FR-011) specified with Zod as the enforcement mechanism? [Clarity, Spec FR-011, data-model.md Validation Schemas]
+
+## Plan-Spec Traceability
+- [x] Does every FR map to at least one API contract in contracts/? [Traceability, contracts/ — FR-001..FR-005 → project-crud.md, FR-004/FR-006 → context-assembly.md, FR-007..FR-010 → archival-cron.md + project-crud.md]
+- [x] Does the data model match the spec's Key Entities section field-for-field? [Consistency, data-model.md vs Spec Key Entities — all 13 Project fields, Operator.active_context_id, AuditLogEntry fields match]
+- [x] Are all edge cases (EC-01 through EC-06) addressed in quickstart test scenarios? [Coverage, quickstart.md — TS-03 (EC-03 invalid name), TS-04 (EC-01 duplicate), TS-09 (contamination), TS-10 (EC-04 partial failure), TS-11 (EC-02 concurrent write)]
+- [x] Is the architecture diagram consistent with the 4-plane model (P-VII)? [Consistency, plan.md architecture — P1 Ingesta, P2 Control, P3/P4 Project Service; extends, no new planes]

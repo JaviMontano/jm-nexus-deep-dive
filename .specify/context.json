@@ -2,17 +2,17 @@
   "tdd_determination": "optional",
   "planview": {
     "nodeClassifications": {
-      "Telegram Webhook": "client",
+      "Telegram User (Operator)": "client",
       "Cloud Fn (P1 Ingesta)": "server",
-      "Pub/Sub": "storage",
-      "Worker (P2 Router/Orchestrator)": "server",
+      "Cloud Scheduler": "server",
+      "Worker (P2 Control)": "server",
+      "CRON Fn archive-projects": "server",
       "Project Service (P3/P4)": "server",
+      "Context Assembler": "server",
       "Firestore projects": "storage",
       "Firestore operators": "storage",
       "Firestore audit_log": "storage",
-      "Cloud Scheduler (CRON)": "server",
-      "HIL Gate (future)": "server",
-      "Agent Pool (P3)": "server"
+      "Pub/Sub": "storage"
     }
   },
   "checklist_reviewed_at": "2026-04-03T06:52:08Z"

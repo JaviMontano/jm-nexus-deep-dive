@@ -1,73 +1,89 @@
 # Implementation Plan: Project State Engine
 
 **Branch**: `001-project-state-engine` | **Date**: 2026-04-03 | **Spec**: [spec.md](spec.md)
-**Input**: Feature specification from `specs/001-project-state-engine/spec.md`
-**Constitution**: CONSTITUTION.md v1.0.0 (P-I through P-VII enforced)
+**Input**: Feature specification from `/specs/001-project-state-engine/spec.md`
+**Constitution**: v1.1.0 — P-I, P-IV, P-V, P-VI, P-VII + RP-3, RP-7
 
 ## Summary
 
-Implement the Project State Engine — Nexus's core persistence layer for
-project lifecycle management (create, retrieve, archive, reactivate) with
-zero cross-project contamination, context-bounded retrieval (<=500 tokens +
-15 turns), and full audit logging. This is the keystone H1 deliverable
-(ADR-005, PRIORITY MAXIMUM) — all downstream features depend on it.
-
-Technical approach: TypeScript Cloud Functions extending the existing P4
-(Persistencia) plane with Firestore collections (projects, operators update),
-a daily CRON via Cloud Scheduler, and deterministic state-machine transitions
-per P-I.
+Implement the Project State Engine: Firestore-backed CRUD for named work
+contexts with 2-state lifecycle (ACTIVE/ARCHIVED), zero cross-project
+contamination via triple-filter context assembly, CRON-driven archival,
+and immutable audit logging. All operations are infrastructure-level
+(zero LLM token cost) and extend the existing P4 Persistencia plane.
 
 ## Technical Context
 
-**Language/Version**: TypeScript (strict mode) on Node.js (Cloud Functions v2)
-**Primary Dependencies**: Firebase Admin SDK, Firestore, Cloud Scheduler, Pub/Sub, Zod (runtime validation)
-**Storage**: Firestore (document store) — single persistence per ADR-002
-**Testing**: Vitest (unit + integration), 80% global coverage, 100% for routing + security
-**Target Platform**: Google Cloud Functions v2 (serverless)
-**Project Type**: Single project (Firebase monorepo with functional planes)
-**Performance Goals**: Project creation <3s p95 (webhook→response), context retrieval <3s p95, context assembly <200ms
-**Constraints**: <=500 tokens compressed_context, 15-turn short_term_memory, single-operator H1, Firestore transactions for writes
-**Scale/Scope**: ~100 conversations/day (H1), single operator, 6 agents, <$20/day token cost
+**Language/Version**: TypeScript 5.x, strict mode, no `any` types
+**Primary Dependencies**: Firebase Admin SDK (Firestore), Zod (validation),
+uuid (v4 generation), Vitest (testing)
+**Storage**: Firestore (sole persistence layer per ADR-002; no Redis/Postgres in H1)
+**Testing**: Vitest with Firestore Emulator for integration tests
+**Target Platform**: Google Cloud Functions v2 (Node.js 20 runtime)
+**Project Type**: Serverless functions within existing Nexus monorepo
+**Performance Goals**: <3s p95 webhook→Telegram response; <200ms context assembly
+**Constraints**: Single-operator H1; <=500 token compressed_context; <$50/month
+**Scale/Scope**: ~1 operator, ~50 projects; multi-tenant deferred to H3
 
 ## Constitution Check
 
-*GATE: Passed — all decisions validated against Constitution v1.1.0 (P-I–P-VII + RP-1–RP-8).*
+*GATE: Passed — all decisions align with constitutional principles.*
 
-### Governance Principles
+| Principle | Decision | Compliance |
+|-----------|----------|------------|
+| P-I State Machine Determinism | 2-state model (ACTIVE/ARCHIVED), max 1 transition per operation | ALIGNED [DOC: ADR-005] |
+| P-II Human-in-the-Loop | EXEMPT — no external side effects; internal state only | N/A |
+| P-IV Persistent Project Context | This IS the P-IV implementation | ALIGNED [DOC: G-06] |
+| P-V Specification-Driven | 12 FRs, 7 SCs, 6 invariants, 6 edge cases | ALIGNED |
+| P-VI Traceability | All operations logged to audit_log (FR-010) | ALIGNED [DOC: TD-07] |
+| P-VII Incremental Extension | Extends P4 plane; additive changes only; no rewrites | ALIGNED |
+| RP-3 Context Compression | 500-token cap enforced in context-assembler guard | ALIGNED |
+| RP-7 Fail-Open/Closed | Writes: transactions + 3 retries + fail-closed. Reads: degrade gracefully | ALIGNED |
 
-| Principle | Status | Evidence |
-|-----------|--------|----------|
-| P-I State Machine Determinism | PASS | Project lifecycle is a state machine: ACTIVE ↔ ARCHIVED. No loops. All transitions auditable. Cost-bounded (Firestore ops only, no LLM). |
-| P-II HIL for External Actions | PASS | Project CRUD is internal state management (read/write to Firestore). No external side effects. Exempt per P-II ("internal read-only operations exempt"). Archive/reactivate are internal state changes. |
-| P-III Constitutional Governance | PASS | This feature operates under all principles. No conflicts identified. |
-| P-IV Persistent Project Context | PASS | This IS P-IV implementation. Context persistence is the core deliverable. |
-| P-V Specification-Driven | PASS | spec.md exists with 12 FRs, 7 SCs, 6 edge cases, 8 clarifications. |
-| P-VI Traceability | PASS | All claims carry evidence tags (via research.md delegation). Audit logging (FR-010) ensures runtime traceability. |
-| P-VII Incremental Extension | PASS | Extends P4 (Persistencia) plane. No rewrites. projects collection is new; operators collection gets active_context_id field (additive). |
+## Architecture
 
-### Runtime Principles
-
-| Principle | Status | Evidence |
-|-----------|--------|----------|
-| RP-1 Async-First | N/A | Project CRUD is invoked by async Pub/Sub worker (not webhook path). No sync LLM calls. |
-| RP-2 State Machine | PASS | ACTIVE ↔ ARCHIVED with max 1 transition per operation. No loops possible. |
-| RP-3 Context Compression | PASS | 500-token cap enforced by context-assembler guard clause. CRON daily compression. Alert at 800. |
-| RP-4 Execution Isolation | N/A | No agent execution in project CRUD. Minimal IAM: service account + owner_id filtering. |
-| RP-5 Declarative Agents | N/A | No agent definitions in this feature. |
-| RP-6 Idempotent Handlers | N/A | Project CRUD is not webhook-triggered; invoked by router after dedup. |
-| RP-7 Fail-Closed Writes | PASS | Firestore transactions with retry max 3. Fail-closed on persistent error (surface to operator). |
-| RP-8 Token Budget | N/A | No LLM calls in project CRUD. Zero token cost per operation. |
-
-### Security & Risk
-
-| Check | Status | Evidence |
-|-------|--------|----------|
-| CP1 Input Sanitization | N/A | Input arrives pre-sanitized from P1 Ingesta. Project name validated by Zod (FR-011). |
-| CP2 Prompt Hardening | N/A | No prompt composition in project lifecycle. |
-| CP3 Output Scan | N/A | No LLM output in project CRUD responses. |
-| R-13 Context Bloat | MITIGATED | RP-3 500-token cap + CRON + alert threshold. |
-| R-10 Webhook Timeout | N/A | Async worker path; not in webhook critical path. |
-| DoR Compliance | PASS | All 10 DoR criteria met (spec, plan, ACs, edge cases, security, tokens, risks, constraints, features, tasks). |
+```
+┌──────────────────┐
+│  Telegram User   │
+│  (Operator)      │
+└───────┬──────────┘
+        │ webhook
+        ▼
+┌──────────────────┐     ┌──────────────────┐
+│ Cloud Fn          │     │ Cloud Scheduler   │
+│ (P1 Ingesta)     │     │ 02:00 UTC daily   │
+│ ACK <2s          │     └───────┬──────────┘
+└───────┬──────────┘             │
+        │ Pub/Sub                │ HTTP POST
+        ▼                        ▼
+┌──────────────────┐     ┌──────────────────┐
+│ Worker            │     │ CRON Fn           │
+│ (P2 Control)     │     │ archive-projects  │
+│ Router →         │     └───────┬──────────┘
+│ PROJECT_QUERY    │             │
+└───────┬──────────┘             │
+        │                        │
+        ▼                        ▼
+┌──────────────────────────────────────────┐
+│           Project Service (P3/P4)        │
+│                                          │
+│  ┌──────────┐ ┌───────────┐ ┌─────────┐ │
+│  │ create   │ │ retrieve  │ │ archive │ │
+│  │ Project  │ │ Project   │ │ Project │ │
+│  └────┬─────┘ └─────┬─────┘ └────┬────┘ │
+│       │             │             │      │
+│  ┌────┴─────────────┴─────────────┴────┐ │
+│  │       Context Assembler             │ │
+│  │  (triple-filter, 500-token cap)     │ │
+│  └────┬─────────────┬─────────────┬────┘ │
+│       │             │             │      │
+└───────┼─────────────┼─────────────┼──────┘
+        ▼             ▼             ▼
+┌──────────────┐ ┌──────────┐ ┌──────────┐
+│  Firestore   │ │ Firestore│ │ Firestore│
+│  projects    │ │ operators│ │ audit_log│
+└──────────────┘ └──────────┘ └──────────┘
+```
 
 ## Project Structure
 
@@ -75,152 +91,148 @@ per P-I.
 
 ```text
 specs/001-project-state-engine/
-  spec.md              # Feature specification (complete, 10/10)
+  spec.md              # Feature specification (complete)
   plan.md              # This file
-  research.md          # Technology decisions & rationale
-  data-model.md        # Entity definitions with fields, types, constraints
-  quickstart.md        # Test scenarios & dev setup
-  contracts/           # API contracts (internal message contracts)
-    project-crud.md    # Create/retrieve/archive/reactivate contracts
-    archival-cron.md   # CRON job contract
-    context-assembly.md # Context retrieval contract
+  research.md          # Technology decisions (complete)
+  data-model.md        # Entity definitions (complete)
+  quickstart.md        # Test scenarios (complete)
+  contracts/           # API contracts (complete)
+    project-crud.md
+    context-assembly.md
+    archival-cron.md
+  tasks.md             # Task graph (generated by /iikit-05-tasks)
+  tests/               # BDD .feature files (generated by /iikit-04-testify)
 ```
 
-### Source Code (repository root — target Nexus repo)
+### Source Code (repository root)
 
 ```text
 src/
-  ecosystem/
-    project-state/
-      project-service.ts       # Core CRUD: create, retrieve, archive, reactivate
-      project-repository.ts    # Firestore data access (projects collection)
-      context-assembler.ts     # Load compressed_context + short_term_memory
-      archival-cron.ts         # Cloud Scheduler handler (daily)
-      project-validators.ts    # Zod schemas + name validation (FR-011)
-      project-types.ts         # TypeScript interfaces + state enum
-    prompt-composer.ts         # MODIFY: integrate context-assembler output
-    router.ts                  # MODIFY: route PROJECT_QUERY to project-service
+  services/
+    project-service.ts          # createProject, retrieveProject, archiveProject, reactivateProject
+    context-assembler.ts        # assembleContext with triple-filter isolation
+  schemas/
+    project-schemas.ts          # Zod schemas: CreateProjectInput, ProjectDocument, ProjectStatus
+  cron/
+    archive-projects.ts         # Cloud Scheduler handler: daily archival CRON
+  utils/
+    audit-logger.ts             # Append-only audit_log writer
+    firestore-transaction.ts    # Retry wrapper (max 3, exponential backoff)
 
 tests/
   unit/
-    project-service.test.ts
-    project-repository.test.ts
-    context-assembler.test.ts
-    archival-cron.test.ts
-    project-validators.test.ts
+    project-service.test.ts     # Unit tests with mocked Firestore
+    project-schemas.test.ts     # Zod validation tests (100% coverage target)
+    context-assembler.test.ts   # Triple-filter isolation tests
   integration/
-    project-lifecycle.test.ts  # Full create→retrieve→archive→reactivate flow
-    cross-contamination.test.ts # FR-006 zero-leakage verification
-  contract/
-    project-crud.contract.test.ts
+    project-crud.test.ts        # Full CRUD against Firestore Emulator
+    archival-cron.test.ts       # CRON against Firestore Emulator
+    context-isolation.test.ts   # SC-003: 100 consecutive switches
 ```
 
-**Structure Decision**: Extends existing `src/ecosystem/` structure (P-VII).
-New `project-state/` module under ecosystem, following the declarative
-pattern of existing agent modules. Tests mirror source structure.
+**Structure Decision**: Single-project layout extending the existing `src/`
+directory. Nexus is a monorepo with Cloud Functions — new files slot into
+existing service/schema/util patterns. [CODIGO: existing ecosystem/loader.ts
+pattern]
 
-## Architecture
+## Key Design Decisions
+
+### 1. Internal Service Contracts (not REST)
+
+Project operations are TypeScript function calls invoked by the P2
+orchestrator, not HTTP endpoints. The Telegram webhook → Pub/Sub → Worker
+pipeline already handles HTTP transport. Project Service operates at P3/P4
+layer. [DOC: A4 4-plane architecture]
+
+### 2. Atomic Cross-Collection Transactions
+
+Every state change (create, archive, reactivate) uses a Firestore
+transaction spanning `projects` + `operators` collections to guarantee
+`active_context_id` consistency. Max 3 retries with exponential backoff;
+fail-closed on persistent failure. [DOC: TD-04, RP-7]
+
+### 3. Triple-Filter Context Isolation
+
+Context assembly enforces zero contamination at three levels:
+1. **Query-level**: Firestore WHERE on `owner_id` + `project_id`
+2. **Assertion-level**: Post-query ownership validation
+3. **Defensive-level**: Mismatched turns filtered with warning log
+
+This is the SC-003 invariant. [DOC: FR-006]
+
+### 4. Zero LLM Cost
+
+All project CRUD operations are pure Firestore operations — no delegation
+mode, no token budget consumed. Project state is infrastructure, not agent
+work. [INFERENCIA: RP-8 token budget exemption]
+
+### 5. 2-State Simplicity
+
+Only ACTIVE and ARCHIVED states. No SUSPENDED, COMPLETED, or DELETED.
+Enforced via Zod enum. Aligned with ADR-005 and Constitution best
+practice #8 (2-state simplicity). [DOC: ADR-005]
+
+### 6. CRON Idempotency
+
+Archival CRON is safe to re-run. The `status == 'ACTIVE'` query filter
+naturally excludes already-archived projects. Per-project transactions
+isolate failures. [DOC: contracts/archival-cron.md]
+
+## Dependencies
+
+| Dependency | Version | Purpose | Evidence |
+|-----------|---------|---------|----------|
+| firebase-admin | ^12.x | Firestore SDK, server timestamps | [CODIGO: existing dependency] |
+| zod | ^3.x | Schema validation (FR-011, document shapes) | [CODIGO: existing in ecosystem/loader.ts] |
+| uuid | ^9.x | UUID v4 generation for project IDs | [INFERENCIA: standard choice] |
+| vitest | ^1.x | Test runner | [CODIGO: existing test setup] |
+| @google-cloud/scheduler | — | Cloud Scheduler configuration (infra, not code dep) | [CONFIG: GCP project] |
+
+No new runtime dependencies beyond what exists in the codebase.
+
+## Firestore Indexes
+
+| Collection | Fields | Order | Purpose |
+|-----------|--------|-------|---------|
+| `projects` | `owner_id`, `status` | ASC, ASC | Dashboard: list active projects |
+| `projects` | `owner_id`, `name` | ASC, ASC | Disambiguation queries (FR-005) |
+
+Declare in `firestore.indexes.json`. [CONFIG: Firebase project]
+
+## Firestore Security Rules
 
 ```
-┌──────────────┐     ┌──────────────┐     ┌───────────────────┐
-│  Telegram     │────▶│  Cloud Fn     │────▶│  Pub/Sub          │
-│  Webhook      │     │  (P1 Ingesta) │     │  (async queue)    │
-└──────────────┘     └──────────────┘     └───────┬───────────┘
-                                                   │
-                                                   ▼
-                                          ┌──────────────────┐
-                                          │  Worker (P2)      │
-                                          │  Router/Orchestr. │
-                                          └───────┬──────────┘
-                                                   │
-                              ┌─────────────────────┼─────────────────┐
-                              ▼                     ▼                 ▼
-                     ┌────────────────┐   ┌────────────────┐  ┌──────────────┐
-                     │ Project Service │   │ Agent Pool     │  │ HIL Gate     │
-                     │ (NEW - P3/P4)   │   │ (P3 existing)  │  │ (future)     │
-                     └───────┬────────┘   └────────────────┘  └──────────────┘
-                              │
-               ┌──────────────┼──────────────┐
-               ▼              ▼              ▼
-      ┌──────────────┐ ┌──────────┐ ┌──────────────┐
-      │  Firestore    │ │ Firestore│ │  Firestore   │
-      │  projects     │ │ operators│ │  audit_log   │
-      │  (NEW)        │ │ (MODIFY) │ │  (EXTEND)    │
-      └──────────────┘ └──────────┘ └──────────────┘
-
-      ┌──────────────────────────────────────────────┐
-      │  Cloud Scheduler (CRON daily)                 │
-      │  → archival-cron.ts                           │
-      │  → evaluates last_interaction vs threshold    │
-      │  → archives qualifying projects               │
-      └──────────────────────────────────────────────┘
+match /projects/{projectId} {
+  allow read: if request.auth.uid == resource.data.owner_id;
+  allow create: if request.auth.uid == request.resource.data.owner_id;
+  allow update: if request.auth.uid == resource.data.owner_id;
+  allow delete: if false;  // FR-008: NEVER delete
+}
 ```
 
-## State Machine (Project Lifecycle)
+Note: Cloud Functions use Admin SDK (bypasses rules). Rules apply to
+direct client access only (future mobile/web client). [INFERENCIA: defense-in-depth]
 
-```
-                    ┌─────────┐
-     create ───────▶│  ACTIVE  │◀──── reactivate
-                    └────┬────┘
-                         │
-              CRON (30d) │ or manual
-                         ▼
-                    ┌──────────┐
-                    │ ARCHIVED  │
-                    └──────────┘
-```
+## Tessl Tiles (Available for Implementation)
 
-**Transitions**:
-- `∅ → ACTIVE`: Operator creates project (FR-001)
-- `ACTIVE → ARCHIVED`: CRON daily or manual archive (FR-007)
-- `ARCHIVED → ACTIVE`: Operator explicit reference (FR-009)
+| Technology | Top Tile | Score | Status |
+|-----------|---------|-------|--------|
+| TypeScript | `pantheon-ai/typescript-advanced` | 99 | Available — install at implementation |
+| Firestore | `firebase-firestore` (from jezweb) | 80 | Available — install at implementation |
+| Zod | `zod` (from secondsky) | 91 | Available — install at implementation |
 
-**Invariants**:
-- No `DELETED` state — projects are never removed (FR-008)
-- Only 2 states: ACTIVE, ARCHIVED (per clarification session)
-- All transitions logged to audit_log (FR-010)
-
-## Requirements Traceability
-
-**Evidence delegation**: Technical rationale for all decisions is in research.md (TD-01 through TD-07) with inline evidence tags per P-VI. This plan references research.md for evidence provenance.
-
-| Requirement | Plan Coverage | Evidence Source |
-|-------------|--------------|-----------------|
-| FR-001 | State Machine: `∅ → ACTIVE` | research.md TD-01, TD-04 |
-| FR-002 | Architecture: operators.active_context_id update | research.md TD-04 |
-| FR-003 | Clarifications: dual-mode router (explicit + implicit) | research.md TD-06 |
-| FR-004 | Technical Context: context retrieval <3s p95 | research.md TD-05 |
-| FR-005 | Architecture: disambiguation via Telegram inline buttons | research.md TD-06 |
-| FR-006 | Architecture: context-assembler triple-filter | research.md TD-05 |
-| FR-007 | State Machine: CRON daily archive | research.md TD-03 |
-| FR-008 | State Machine: no DELETED state | research.md TD-01 |
-| FR-009 | State Machine: `ARCHIVED → ACTIVE` | research.md TD-04 |
-| FR-010 | State Machine: all transitions logged | research.md TD-07 |
-| FR-011 | Foundational: Zod validation schemas | research.md TD-02 |
-| FR-012 | Architecture: duplicate name detection | research.md TD-06 |
+Tiles not installed during plan phase. Install during `/iikit-07-implement`
+for code-level guidance.
 
 ## Complexity Tracking
 
-No constitution violations detected. No complexity justifications needed.
+No constitution violations to justify. All decisions align with
+constitutional principles and existing patterns.
 
-| Decision | Simplicity Check | Result |
-|----------|-----------------|--------|
-| 2-state model (ACTIVE/ARCHIVED) | Simpler than multi-state | PASS — P-VII satisfied |
-| Firestore-only (no Redis) | Per ADR-002 | PASS — sufficient for H1 |
-| Single module under ecosystem/ | Follows existing pattern | PASS — P-VII extension |
-| Zod validation (not custom) | Industry standard | PASS — already in codebase |
-| CRON via Cloud Scheduler | Managed service, no infra | PASS — P-I deterministic |
-
-## Clarifications
-
-### Session 2026-04-03
-
-- Q: What does the orchestrator do when Project Service returns TRANSACTION_FAILED after 3 Firestore retries? -> A: Surface error to operator via Telegram with a user-friendly message ("Something went wrong, please try again"). No orchestrator-level retry. Rationale: operation is idempotent (no data persisted, no side effects per P-II), operator can trivially retry, adding retry layers risks breaching 3s p95 SLA (SC-001) and violates P-VII (no overengineering). P-I satisfied: deterministic response to a deterministic failure. [Architecture, Trade-offs, contracts/project-crud.md]
-
-- Q: What version pinning strategy applies to dependencies (Firebase Admin SDK, Zod, etc.)? -> A: Caret ranges (`^x.y.z`) in package.json with `package-lock.json` committed to repo. Lockfile guarantees deterministic installs (P-I). Caret ranges allow controlled patch/minor updates via explicit `npm update`. Exact pinning deferred — justified only for multi-team production systems, not H1 single-operator. P-VII satisfied: standard Node.js practice, no extra tooling. [Technical Context, Dependency Risks]
-
-- Q: How does the router classify PROJECT_QUERY intent to hand off to Project Service? -> A: Dual-mode per FR-003. (1) Explicit commands (`/project <name>`, "create project X") are parsed deterministically by the router before LLM classification — fast, no token cost, P-I compliant. (2) Implicit mentions (e.g., "let's work on Acme") go through the router's existing LLM intent classification, which adds `PROJECT_QUERY` as a recognized intent category. Router modification is incremental: add PROJECT_QUERY to the intent enum and route to project-service. P-VII satisfied: reuses existing classification pipeline. [Architecture, Integration Points, Project Structure: router.ts MODIFY]
-
-- Q: Analysis F-001: FR-002, FR-004, FR-005, FR-006, FR-011, FR-012 not referenced by ID in plan.md body — how to resolve? -> A: Added Requirements Traceability table mapping all 12 FRs to plan sections and research.md evidence sources. Explicit delegation pattern: plan.md references research.md TD-xx for evidence provenance per P-VI. [Requirements Traceability section, all FR-xxx]
-
-- Q: Analysis F-002: P-VI evidence tags delegated to research.md rather than inline in plan.md — acceptable? -> A: Yes. Evidence delegation is documented in the new Requirements Traceability section header. research.md carries [CODIGO]/[DOC]/[INFERENCIA] tags on all 7 technical decisions. plan.md references research.md for provenance. This satisfies P-VI traceability without duplicating evidence tags across artifacts. [Requirements Traceability, P-VI]
+| Check | Status |
+|-------|--------|
+| No new external dependencies | PASS |
+| Extends P4 plane (P-VII) | PASS |
+| 2-state model (ADR-005) | PASS |
+| Firestore-only (H1 best practice #6) | PASS |
+| Zero LLM cost (RP-8) | PASS |

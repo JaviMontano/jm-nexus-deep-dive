@@ -1,3 +1,18 @@
 {
-  "tdd_determination": "optional"
+  "tdd_determination": "optional",
+  "planview": {
+    "nodeClassifications": {
+      "Telegram Webhook": "client",
+      "Cloud Fn (P1 Ingesta)": "server",
+      "Pub/Sub": "storage",
+      "Worker (P2 Router/Orchestrator)": "server",
+      "Project Service (P3/P4)": "server",
+      "Firestore projects": "storage",
+      "Firestore operators": "storage",
+      "Firestore audit_log": "storage",
+      "Cloud Scheduler (CRON)": "server",
+      "HIL Gate (future)": "server",
+      "Agent Pool (P3)": "server"
+    }
+  }
 }

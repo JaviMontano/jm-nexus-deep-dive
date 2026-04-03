@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A6: Data Model Canonico — Nexus Assistant OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#1E3258;--card:rgba(255,255,255,0.06);--gold:#FFD700;--blue:#137DC5;
+  --text:#E8E8E8;--text-dim:#A0A8B8;--navy-deep:#122562;--lilac:#BBA0CC;
+  --gray:#808080;--dark:#1F2833;--font-display:'Poppins',sans-serif;
+  --font-body:'Montserrat',sans-serif;--radius:12px;--blur:16px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-weight:400;line-height:1.65;min-height:100vh}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* === SKIP LINK === */
+.skip-link{position:absolute;top:-100%;left:16px;background:var(--gold);color:var(--bg);padding:8px 16px;border-radius:4px;font-weight:600;z-index:999}
+.skip-link:focus{top:16px}
+
+/* === HEADER === */
+header{text-align:center;padding:48px 24px 32px;position:relative}
+.brand{font-family:var(--font-display);font-weight:800;font-size:clamp(1.8rem,4vw,2.6rem);letter-spacing:1px}
+.brand-white{color:#fff}
+.brand-gold{color:var(--gold)}
+header .subtitle-line{color:var(--text-dim);font-size:.9rem;margin-top:4px}
+
+/* === HERO === */
+.hero{text-align:center;padding:16px 24px 48px;max-width:860px;margin:0 auto}
+.hero h1{font-family:var(--font-display);font-weight:700;font-size:clamp(1.5rem,3.5vw,2.2rem);color:#fff;margin-bottom:12px}
+.hero p{color:var(--text-dim);font-size:1.05rem;max-width:640px;margin:0 auto}
+
+/* === LAYOUT === */
+.container{max-width:1120px;margin:0 auto;padding:0 24px 64px}
+
+/* === SECTION === */
+section{margin-bottom:56px}
+section > h2{font-family:var(--font-display);font-weight:700;font-size:clamp(1.2rem,2.5vw,1.6rem);color:#fff;margin-bottom:24px;padding-bottom:12px;border-bottom:2px solid var(--gold);display:flex;align-items:center;gap:10px}
+section > h2 .sec-num{background:var(--gold);color:var(--bg);font-size:.8rem;padding:3px 10px;border-radius:20px;font-weight:700}
+
+/* === GLASS CARD === */
+.glass{background:var(--card);backdrop-filter:blur(var(--blur));-webkit-backdrop-filter:blur(var(--blur));border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius);padding:28px;margin-bottom:20px;transition:border-color .2s}
+.glass:hover{border-color:rgba(255,215,0,0.25)}
+
+/* === ERD === */
+.erd-wrapper{overflow-x:auto;padding:8px 0}
+.erd{display:flex;flex-direction:column;gap:6px;font-family:'Courier New',monospace;font-size:clamp(.78rem,1.3vw,.92rem);color:var(--gold);min-width:520px}
+.erd-row{display:flex;align-items:center;gap:0;white-space:nowrap}
+.erd-entity{background:rgba(19,125,197,0.18);border:1px solid var(--blue);border-radius:6px;padding:4px 14px;color:#fff;font-weight:600;min-width:160px;text-align:center}
+.erd-rel{color:var(--gold);padding:0 6px;font-size:.85rem}
+.erd-arrow{color:var(--text-dim);font-size:.85rem;padding:0 2px}
+.erd-note{color:var(--lilac);font-style:italic;padding-left:8px;font-size:.82rem}
+
+/* === COLLECTION GRID === */
+.coll-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+.coll-card{position:relative;overflow:hidden}
+.coll-card .coll-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.coll-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.coll-card h3{font-family:var(--font-display);font-weight:700;font-size:1.05rem;color:#fff}
+.coll-card .coll-num{font-size:.75rem;color:var(--gold);font-weight:600}
+.field-list{list-style:none;font-size:.88rem;color:var(--text-dim)}
+.field-list li{padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.field-list li:last-child{border-bottom:none}
+.field-list .fname{color:var(--gold);font-weight:500}
+.field-list .fdetail{color:var(--text-dim)}
+
+/* icon colors per type */
+.icon-operator{background:rgba(19,125,197,0.2);color:var(--blue)}
+.icon-project{background:rgba(255,215,0,0.15);color:var(--gold)}
+.icon-artifact{background:rgba(187,160,204,0.2);color:var(--lilac)}
+.icon-action{background:rgba(255,100,100,0.15);color:#ff6464}
+.icon-exec{background:rgba(100,220,180,0.15);color:#64dcb4}
+.icon-stm{background:rgba(100,180,255,0.15);color:#64b4ff}
+.icon-sem{background:rgba(200,160,255,0.15);color:#c8a0ff}
+.icon-skill{background:rgba(255,215,0,0.15);color:var(--gold)}
+.icon-workflow{background:rgba(19,125,197,0.2);color:var(--blue)}
+.icon-audit{background:rgba(128,128,128,0.2);color:var(--gray)}
+
+/* === TABLE === */
+.inv-table{width:100%;border-collapse:collapse;font-size:.88rem}
+.inv-table thead th{background:rgba(255,215,0,0.1);color:var(--gold);font-family:var(--font-display);font-weight:700;padding:12px 14px;text-align:left;border-bottom:2px solid var(--gold);white-space:nowrap}
+.inv-table tbody td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.06);vertical-align:top}
+.inv-table tbody tr:hover{background:rgba(255,255,255,0.03)}
+.inv-table .inv-name{color:#fff;font-weight:600}
+
+/* === CODE === */
+.code-block{background:#0d1520;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:24px;overflow-x:auto;font-family:'Courier New',monospace;font-size:.84rem;line-height:1.7;color:var(--text-dim)}
+.code-block .ck{color:var(--blue)}
+.code-block .cs{color:var(--gold)}
+.code-block .cc{color:var(--gray);font-style:italic}
+.code-block .cv{color:var(--lilac)}
+
+/* === INDEX TABLE === */
+.idx-table{width:100%;border-collapse:collapse;font-size:.88rem}
+.idx-table thead th{background:rgba(19,125,197,0.12);color:var(--blue);font-family:var(--font-display);font-weight:700;padding:10px 14px;text-align:left;border-bottom:2px solid var(--blue)}
+.idx-table tbody td{padding:9px 14px;border-bottom:1px solid rgba(255,255,255,0.05)}
+.idx-table tbody tr:hover{background:rgba(255,255,255,0.03)}
+.idx-table code{background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;font-size:.82rem}
+
+/* === FOOTER === */
+footer{text-align:center;padding:40px 24px 48px;border-top:1px solid rgba(255,255,255,0.08)}
+footer .brand{font-size:1.2rem;margin-bottom:8px}
+footer p{color:var(--text-dim);font-size:.82rem;max-width:600px;margin:0 auto}
+
+/* === RESPONSIVE === */
+@media(max-width:680px){
+  .coll-grid{grid-template-columns:1fr}
+  .inv-table,.idx-table{display:block;overflow-x:auto}
+  .container{padding:0 16px 48px}
+}
+
+/* === PRINT === */
+@media print{
+  body{background:#fff;color:#222}
+  .glass{background:#f5f5f5;border:1px solid #ddd;backdrop-filter:none;-webkit-backdrop-filter:none;break-inside:avoid}
+  header,.hero{background:#1E3258;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .brand-white{color:#fff!important}
+  .brand-gold{color:#FFD700!important}
+  .erd-entity{border-color:#137DC5;background:#eef5fc}
+  .code-block{background:#f0f0f0;border-color:#ccc;color:#333}
+  .inv-table thead th,.idx-table thead th{background:#eee;color:#333}
+  footer{border-top:1px solid #ccc}
+  section > h2{border-bottom-color:#FFD700}
+}
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Ir al contenido</a>
+
+<!-- ============ HEADER ============ -->
+<header>
+  <div class="brand"><span class="brand-white">Metodolog</span><span class="brand-gold">IA</span></div>
+  <div class="subtitle-line">Arquitectura &middot; Datos &middot; Gobernanza</div>
+</header>
+
+<!-- ============ HERO ============ -->
+<div class="hero">
+  <h1>Data Model Canonico &mdash; Nexus Assistant OS</h1>
+  <p>10 colecciones Firestore &bull; 7 invariantes &bull; reglas de seguridad</p>
+</div>
+
+<!-- ============ MAIN ============ -->
+<main id="main" class="container">
+
+<!-- ===================== S1: ERD ===================== -->
+<section>
+  <h2><span class="sec-num">1</span>Entity-Relationship Diagram</h2>
+  <div class="glass erd-wrapper">
+    <div class="erd">
+      <div class="erd-row">
+        <span class="erd-entity">operators</span>
+        <span class="erd-rel">&mdash; 1 : N &rarr;</span>
+        <span class="erd-entity">projects</span>
+        <span class="erd-rel">&mdash; 1 : N &rarr;</span>
+        <span class="erd-entity">artifacts</span>
+      </div>
+      <div class="erd-row">
+        <span class="erd-entity">operators</span>
+        <span class="erd-rel">&mdash; 1 : N &rarr;</span>
+        <span class="erd-entity">executions</span>
+      </div>
+      <div class="erd-row">
+        <span class="erd-entity">operators</span>
+        <span class="erd-rel">&mdash; 1 : N &rarr;</span>
+        <span class="erd-entity">short_term_memory</span>
+      </div>
+      <div class="erd-row">
+        <span class="erd-entity">operators</span>
+        <span class="erd-rel">&mdash; 1 : N &rarr;</span>
+        <span class="erd-entity">semantic_memory</span>
+      </div>
+      <div class="erd-row">
+        <span class="erd-entity">projects</span>
+        <span class="erd-rel">&mdash; 1 : N &rarr;</span>
+        <span class="erd-entity">pending_actions</span>
+      </div>
+      <div class="erd-row">
+        <span class="erd-entity">skills</span>
+        <span class="erd-rel">&mdash; 1 : N &rarr;</span>
+        <span class="erd-entity">workflows</span>
+        <span class="erd-note">(declarativos)</span>
+      </div>
+      <div class="erd-row">
+        <span class="erd-entity">audit_log</span>
+        <span class="erd-rel">&larr;&mdash;&mdash;</span>
+        <span class="erd-entity" style="border-color:var(--gold)">* todo *</span>
+        <span class="erd-note">(append-only)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== S2: COLLECTION CARDS ===================== -->
+<section>
+  <h2><span class="sec-num">2</span>Colecciones Firestore (10)</h2>
+  <div class="coll-grid">
+
+    <!-- 1. operators -->
+    <div class="glass coll-card">
+      <div class="coll-header">
+        <div class="coll-icon icon-operator">&#x1F464;</div>
+        <div><span class="coll-num">#1</span><h3>operators</h3></div>
+      </div>
+      <ul class="field-list">
+        <li><span class="fname">operator_id</span> <span class="fdetail">&mdash; PK, string</span></li>
+        <li><span class="fname">role</span> <span class="fdetail">&mdash; enum</span></li>
+        <li><span class="fname">active_context_id</span> <span class="fdetail">&mdash; ref &rarr; projects</span></li>
+        <li><span class="fname">preferences</span> <span class="fdetail">&mdash; {language, verbosity, approval_level}</span></li>
+      </ul>
+    </div>
+
+    <!-- 2. projects -->
+    <div class="glass coll-card">
+      <div class="coll-header">
+        <div class="coll-icon icon-project">&#x1F4C1;</div>
+        <div><span class="coll-num">#2</span><h3>projects</h3></div>
+      </div>
+      <ul class="field-list">
+        <li><span class="fname">project_id</span> <span class="fdetail">&mdash; PK</span></li>
+        <li><span class="fname">owner_id</span> <span class="fdetail">&mdash; FK &rarr; operators</span></li>
+        <li><span class="fname">client_name</span> <span class="fdetail">&mdash; string</span></li>
+        <li><span class="fname">status</span> <span class="fdetail">&mdash; enum</span></li>
+        <li><span class="fname">compressed_context</span> <span class="fdetail">&mdash; text, &le;500 tokens</span></li>
+        <li><span class="fname">knowledge_anchors[]</span></li>
+        <li><span class="fname">open_tasks[]</span></li>
+        <li><span class="fname">artifacts[]</span></li>
+        <li><span class="fname">compression_log[]</span></li>
+        <li><span class="fname">auto_archive_after_days</span> <span class="fdetail">&mdash; int</span></li>
+      </ul>
+    </div>
+
+    <!-- 3. artifacts -->
+    <div class="glass coll-card">
+      <div class="coll-header">
+        <div class="coll-icon icon-artifact">&#x1F4E6;</div>
+        <div><span class="coll-num">#3</span><h3>artifacts</h3></div>
+      </div>
+      <ul class="field-list">
+        <li><span class="fname">artifact_id</span> <span class="fdetail">&mdash; PK</span></li>
+        <li><span class="fname">project_id</span> <span class="fdetail">&mdash; FK &rarr; projects</span></li>
+        <li><span class="fname">type</span> <span class="fdetail">&mdash; string</span></li>
+        <li><span class="fname">storage_url</span></li>
+        <li><span class="fname">public_url</span> <span class="fdetail">&mdash; signed, 7d TTL</span></li>
+        <li><span class="fname">version</span> <span class="fdetail">&mdash; int</span></li>
+        <li><span class="fname">status</span> <span class="fdetail">&mdash; DRAFT | PUBLISHED | ARCHIVED</span></li>
+        <li><span class="fname">metadata</span> <span class="fdetail">&mdash; {template, tokens, model, time}</span></li>
+      </ul>
+    </div>
+
+    <!-- 4. pending_actions -->
+    <div class="glass coll-card">
+      <div class="coll-header">
+        <div class="coll-icon icon-action">&#x26A0;&#xFE0F;</div>
+        <div><span class="coll-num">#4</span><h3>pending_actions</h3></div>
+      </div>
+      <ul class="field-list">
+        <li><span class="fname">action_id</span> <span class="fdetail">&mdash; PK</span></li>
+        <li><span class="fname">operator_id</span> <span class="fdetail">&mdash; FK &rarr; operators</span></li>
+        <li><span class="fname">intent</span> <span class="fdetail">&mdash; string</span></li>
+        <li><span class="fname">permission_level</span></li>
+        <li><span class="fname">payload</span> <span class="fdetail">&mdash; map</span></li>
+        <li><span class="fname">status</span> <span class="fdetail">&mdash; AWAITING | APPROVED | REJECTED | EXPIRED</span></li>
+        <li><span class="fname">telegram_message_id</span></li>
+        <li><span class="fname">expires_at</span> <span class="fdetail">&mdash; timestamp, 24h TTL</span></li>
+        <li><span class="fname">parent_execution_id</span> <span class="fdetail">&mdash; FK &rarr; executions</span></li>
+      </ul>
+    </div>
+
+    <!-- 5. executions -->
+    <div class="glass coll-card">
+      <div class="coll-header">
+        <div class="coll-icon icon-exec">&#x2699;&#xFE0F;</div>
+        <div><span class="coll-num">#5</span><h3>executions</h3></div>
+      </div>
+      <ul class="field-list">
+        <li><span class="fname">execution_id</span> <span class="fdetail">&mdash; PK</span></li>
+        <li><span class="fname">operator_id</span> <span class="fdetail">&mdash; FK &rarr; operators</span></li>
+        <li><span class="fname">project_id</span> <span class="fdetail">&mdash; FK &rarr; projects</span></li>
+        <li><span class="fname">delegation_mode</span></li>
+        <li><span class="fname">agents_invoked[]</span></li>
+        <li><span class="fname">intent</span> <span class="fdetail">&mdash; string</span></li>
+        <li><span class="fname">tokens_consumed</span> <span class="fdetail">&mdash; {in, out, total}</span></li>
+        <li><span class="fname">models_used[]</span></li>
+        <li><span class="fname">latency_ms</span> <span class="fdetail">&mdash; int</span></li>
+        <li><span class="fname">token_budget</span> <span class="fdetail">&mdash; {allocated, consumed, truncated}</span></li>
+        <li><span class="fname">degradation_path[]</span></li>
+      </ul>
+    </div>
+
+    <!-- 6. short_term_memory -->
+    <div class="glass coll-card">
+      <div class="coll-header">
+        <div class="coll-icon icon-stm">&#x1F4AD;</div>
+        <div><span class="coll-num">#6</span><h3>short_term_memory</h3></div>
+      </div>
+      <ul class="field-list">
+        <li><span class="fname">memory_id</span> <span class="fdetail">&mdash; PK</span></li>
+        <li><span class="fname">operator_id</span> <span class="fdetail">&mdash; FK &rarr; operators</span></li>
+        <li><span class="fname">thread_id</span></li>
+        <li><span class="fname">role</span> <span class="fdetail">&mdash; string</span></li>
+        <li><span class="fname">content</span> <span class="fdetail">&mdash; text</span></li>
+        <li><span class="fname">turn_number</span> <span class="fdetail">&mdash; int</span></li>
+        <li><span class="fname">expires_at</span> <span class="fdetail">&mdash; TTL 24h</span></li>
+      </ul>
+    </div>
+
+    <!-- 7. semantic_memory -->
+    <div class="glass coll-card">
+      <div class="coll-header">
+        <div class="coll-icon icon-sem">&#x1F9E0;</div>
+        <div><span class="coll-num">#7</span><h3>semantic_memory</h3></div>
+      </div>
+      <ul class="field-list">
+        <li><span class="fname">memory_id</span> <span class="fdetail">&mdash; PK</span></li>
+        <li><span class="fname">operator_id</span> <span class="fdetail">&mdash; FK &rarr; operators</span></li>
+        <li><span class="fname">category</span> <span class="fdetail">&mdash; fact | preference | decision | learning</span></li>
+        <li><span class="fname">content</span> <span class="fdetail">&mdash; text</span></li>
+        <li><span class="fname">confidence</span> <span class="fdetail">&mdash; float</span></li>
+        <li><span class="fname">reinforcement_count</span> <span class="fdetail">&mdash; int</span></li>
+        <li><span class="fname">source</span></li>
+      </ul>
+    </div>
+
+    <!-- 8. skills -->
+    <div class="glass coll-card">
+      <div class="coll-header">
+        <div class="coll-icon icon-skill">&#x1F527;</div>
+        <div><span class="coll-num">#8</span><h3>skills</h3></div>
+      </div>
+      <ul class="field-list">
+        <li><span class="fname">skill_id</span> <span class="fdetail">&mdash; PK</span></li>
+        <li><span class="fname">agent_id</span></li>
+        <li><span class="fname">name</span></li>
+        <li><span class="fname">triggers[]</span></li>
+        <li><span class="fname">dependencies[]</span></li>
+        <li><span class="fname">memory_access[]</span></li>
+        <li><span class="fname">security_validations[]</span></li>
+      </ul>
+    </div>
+
+    <!-- 9. workflows -->
+    <div class="glass coll-card">
+      <div class="coll-header">
+        <div class="coll-icon icon-workflow">&#x1F504;</div>
+        <div><span class="coll-num">#9</span><h3>workflows</h3></div>
+      </div>
+      <ul class="field-list">
+        <li><span class="fname">workflow_id</span> <span class="fdetail">&mdash; PK</span></li>
+        <li><span class="fname">skill_id</span> <span class="fdetail">&mdash; FK &rarr; skills</span></li>
+        <li><span class="fname">steps[]</span> <span class="fdetail">&mdash; array of step objects</span></li>
+        <li style="padding-left:18px"><span class="fdetail">&bull; preconditions</span></li>
+        <li style="padding-left:18px"><span class="fdetail">&bull; checklist</span></li>
+        <li style="padding-left:18px"><span class="fdetail">&bull; raci</span></li>
+        <li style="padding-left:18px"><span class="fdetail">&bull; error_handling</span></li>
+      </ul>
+    </div>
+
+    <!-- 10. audit_log -->
+    <div class="glass coll-card">
+      <div class="coll-header">
+        <div class="coll-icon icon-audit">&#x1F4DC;</div>
+        <div><span class="coll-num">#10</span><h3>audit_log</h3></div>
+      </div>
+      <ul class="field-list">
+        <li><span class="fname">log_id</span> <span class="fdetail">&mdash; PK</span></li>
+        <li><span class="fname">operator_id</span> <span class="fdetail">&mdash; FK &rarr; operators</span></li>
+        <li><span class="fname">action</span> <span class="fdetail">&mdash; string</span></li>
+        <li><span class="fname">level</span> <span class="fdetail">&mdash; L0 | L1 | L2 | L3 | L4</span></li>
+        <li><span class="fname">result</span></li>
+        <li><span class="fname">details</span> <span class="fdetail">&mdash; map</span></li>
+        <li style="color:var(--gold);font-weight:600;font-size:.82rem;margin-top:6px">APPEND-ONLY</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== S3: INVARIANTES ===================== -->
+<section>
+  <h2><span class="sec-num">3</span>7 Invariantes</h2>
+  <div class="glass" style="overflow-x:auto">
+    <table class="inv-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Invariante</th>
+          <th>Colecci&oacute;n</th>
+          <th>Enforcement</th>
+          <th>Violaci&oacute;n</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="color:var(--gold);font-weight:700">I-1</td>
+          <td class="inv-name">compressed_context &le; 500 tokens</td>
+          <td>projects</td>
+          <td>CRON rechaza</td>
+          <td>Re-comprime m&aacute;s agresivo</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold);font-weight:700">I-2</td>
+          <td class="inv-name">Solo operator_id resuelve pending</td>
+          <td>pending_actions</td>
+          <td>Firestore rule + Telegram verify</td>
+          <td>Ignorada + audit log</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold);font-weight:700">I-3</td>
+          <td class="inv-name">No resolver si expirada</td>
+          <td>pending_actions</td>
+          <td>Firestore rule (expires_at)</td>
+          <td>&ldquo;Acci&oacute;n expirada&rdquo;</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold);font-weight:700">I-4</td>
+          <td class="inv-name">public_url solo si PUBLISHED</td>
+          <td>artifacts</td>
+          <td>Cloud Function pre-URL</td>
+          <td>Error 403</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold);font-weight:700">I-5</td>
+          <td class="inv-name">audit_log append-only</td>
+          <td>audit_log</td>
+          <td>Firestore rule (no update/delete)</td>
+          <td>Reject silencioso</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold);font-weight:700">I-6</td>
+          <td class="inv-name">Projects nunca se borran</td>
+          <td>projects</td>
+          <td>Firestore rule (delete: false)</td>
+          <td>Solo ARCHIVED</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold);font-weight:700">I-7</td>
+          <td class="inv-name">token consumed &le; allocated * 1.1</td>
+          <td>executions</td>
+          <td>Orchestrator trunca</td>
+          <td>Warning + parcial</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ===================== S4: SECURITY RULES ===================== -->
+<section>
+  <h2><span class="sec-num">4</span>Security Rules (Firestore)</h2>
+  <div class="glass">
+    <div class="code-block"><span class="ck">rules_version</span> = <span class="cs">'2'</span>;
+
+<span class="ck">service</span> <span class="cv">cloud.firestore</span> {
+  <span class="ck">match</span> /databases/{database}/documents {
+
+    <span class="cc">// --- operators: solo el propio operador lee/escribe ---</span>
+    <span class="ck">match</span> /operators/{opId} {
+      <span class="ck">allow</span> read, update: <span class="ck">if</span> request.auth.uid == opId;
+      <span class="ck">allow</span> create: <span class="ck">if</span> request.auth != <span class="cs">null</span>;
+      <span class="ck">allow</span> delete: <span class="ck">if</span> <span class="cs">false</span>;
+    }
+
+    <span class="cc">// --- projects: owner lee/escribe, NUNCA delete ---</span>
+    <span class="ck">match</span> /projects/{projId} {
+      <span class="ck">allow</span> read, update: <span class="ck">if</span> request.auth.uid == resource.data.owner_id;
+      <span class="ck">allow</span> create: <span class="ck">if</span> request.auth != <span class="cs">null</span>;
+      <span class="ck">allow</span> delete: <span class="ck">if</span> <span class="cs">false</span>; <span class="cc">// I-6: nunca borrar</span>
+    }
+
+    <span class="cc">// --- artifacts: owner del proyecto padre ---</span>
+    <span class="ck">match</span> /artifacts/{artId} {
+      <span class="ck">allow</span> read, write: <span class="ck">if</span> request.auth.uid ==
+        get(/databases/$(database)/documents/projects/$(resource.data.project_id)).data.owner_id;
+    }
+
+    <span class="cc">// --- pending_actions: solo operator_id resuelve (I-2) ---</span>
+    <span class="ck">match</span> /pending_actions/{actId} {
+      <span class="ck">allow</span> read: <span class="ck">if</span> request.auth.uid == resource.data.operator_id;
+      <span class="ck">allow</span> update: <span class="ck">if</span> request.auth.uid == resource.data.operator_id
+        &amp;&amp; resource.data.expires_at > request.time; <span class="cc">// I-3</span>
+      <span class="ck">allow</span> create: <span class="ck">if</span> request.auth != <span class="cs">null</span>;
+      <span class="ck">allow</span> delete: <span class="ck">if</span> <span class="cs">false</span>;
+    }
+
+    <span class="cc">// --- executions: operator lee/escribe ---</span>
+    <span class="ck">match</span> /executions/{exId} {
+      <span class="ck">allow</span> read, write: <span class="ck">if</span> request.auth.uid == resource.data.operator_id;
+    }
+
+    <span class="cc">// --- short_term_memory: operator, TTL enforced server-side ---</span>
+    <span class="ck">match</span> /short_term_memory/{memId} {
+      <span class="ck">allow</span> read, write: <span class="ck">if</span> request.auth.uid == resource.data.operator_id;
+    }
+
+    <span class="cc">// --- semantic_memory: operator ---</span>
+    <span class="ck">match</span> /semantic_memory/{memId} {
+      <span class="ck">allow</span> read, write: <span class="ck">if</span> request.auth.uid == resource.data.operator_id;
+    }
+
+    <span class="cc">// --- skills / workflows: authenticated read, admin write ---</span>
+    <span class="ck">match</span> /skills/{skillId} {
+      <span class="ck">allow</span> read: <span class="ck">if</span> request.auth != <span class="cs">null</span>;
+      <span class="ck">allow</span> write: <span class="ck">if</span> request.auth.token.admin == <span class="cs">true</span>;
+    }
+    <span class="ck">match</span> /workflows/{wfId} {
+      <span class="ck">allow</span> read: <span class="ck">if</span> request.auth != <span class="cs">null</span>;
+      <span class="ck">allow</span> write: <span class="ck">if</span> request.auth.token.admin == <span class="cs">true</span>;
+    }
+
+    <span class="cc">// --- audit_log: APPEND-ONLY (I-5) ---</span>
+    <span class="ck">match</span> /audit_log/{logId} {
+      <span class="ck">allow</span> create: <span class="ck">if</span> request.auth != <span class="cs">null</span>;
+      <span class="ck">allow</span> read: <span class="ck">if</span> request.auth.token.admin == <span class="cs">true</span>;
+      <span class="ck">allow</span> update, delete: <span class="ck">if</span> <span class="cs">false</span>; <span class="cc">// immutable</span>
+    }
+  }
+}</div>
+  </div>
+</section>
+
+<!-- ===================== S5: INDEXES ===================== -->
+<section>
+  <h2><span class="sec-num">5</span>Required Indexes</h2>
+  <div class="glass" style="overflow-x:auto">
+    <table class="idx-table">
+      <thead>
+        <tr>
+          <th>Colecci&oacute;n</th>
+          <th>Campos</th>
+          <th>Orden</th>
+          <th>Uso</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>projects</code></td>
+          <td><code>owner_id</code>, <code>status</code></td>
+          <td>ASC, ASC</td>
+          <td>Dashboard del operador &mdash; filtrar proyectos activos</td>
+        </tr>
+        <tr>
+          <td><code>artifacts</code></td>
+          <td><code>project_id</code>, <code>status</code>, <code>version</code></td>
+          <td>ASC, ASC, DESC</td>
+          <td>Listar artefactos publicados, &uacute;ltima versi&oacute;n primero</td>
+        </tr>
+        <tr>
+          <td><code>pending_actions</code></td>
+          <td><code>operator_id</code>, <code>status</code>, <code>expires_at</code></td>
+          <td>ASC, ASC, ASC</td>
+          <td>Cola de aprobaci&oacute;n Telegram &mdash; pendientes no expiradas</td>
+        </tr>
+        <tr>
+          <td><code>executions</code></td>
+          <td><code>operator_id</code>, <code>project_id</code>, <code>timestamp</code></td>
+          <td>ASC, ASC, DESC</td>
+          <td>Historial de ejecuciones por proyecto</td>
+        </tr>
+        <tr>
+          <td><code>short_term_memory</code></td>
+          <td><code>operator_id</code>, <code>thread_id</code>, <code>turn_number</code></td>
+          <td>ASC, ASC, ASC</td>
+          <td>Reconstruir hilo conversacional ordenado</td>
+        </tr>
+        <tr>
+          <td><code>semantic_memory</code></td>
+          <td><code>operator_id</code>, <code>category</code>, <code>confidence</code></td>
+          <td>ASC, ASC, DESC</td>
+          <td>Recall por categor&iacute;a, mayor confianza primero</td>
+        </tr>
+        <tr>
+          <td><code>audit_log</code></td>
+          <td><code>operator_id</code>, <code>level</code>, <code>timestamp</code></td>
+          <td>ASC, ASC, DESC</td>
+          <td>Filtrar logs por severidad, m&aacute;s recientes primero</td>
+        </tr>
+        <tr>
+          <td><code>skills</code></td>
+          <td><code>agent_id</code>, <code>name</code></td>
+          <td>ASC, ASC</td>
+          <td>Buscar skills por agente</td>
+        </tr>
+        <tr>
+          <td><code>workflows</code></td>
+          <td><code>skill_id</code></td>
+          <td>ASC</td>
+          <td>Obtener workflows de un skill</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="brand"><span class="brand-white">Metodolog</span><span class="brand-gold">IA</span></div>
+  <p>&copy; 2026 MetodologIA. Copyleft &mdash; Para uso y aprovechamiento de profesionales en la era de la IA.</p>
+</footer>
+
+</body>
+</html>

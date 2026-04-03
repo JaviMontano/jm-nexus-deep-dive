@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="es" data-mtia="discovery-plan">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>00 Discovery Plan — Nexus Assistant OS | MetodologIA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ── Reset & Base ─────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg-body: #1E3258;
+      --bg-dark: #122562;
+      --gold: #FFD700;
+      --blue: #137DC5;
+      --text: #E8E8E8;
+      --text-muted: #B0B8C8;
+      --card-bg: rgba(255,255,255,0.06);
+      --card-border: rgba(255,255,255,0.10);
+      --purple: #BBA0CC;
+      --gray: #808080;
+      --dark-surface: #1F2833;
+      --font-display: 'Poppins', sans-serif;
+      --font-body: 'Montserrat', sans-serif;
+      --font-footnote: 'Trebuchet MS', sans-serif;
+      --max-w: 1120px;
+      --radius: 16px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      font-weight: 400;
+      background: var(--bg-body);
+      color: var(--text);
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    /* ── Skip link ────────────────────────────────── */
+    .skip-link {
+      position: absolute; left: -9999px; top: 0;
+      background: var(--gold); color: var(--bg-dark);
+      padding: .5rem 1rem; z-index: 1000; font-weight: 600;
+    }
+    .skip-link:focus { left: 1rem; }
+    /* ── Layout ───────────────────────────────────── */
+    .container { max-width: var(--max-w); margin: 0 auto; padding: 0 1.5rem; }
+    /* ── Header ───────────────────────────────────── */
+    header[data-mtia="header"] {
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-body) 100%);
+      border-bottom: 1px solid var(--card-border);
+      padding: 1.25rem 0;
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+    .header-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .brand { display: flex; align-items: center; gap: .75rem; }
+    .brand-logo { width: 36px; height: 36px; flex-shrink: 0; }
+    .brand-wordmark { font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; letter-spacing: .02em; }
+    .brand-wordmark .w { color: #fff; }
+    .brand-wordmark .ia { color: var(--gold); }
+    .doc-badge {
+      font-family: var(--font-display); font-size: .75rem; font-weight: 600;
+      background: rgba(255,215,0,.12); color: var(--gold);
+      padding: .3rem .75rem; border-radius: 20px;
+      border: 1px solid rgba(255,215,0,.25);
+    }
+    /* ── Hero ──────────────────────────────────────── */
+    .hero[data-mtia="hero"] {
+      padding: 3rem 0 2rem;
+      text-align: center;
+    }
+    .hero h1 {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      margin-bottom: .5rem;
+    }
+    .hero h1 .accent { color: var(--gold); }
+    .hero .subtitle {
+      font-size: 1.05rem; color: var(--text-muted);
+      max-width: 680px; margin: 0 auto;
+    }
+    /* ── TLDR card ─────────────────────────────────── */
+    .tldr[data-mtia="tldr"] {
+      background: linear-gradient(135deg, rgba(255,215,0,.08), rgba(19,125,197,.08));
+      border: 1px solid rgba(255,215,0,.20);
+      border-radius: var(--radius);
+      padding: 1.5rem 2rem;
+      margin: 0 auto 2.5rem;
+      max-width: 820px;
+      backdrop-filter: blur(16px);
+    }
+    .tldr strong { color: var(--gold); font-family: var(--font-display); font-weight: 700; }
+    /* ── Glass card ────────────────────────────────── */
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .card h2 {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 1.35rem; margin-bottom: 1rem;
+      display: flex; align-items: center; gap: .6rem;
+    }
+    .card h2 .num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: 8px;
+      background: rgba(255,215,0,.15); color: var(--gold);
+      font-size: .85rem; font-weight: 700; flex-shrink: 0;
+    }
+    .card h3 {
+      font-family: var(--font-display); font-weight: 600;
+      font-size: 1.05rem; margin: 1.25rem 0 .5rem;
+      color: var(--blue);
+    }
+    /* ── Metadata grid ────────────────────────────── */
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .meta-item {
+      background: rgba(255,255,255,0.04);
+      border-radius: 10px; padding: 1rem 1.25rem;
+      border-left: 3px solid var(--blue);
+    }
+    .meta-item .label {
+      font-size: .75rem; text-transform: uppercase; letter-spacing: .06em;
+      color: var(--text-muted); margin-bottom: .25rem;
+    }
+    .meta-item .value { font-weight: 500; }
+    /* ── Objectives list ──────────────────────────── */
+    .obj-list { list-style: none; counter-reset: obj; }
+    .obj-list li {
+      counter-increment: obj;
+      padding: .6rem 0 .6rem 2.5rem;
+      position: relative;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .obj-list li::before {
+      content: counter(obj);
+      position: absolute; left: 0; top: .55rem;
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--blue); color: #fff;
+      font-family: var(--font-display); font-weight: 700; font-size: .8rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    /* ── Pipeline table ────────────────────────────── */
+    .pipeline-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    .pipeline-table th {
+      text-align: left; padding: .65rem .75rem;
+      font-family: var(--font-display); font-weight: 600;
+      color: var(--gold); border-bottom: 2px solid rgba(255,215,0,.25);
+      font-size: .8rem; text-transform: uppercase; letter-spacing: .04em;
+    }
+    .pipeline-table td {
+      padding: .6rem .75rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      vertical-align: top;
+    }
+    .pipeline-table tr:hover td { background: rgba(255,255,255,0.03); }
+    .phase-tag {
+      display: inline-block; font-size: .7rem; font-weight: 600;
+      padding: .15rem .5rem; border-radius: 6px;
+      background: rgba(19,125,197,.18); color: var(--blue);
+      font-family: var(--font-display);
+    }
+    .status-icon { font-size: 1rem; }
+    /* ── Team grid ─────────────────────────────────── */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .team-member {
+      background: rgba(255,255,255,0.04);
+      border-radius: 12px; padding: 1.25rem;
+      border-top: 3px solid var(--gold);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .team-member:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+    }
+    .team-member .agent-name {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: .95rem; color: var(--gold); margin-bottom: .25rem;
+    }
+    .team-member .agent-role { font-size: .88rem; margin-bottom: .4rem; }
+    .team-member .agent-phases {
+      font-size: .78rem; color: var(--text-muted);
+      font-family: var(--font-footnote);
+    }
+    /* ── Gates ─────────────────────────────────────── */
+    .gate-list { list-style: none; }
+    .gate-list li {
+      padding: .85rem 1.25rem; margin-bottom: .75rem;
+      background: rgba(255,255,255,0.04); border-radius: 10px;
+      border-left: 4px solid var(--gold);
+      display: flex; align-items: flex-start; gap: .75rem;
+    }
+    .gate-id {
+      font-family: var(--font-display); font-weight: 700;
+      color: var(--gold); white-space: nowrap;
+    }
+    .gate-status {
+      font-size: .75rem; font-weight: 600;
+      padding: .15rem .5rem; border-radius: 6px;
+      background: rgba(187,160,204,.18); color: var(--purple);
+      margin-left: auto; white-space: nowrap;
+    }
+    /* ── Constraints ───────────────────────────────── */
+    .constraint-list { list-style: none; }
+    .constraint-list li {
+      padding: .5rem 0 .5rem 1.5rem; position: relative;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .constraint-list li::before {
+      content: ''; position: absolute; left: 0; top: .85rem;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--gold);
+    }
+    /* ── Timeline ──────────────────────────────────── */
+    .timeline[data-mtia="timeline"] {
+      position: relative; padding: 1.5rem 0 1rem 2.5rem;
+    }
+    .timeline::before {
+      content: ''; position: absolute; left: 12px; top: 0; bottom: 0;
+      width: 3px; background: linear-gradient(to bottom, var(--gold), var(--blue), var(--purple));
+      border-radius: 2px;
+    }
+    .tl-item {
+      position: relative; margin-bottom: 1.75rem;
+      padding-left: 1.5rem;
+    }
+    .tl-item::before {
+      content: ''; position: absolute; left: -2.5rem; top: .35rem;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--gold); border: 3px solid var(--bg-body);
+      z-index: 1;
+    }
+    .tl-item.active::before { box-shadow: 0 0 0 4px rgba(255,215,0,.3); }
+    .tl-phase {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: .95rem; color: var(--gold); margin-bottom: .2rem;
+    }
+    .tl-desc { font-size: .88rem; color: var(--text-muted); }
+    .tl-gate {
+      display: inline-block; margin-top: .35rem;
+      font-size: .72rem; font-weight: 600;
+      padding: .15rem .5rem; border-radius: 6px;
+      background: rgba(255,215,0,.12); color: var(--gold);
+      font-family: var(--font-display);
+    }
+    /* ── Footer ───────────────────────────────────── */
+    footer[data-mtia="footer"] {
+      border-top: 1px solid var(--card-border);
+      padding: 2rem 0;
+      text-align: center;
+      font-family: var(--font-footnote);
+      font-size: .82rem;
+      color: var(--text-muted);
+    }
+    footer .copy { margin-bottom: .35rem; }
+    footer .tagline { font-size: .75rem; opacity: .7; }
+    /* ── Print ─────────────────────────────────────── */
+    @media print {
+      body { background: #fff; color: #1a1a1a; }
+      header, .skip-link { display: none; }
+      .card { background: #f5f5f5; border: 1px solid #ddd; box-shadow: none; backdrop-filter: none; }
+      .hero h1 .accent, .brand-wordmark .ia { color: #b8860b; }
+      .pipeline-table th { color: #b8860b; border-bottom-color: #b8860b; }
+      .team-member { border-top-color: #b8860b; }
+      footer { color: #666; }
+      a { color: #137DC5; }
+    }
+    /* ── Responsive ────────────────────────────────── */
+    @media (max-width: 640px) {
+      .card { padding: 1.25rem; }
+      .meta-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: 1fr; }
+      .pipeline-table { font-size: .8rem; }
+      .pipeline-table th, .pipeline-table td { padding: .5rem; }
+      .header-inner { justify-content: center; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Saltar al contenido</a>
+
+  <!-- ═══ HEADER ═══ -->
+  <header data-mtia="header">
+    <div class="container header-inner">
+      <div class="brand">
+        <svg class="brand-logo" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect width="36" height="36" rx="8" fill="#122562"/>
+          <rect x="7" y="10" width="4" height="16" rx="2" fill="#fff"/>
+          <rect x="16" y="6" width="4" height="20" rx="2" fill="#fff"/>
+          <rect x="25" y="12" width="4" height="14" rx="2" fill="#fff"/>
+          <circle cx="28" cy="8" r="3.5" fill="#FFD700"/>
+        </svg>
+        <span class="brand-wordmark"><span class="w">Metodolog</span><span class="ia">IA</span></span>
+      </div>
+      <span class="doc-badge">00 &middot; Discovery Plan</span>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+
+    <!-- ═══ HERO ═══ -->
+    <section class="hero" data-mtia="hero">
+      <h1>Discovery Plan: <span class="accent">Nexus Assistant OS</span></h1>
+      <p class="subtitle">Consolidacion arquitectonica de un Work OS Telegram-first con orquestacion multi-agente, multi-LLM y memoria persistente.</p>
+    </section>
+
+    <!-- ═══ TL;DR ═══ -->
+    <div class="tldr" data-mtia="tldr">
+      <strong>TL;DR</strong> &mdash; Plan de discovery para consolidar 7 documentos divergentes de un Telegram-first Work OS en una arquitectura unificada, cruzada contra repositorio real, con 16 entregables en pipeline autonomo completo.
+    </div>
+
+    <!-- ═══ S1: CONTEXTO ═══ -->
+    <section class="card" data-mtia="contexto">
+      <h2><span class="num">1</span> Contexto del Discovery</h2>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="label">Sistema</div>
+          <div class="value">Nexus Assistant OS (Pristino Bot v2)</div>
+        </div>
+        <div class="meta-item">
+          <div class="label">Tipo</div>
+          <div class="value">Orquestador Multi-Agente via Telegram + Firebase</div>
+        </div>
+        <div class="meta-item">
+          <div class="label">Industria</div>
+          <div class="value">Tecnologia / SaaS / Productividad</div>
+        </div>
+        <div class="meta-item">
+          <div class="label">Repositorio</div>
+          <div class="value"><a href="https://github.com/danielfzuluagama-oss/Nexus-Backup" target="_blank" rel="noopener">Nexus-Backup</a> (branch 001-pristino-bot-v2)</div>
+        </div>
+        <div class="meta-item">
+          <div class="label">Stack</div>
+          <div class="value">TypeScript + Firebase Functions + Telegram Bot API + Multi-LLM (Groq / OpenRouter / Gemini)</div>
+        </div>
+        <div class="meta-item">
+          <div class="label">Estado Actual</div>
+          <div class="value">50 archivos TS, 6 agentes, 24 skills, 96 workflows, Constitution 8 principios, Spec 87/100</div>
+        </div>
+      </div>
+      <h3>Problema Central</h3>
+      <p>7 documentos de discovery nunca reconciliados entre si. 2 gaps criticos identificados: <strong>Project State</strong> y <strong>HIL Middleware</strong> sin documentacion coherente.</p>
+    </section>
+
+    <!-- ═══ S2: OBJETIVOS ═══ -->
+    <section class="card" data-mtia="objetivos">
+      <h2><span class="num">2</span> Objetivos del Discovery</h2>
+      <ol class="obj-list">
+        <li>Reconciliar 7 documentos en fuente de verdad unica</li>
+        <li>Documentar AS-IS grounded en repositorio real (no en aspiraciones)</li>
+        <li>Cuantificar gaps AS-IS vs TO-BE con evidencia taggeada</li>
+        <li>Disenar arquitectura TO-BE con ADRs formales</li>
+        <li>Producir especificacion funcional implementable</li>
+        <li>Definir roadmap de 3 horizontes (16 semanas)</li>
+        <li>Evaluar viabilidad y oportunidades de IA</li>
+      </ol>
+    </section>
+
+    <!-- ═══ S3: PIPELINE ═══ -->
+    <section class="card" data-mtia="pipeline">
+      <h2><span class="num">3</span> Pipeline &mdash; 16 Entregables</h2>
+      <div style="overflow-x:auto;">
+        <table class="pipeline-table">
+          <thead>
+            <tr>
+              <th>Fase</th>
+              <th>#</th>
+              <th>Entregable</th>
+              <th>Descripcion</th>
+              <th style="text-align:center;">Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="phase-tag">F0</span></td>
+              <td>00</td>
+              <td>Discovery Plan</td>
+              <td>Alcance, dream team, pipeline, gates, restricciones</td>
+              <td style="text-align:center;" class="status-icon">&#9989;</td>
+            </tr>
+            <tr>
+              <td><span class="phase-tag">F0</span></td>
+              <td>01</td>
+              <td>Stakeholder Map</td>
+              <td>Mapa de actores, influencia, expectativas</td>
+              <td style="text-align:center;" class="status-icon">&#9898;</td>
+            </tr>
+            <tr>
+              <td><span class="phase-tag">F1</span></td>
+              <td>02</td>
+              <td>Brief Tecnico</td>
+              <td>Resumen ejecutivo del sistema, stack, metricas clave</td>
+              <td style="text-align:center;" class="status-icon">&#9898;</td>
+            </tr>
+            <tr>
+              <td><span class="phase-tag">F1</span></td>
+              <td>03</td>
+              <td>Analisis AS-IS</td>
+              <td>Estado real del repo cruzado con documentacion</td>
+              <td style="text-align:center;" class="status-icon">&#9898;</td>
+            </tr>
+            <tr>
+              <td><span class="phase-tag">F2</span></td>
+              <td>04</td>
+              <td>Mapeo de Flujos</td>
+              <td>Flujos usuario, agentes, datos, errores</td>
+              <td style="text-align:center;" class="status-icon">&#9898;</td>
+            </tr>
+            <tr>
+              <td><span class="phase-tag">F3</span></td>
+              <td>05</td>
+              <td>Escenarios ToT</td>
+              <td>Tree of Thought: 3 escenarios TO-BE evaluados</td>
+              <td style="text-align:center;" class="status-icon">&#9898;</td>
+            </tr>
+            <tr>
+              <td><span class="phase-tag">F3b</span></td>
+              <td>05b</td>
+              <td>Feasibility ThinkTank</td>
+              <td>Viabilidad tecnica, economica, organizacional</td>
+              <td style="text-align:center;" class="status-icon">&#9898;</td>
+            </tr>
+            <tr>
+              <td><span class="phase-tag">F4</span></td>
+              <td>06</td>
+              <td>Solution Roadmap</td>
+              <td>Roadmap 3 horizontes, dependencias, FTE-meses</td>
+              <td style="text-align:center;" class="status-icon">&#9898;</td>
+            </tr>
+            <tr>
+              <td><span class="phase-tag">F5a</span></td>
+              <td>07</td>
+              <td>Especificacion Funcional</td>
+              <td>Spec implementable con contratos y criterios de aceptacion</td>
+              <td style="text-align:center;" class="status-icon">&#9898;</td>
+            </tr>
+            <tr>
+              <td><span class="phase-tag">F5b</span></td>
+              <td>08</td>
+              <td>Pitch Ejecutivo</td>
+              <td>Presentacion de valor para stakeholders</td>
+              <td style="text-align:center;" class="status-icon">&#9898;</td>
+            </tr>
+            <tr>
+              <td><span class="phase-tag">F7a</span></td>
+              <td>10</td>
+              <td>Hallazgos &mdash; Presentacion</td>
+              <td>Deck ejecutivo de hallazgos consolidados</td>
+              <td style="text-align:center;" class="status-icon">&#9898;</td>
+            </tr>
+            <tr>
+              <td><span class="phase-tag">F7b</span></td>
+              <td>11</td>
+              <td>Hallazgos &mdash; Tecnicos</td>
+              <td>Deuda tecnica, riesgos arquitectonicos, ADRs</td>
+              <td style="text-align:center;" class="status-icon">&#9898;</td>
+            </tr>
+            <tr>
+              <td><span class="phase-tag">F7c</span></td>
+              <td>12</td>
+              <td>Hallazgos &mdash; Funcionales</td>
+              <td>Gaps funcionales, capabilities faltantes</td>
+              <td style="text-align:center;" class="status-icon">&#9898;</td>
+            </tr>
+            <tr>
+              <td><span class="phase-tag">F7d</span></td>
+              <td>13</td>
+              <td>Hallazgos &mdash; Negocio <em style="color:var(--purple);font-size:.75rem;">INTERNAL</em></td>
+              <td>Oportunidades comerciales, modelo de ingresos</td>
+              <td style="text-align:center;" class="status-icon">&#128274;</td>
+            </tr>
+            <tr>
+              <td><span class="phase-tag">F7e</span></td>
+              <td>14</td>
+              <td>Hallazgos &mdash; IA</td>
+              <td>Oportunidades IA, quick wins, riesgos eticos</td>
+              <td style="text-align:center;" class="status-icon">&#9898;</td>
+            </tr>
+            <tr>
+              <td><span class="phase-tag">F6</span></td>
+              <td>09</td>
+              <td>Handover <em style="color:var(--text-muted);font-size:.75rem;">LAST</em></td>
+              <td>Paquete de entrega: contexto, decisiones, siguiente paso</td>
+              <td style="text-align:center;" class="status-icon">&#9898;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══ S4: DREAM TEAM ═══ -->
+    <section class="card" data-mtia="dream-team">
+      <h2><span class="num">4</span> Dream Team</h2>
+      <div class="team-grid">
+        <div class="team-member">
+          <div class="agent-name">discovery-conductor</div>
+          <div class="agent-role">Orquesta fases, enforces gates, resuelve bloqueos</div>
+          <div class="agent-phases">Fases: Todas</div>
+        </div>
+        <div class="team-member">
+          <div class="agent-name">delivery-manager</div>
+          <div class="agent-role">Timeline, scope, gestion de riesgos de entrega</div>
+          <div class="agent-phases">Fases: Todas</div>
+        </div>
+        <div class="team-member">
+          <div class="agent-name">risk-controller</div>
+          <div class="agent-role">Quality gates, validacion de evidencia, no-regresion</div>
+          <div class="agent-phases">Fases: Todas</div>
+        </div>
+        <div class="team-member">
+          <div class="agent-name">technical-architect</div>
+          <div class="agent-role">Analisis AS-IS, diseno TO-BE, ADRs arquitectonicos</div>
+          <div class="agent-phases">Fases: 1 &ndash; 3b</div>
+        </div>
+        <div class="team-member">
+          <div class="agent-name">solutions-architect</div>
+          <div class="agent-role">Integraciones, cross-cutting concerns, NFRs</div>
+          <div class="agent-phases">Fases: 2 &ndash; 3b</div>
+        </div>
+        <div class="team-member">
+          <div class="agent-name">data-strategist</div>
+          <div class="agent-role">Modelo de datos, memoria persistente, estado</div>
+          <div class="agent-phases">Fases: 4 &ndash; 5a</div>
+        </div>
+        <div class="team-member">
+          <div class="agent-name">domain-analyst</div>
+          <div class="agent-role">JTBD, capabilities, oportunidades B2B</div>
+          <div class="agent-phases">Fases: 0, 3, 5b</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ S5: GATES ═══ -->
+    <section class="card" data-mtia="gates">
+      <h2><span class="num">5</span> Gates</h2>
+      <ul class="gate-list">
+        <li>
+          <span class="gate-id">G1</span>
+          <div>
+            <strong>Aprobacion de escenario</strong><br>
+            <span style="font-size:.88rem;color:var(--text-muted);">Valida escenario TO-BE seleccionado antes de roadmap.</span>
+          </div>
+          <span class="gate-status">Auto-aprobado: State Machine</span>
+        </li>
+        <li>
+          <span class="gate-id">G1.5</span>
+          <div>
+            <strong>Viabilidad Think Tank</strong><br>
+            <span style="font-size:.88rem;color:var(--text-muted);">Evaluacion multi-dimensional de factibilidad.</span>
+          </div>
+          <span class="gate-status">Auto-aprobado: FEASIBLE</span>
+        </li>
+        <li>
+          <span class="gate-id">G2</span>
+          <div>
+            <strong>Magnitudes</strong><br>
+            <span style="font-size:.88rem;color:var(--text-muted);">Confirma 3 horizontes y estimaciones FTE-meses.</span>
+          </div>
+          <span class="gate-status">Auto-aprobado: 3 horizontes</span>
+        </li>
+        <li>
+          <span class="gate-id">G3</span>
+          <div>
+            <strong>Cierre final</strong><br>
+            <span style="font-size:.88rem;color:var(--text-muted);">Verifica completitud de los 16 entregables y handover.</span>
+          </div>
+          <span class="gate-status">Auto-aprobado: 16 entregables</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ═══ S6: RESTRICCIONES ═══ -->
+    <section class="card" data-mtia="restricciones">
+      <h2><span class="num">6</span> Restricciones</h2>
+      <ul class="constraint-list">
+        <li><strong>Zero precios</strong> &mdash; solo FTE-meses + disclaimers obligatorios</li>
+        <li><strong>Evidencia taggeada</strong> en toda afirmacion: <code style="background:rgba(255,255,255,0.08);padding:.15rem .4rem;border-radius:4px;font-size:.85rem;">[CODIGO]</code> <code style="background:rgba(255,255,255,0.08);padding:.15rem .4rem;border-radius:4px;font-size:.85rem;">[CONFIG]</code> <code style="background:rgba(255,255,255,0.08);padding:.15rem .4rem;border-radius:4px;font-size:.85rem;">[DOC]</code> <code style="background:rgba(255,255,255,0.08);padding:.15rem .4rem;border-radius:4px;font-size:.85rem;">[INFERENCIA]</code> <code style="background:rgba(255,255,255,0.08);padding:.15rem .4rem;border-radius:4px;font-size:.85rem;">[SUPUESTO]</code></li>
+        <li><strong>Disclaimers obligatorios</strong> en roadmap y pitch ejecutivo</li>
+        <li><strong>Doc 13 es INTERNAL</strong> &mdash; hallazgos de negocio no se comparten con cliente</li>
+        <li><strong>Handover (09) es siempre el ultimo</strong> entregable del pipeline</li>
+      </ul>
+    </section>
+
+    <!-- ═══ S7: CRONOGRAMA ═══ -->
+    <section class="card" data-mtia="cronograma">
+      <h2><span class="num">7</span> Cronograma Visual</h2>
+      <div class="timeline" data-mtia="timeline">
+        <div class="tl-item active">
+          <div class="tl-phase">Fase 0 &mdash; Fundacion</div>
+          <div class="tl-desc">Discovery Plan + Stakeholder Map</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-phase">Fase 1 &mdash; Diagnostico</div>
+          <div class="tl-desc">Brief Tecnico + Analisis AS-IS (repo-grounded)</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-phase">Fase 2 &mdash; Flujos</div>
+          <div class="tl-desc">Mapeo de flujos usuario, agentes, datos, errores</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-phase">Fase 3 / 3b &mdash; Escenarios</div>
+          <div class="tl-desc">Tree of Thought + Feasibility ThinkTank</div>
+          <span class="tl-gate">GATE G1 + G1.5</span>
+        </div>
+        <div class="tl-item">
+          <div class="tl-phase">Fase 4 &mdash; Roadmap</div>
+          <div class="tl-desc">Solution Roadmap con 3 horizontes y FTE-meses</div>
+          <span class="tl-gate">GATE G2</span>
+        </div>
+        <div class="tl-item">
+          <div class="tl-phase">Fase 5 &mdash; Especificacion + Pitch</div>
+          <div class="tl-desc">Spec funcional implementable + Pitch ejecutivo</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-phase">Fase 7 &mdash; Hallazgos</div>
+          <div class="tl-desc">5 documentos de hallazgos (Presentacion, Tecnicos, Funcionales, Negocio, IA)</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-phase">Fase 6 &mdash; Handover</div>
+          <div class="tl-desc">Paquete de cierre y transferencia de conocimiento</div>
+          <span class="tl-gate">GATE G3 &mdash; Cierre Final</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer data-mtia="footer">
+    <div class="container">
+      <div class="copy">&copy; 2026 MetodologIA. Copyleft &mdash; Para uso y aprovechamiento de profesionales en la era de la IA.</div>
+      <div class="tagline">Construido por profesionales, potenciado por la red agentica de MetodologIA.</div>
+    </div>
+  </footer>
+
+</body>
+</html>

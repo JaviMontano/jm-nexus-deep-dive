@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>06 — Solution Roadmap — Nexus Assistant OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ── Reset ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ── Tokens ── */
+  :root {
+    --bg: #1E3258;
+    --bg-deep: #152545;
+    --card: rgba(255,255,255,0.06);
+    --card-hover: rgba(255,255,255,0.10);
+    --gold: #FFD700;
+    --blue: #137DC5;
+    --purple: #BBA0CC;
+    --navy-dark: #122562;
+    --text: #E8E8E8;
+    --text-muted: #A8B8CC;
+    --gray: #808080;
+    --danger: #E74C3C;
+    --success: #2ECC71;
+    --font-display: 'Poppins', sans-serif;
+    --font-body: 'Montserrat', sans-serif;
+    --font-footnote: 'Trebuchet MS', sans-serif;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-weight: 400;
+    line-height: 1.65;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Skip link ── */
+  .skip-link {
+    position: absolute; left: -9999px; top: auto;
+    background: var(--gold); color: var(--bg); padding: 8px 16px;
+    font-family: var(--font-display); font-weight: 700; z-index: 100;
+    border-radius: var(--radius-sm);
+  }
+  .skip-link:focus { left: 16px; top: 16px; }
+
+  /* ── Layout ── */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+  /* ── Header ── */
+  header {
+    background: linear-gradient(135deg, var(--bg-deep) 0%, var(--bg) 100%);
+    border-bottom: 2px solid rgba(255,215,0,0.25);
+    padding: 24px 0;
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(12px);
+  }
+  .header-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .brand-logo { width: 36px; height: 36px; flex-shrink: 0; }
+  .brand-wordmark { font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; letter-spacing: -0.02em; }
+  .brand-wordmark .wm-ia { color: var(--gold); }
+  .brand-wordmark .wm-prefix { color: #fff; }
+  .header-tag {
+    font-family: var(--font-display); font-size: 0.75rem; font-weight: 600;
+    background: rgba(255,215,0,0.12); color: var(--gold);
+    padding: 4px 12px; border-radius: 99px; letter-spacing: 0.04em;
+  }
+
+  /* ── Hero ── */
+  .hero { text-align: center; padding: 56px 0 36px; }
+  .hero h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem,4vw,2.4rem); color: #fff; margin-bottom: 8px; }
+  .hero h1 span { color: var(--gold); }
+  .hero .subtitle { font-size: 1.05rem; color: var(--text-muted); max-width: 700px; margin: 0 auto; }
+
+  /* ── TL;DR ── */
+  .tldr {
+    background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,215,0,0.02));
+    border: 1px solid rgba(255,215,0,0.20);
+    border-left: 4px solid var(--gold);
+    border-radius: var(--radius);
+    padding: 20px 24px; margin-bottom: 32px;
+    font-size: 0.92rem; line-height: 1.7;
+  }
+  .tldr strong { color: var(--gold); font-family: var(--font-display); font-weight: 700; }
+
+  /* ── Disclaimer ── */
+  .disclaimer {
+    background: rgba(231,76,60,0.08);
+    border: 1px solid rgba(231,76,60,0.30);
+    border-left: 4px solid var(--danger);
+    border-radius: var(--radius);
+    padding: 20px 24px; margin-bottom: 40px;
+  }
+  .disclaimer-title {
+    font-family: var(--font-display); font-weight: 700; font-size: 0.85rem;
+    color: var(--danger); text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+  .disclaimer p {
+    font-size: 0.82rem; color: var(--text-muted); line-height: 1.65;
+  }
+
+  /* ── Section ── */
+  section { margin-bottom: 48px; }
+  .section-heading {
+    font-family: var(--font-display); font-weight: 700; font-size: 1.35rem;
+    margin-bottom: 24px; padding-bottom: 8px;
+    border-bottom: 2px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .section-heading .num {
+    background: var(--gold); color: var(--bg); width: 28px; height: 28px;
+    border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
+  }
+
+  /* ── Timeline visual ── */
+  .timeline-strip {
+    display: flex; gap: 0; border-radius: var(--radius);
+    overflow: hidden; margin-bottom: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+  }
+  .tl-block {
+    padding: 20px 16px; text-align: center;
+    font-family: var(--font-display); font-weight: 700;
+    display: flex; flex-direction: column; justify-content: center; gap: 4px;
+    position: relative;
+  }
+  .tl-block .tl-weeks { font-size: 0.7rem; font-weight: 400; opacity: 0.85; font-family: var(--font-body); }
+  .tl-block .tl-label { font-size: 0.95rem; letter-spacing: 0.02em; }
+  .tl-block .tl-fte { font-size: 0.65rem; font-weight: 400; opacity: 0.7; font-family: var(--font-body); }
+  .tl-h1 { flex: 4; background: linear-gradient(135deg, #b8960a 0%, #d4af37 50%, #FFD700 100%); color: var(--bg); }
+  .tl-h2 { flex: 6; background: linear-gradient(135deg, #0e5a8f 0%, #137DC5 100%); color: #fff; }
+  .tl-h3 { flex: 6; background: linear-gradient(135deg, #7a5a9e 0%, #BBA0CC 100%); color: var(--bg); }
+
+  /* gate marker on timeline */
+  .tl-block::after {
+    content: attr(data-gate); position: absolute; right: -1px; top: 50%; transform: translateY(-50%);
+    background: var(--bg); color: var(--gold); font-size: 0.55rem; font-weight: 700;
+    padding: 2px 6px; border-radius: 4px; z-index: 2;
+    border: 1px solid var(--gold); letter-spacing: 0.06em;
+  }
+  .tl-h2::after { border-color: var(--blue); color: var(--blue); }
+  .tl-h3::after { border-color: var(--purple); color: var(--purple); }
+
+  /* ── Badges ── */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: var(--font-display); font-weight: 700; font-size: 0.65rem;
+    padding: 3px 10px; border-radius: 99px; letter-spacing: 0.04em;
+    text-transform: uppercase; white-space: nowrap;
+  }
+  .badge-h1 { background: rgba(255,215,0,0.18); color: var(--gold); }
+  .badge-h2 { background: rgba(19,125,197,0.20); color: var(--blue); }
+  .badge-h3 { background: rgba(187,160,204,0.20); color: var(--purple); }
+  .badge-crit { background: rgba(231,76,60,0.18); color: var(--danger); }
+  .badge-alta { background: rgba(255,215,0,0.15); color: var(--gold); }
+  .badge-media { background: rgba(19,125,197,0.15); color: var(--blue); }
+  .badge-fte { background: rgba(46,204,113,0.15); color: var(--success); }
+
+  /* ── Sprint Cards Grid ── */
+  .sprint-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .sprint-card {
+    background: var(--card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius);
+    padding: 24px;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .sprint-card:hover {
+    background: var(--card-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+  .sprint-card .card-top {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px; flex-wrap: wrap; gap: 6px;
+  }
+  .sprint-card .sprint-id {
+    font-family: var(--font-display); font-weight: 700; font-size: 0.85rem;
+    color: var(--gold);
+  }
+  .sprint-card h3 {
+    font-family: var(--font-display); font-weight: 700; font-size: 1.05rem;
+    margin-bottom: 12px; color: #fff;
+  }
+  .sprint-card .criterion {
+    background: rgba(255,255,255,0.04);
+    border-left: 3px solid var(--gold);
+    padding: 10px 14px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-size: 0.82rem; color: var(--text-muted); margin-bottom: 10px;
+    line-height: 1.55;
+  }
+  .sprint-card .criterion strong { color: var(--text); font-weight: 600; }
+  .sprint-card .fte-tag {
+    display: inline-block; margin-top: 8px;
+    font-family: var(--font-display); font-size: 0.78rem; font-weight: 600;
+    color: var(--success); opacity: 0.9;
+  }
+
+  /* ── Gate Box ── */
+  .gate-box {
+    background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,215,0,0.03));
+    border: 1px solid rgba(255,215,0,0.25);
+    border-radius: var(--radius);
+    padding: 20px 24px; margin-top: 24px;
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .gate-box.gate-h2 {
+    background: linear-gradient(135deg, rgba(19,125,197,0.08), rgba(19,125,197,0.03));
+    border-color: rgba(19,125,197,0.25);
+  }
+  .gate-box.gate-h3 {
+    background: linear-gradient(135deg, rgba(187,160,204,0.08), rgba(187,160,204,0.03));
+    border-color: rgba(187,160,204,0.25);
+  }
+  .gate-icon {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; flex-shrink: 0; font-weight: 700;
+    font-family: var(--font-display);
+  }
+  .gate-box .gate-icon { background: rgba(255,215,0,0.15); color: var(--gold); }
+  .gate-box.gate-h2 .gate-icon { background: rgba(19,125,197,0.15); color: var(--blue); }
+  .gate-box.gate-h3 .gate-icon { background: rgba(187,160,204,0.15); color: var(--purple); }
+  .gate-box .gate-content { flex: 1; }
+  .gate-box .gate-title {
+    font-family: var(--font-display); font-weight: 700; font-size: 0.95rem;
+    margin-bottom: 6px;
+  }
+  .gate-box ul { list-style: none; padding: 0; }
+  .gate-box ul li {
+    font-size: 0.82rem; color: var(--text-muted); padding: 3px 0;
+    padding-left: 18px; position: relative;
+  }
+  .gate-box ul li::before {
+    content: ''; position: absolute; left: 0; top: 10px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold);
+  }
+  .gate-box.gate-h2 ul li::before { background: var(--blue); }
+  .gate-box.gate-h3 ul li::before { background: var(--purple); }
+
+  /* ── Summary Table ── */
+  .summary-table {
+    width: 100%; border-collapse: collapse;
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .summary-table th {
+    background: rgba(255,215,0,0.10);
+    font-family: var(--font-display); font-weight: 700; font-size: 0.8rem;
+    color: var(--gold); text-align: left;
+    padding: 14px 18px; letter-spacing: 0.04em; text-transform: uppercase;
+    border-bottom: 1px solid rgba(255,215,0,0.15);
+  }
+  .summary-table td {
+    padding: 14px 18px; font-size: 0.88rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: var(--text);
+  }
+  .summary-table tbody tr:last-child td { border-bottom: none; }
+  .summary-table tbody tr:hover { background: var(--card-hover); }
+  .summary-table tfoot td {
+    background: rgba(255,215,0,0.06);
+    font-family: var(--font-display); font-weight: 700;
+    border-top: 2px solid rgba(255,215,0,0.20);
+    color: #fff;
+  }
+
+  /* ── Dependency Diagram ── */
+  .dep-diagram {
+    background: var(--card);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius);
+    padding: 32px 24px;
+    overflow-x: auto;
+  }
+  .dep-row {
+    display: flex; align-items: center; gap: 0;
+    margin-bottom: 20px; flex-wrap: nowrap; min-width: 600px;
+  }
+  .dep-row:last-child { margin-bottom: 0; }
+  .dep-label {
+    font-family: var(--font-display); font-weight: 700; font-size: 0.8rem;
+    padding: 6px 14px; border-radius: var(--radius-sm);
+    min-width: 50px; text-align: center; flex-shrink: 0;
+    margin-right: 12px;
+  }
+  .dep-label-h1 { background: rgba(255,215,0,0.18); color: var(--gold); }
+  .dep-label-h2 { background: rgba(19,125,197,0.20); color: var(--blue); }
+  .dep-label-h3 { background: rgba(187,160,204,0.20); color: var(--purple); }
+  .dep-node {
+    font-family: var(--font-display); font-weight: 600; font-size: 0.75rem;
+    padding: 8px 14px; border-radius: var(--radius-sm);
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    white-space: nowrap; text-align: center; flex-shrink: 0;
+  }
+  .dep-arrow {
+    display: flex; align-items: center; padding: 0 4px; flex-shrink: 0;
+    color: var(--text-muted); font-size: 1rem;
+  }
+  .dep-arrow-strong { color: var(--gold); font-weight: 700; }
+  .dep-arrow-h2 { color: var(--blue); }
+  .dep-arrow-h3 { color: var(--purple); }
+  .dep-gate {
+    font-family: var(--font-display); font-weight: 700; font-size: 0.65rem;
+    padding: 6px 12px; border-radius: var(--radius-sm);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    flex-shrink: 0; margin-left: 8px;
+  }
+  .dep-gate-h1 { background: var(--gold); color: var(--bg); }
+  .dep-gate-h2 { background: var(--blue); color: #fff; }
+  .dep-gate-h3 { background: var(--purple); color: var(--bg); }
+
+  /* ── Pivot Point ── */
+  .pivot-card {
+    background: rgba(19,125,197,0.06);
+    border: 1px solid rgba(19,125,197,0.20);
+    border-left: 4px solid var(--blue);
+    border-radius: var(--radius);
+    padding: 16px 20px; margin-bottom: 16px;
+  }
+  .pivot-card .pivot-label {
+    font-family: var(--font-display); font-weight: 700; font-size: 0.78rem;
+    color: var(--blue); text-transform: uppercase; letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+  .pivot-card p { font-size: 0.85rem; color: var(--text-muted); }
+  .pivot-card .pivot-impact {
+    font-family: var(--font-display); font-weight: 600; font-size: 0.78rem;
+    color: var(--gold); margin-top: 6px;
+  }
+
+  /* ── Risk Row ── */
+  .risk-list { display: flex; flex-direction: column; gap: 14px; }
+  .risk-item {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .risk-item:hover { background: var(--card-hover); }
+  .risk-rank {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+  .risk-rank-high { background: rgba(231,76,60,0.15); color: var(--danger); }
+  .risk-rank-med { background: rgba(255,215,0,0.15); color: var(--gold); }
+  .risk-item .risk-content { flex: 1; }
+  .risk-item .risk-title {
+    font-family: var(--font-display); font-weight: 700; font-size: 0.9rem;
+    color: #fff; margin-bottom: 4px;
+  }
+  .risk-item .risk-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; }
+  .risk-item .risk-impact {
+    margin-top: 6px; font-family: var(--font-display); font-weight: 600;
+    font-size: 0.75rem; color: var(--danger);
+  }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center; padding: 32px 0; margin-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  footer .brand-footer { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; }
+  footer p { font-size: 0.78rem; color: var(--gray); }
+  footer .copyleft { font-family: var(--font-footnote); }
+
+  /* ── Print ── */
+  @media print {
+    body { background: #fff; color: #1a1a1a; }
+    header { position: static; background: none; border-bottom: 2px solid #1E3258; }
+    .brand-wordmark .wm-prefix { color: #1E3258; }
+    .brand-wordmark .wm-ia { color: #b8960a; }
+    .sprint-card, .dep-diagram, .gate-box, .disclaimer, .tldr, .pivot-card, .risk-item { break-inside: avoid; border: 1px solid #ccc; background: #f9f9f9; }
+    .sprint-card:hover, .risk-item:hover { transform: none; box-shadow: none; background: #f9f9f9; }
+    .tl-h1, .tl-h2, .tl-h3 { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .summary-table { border: 1px solid #ccc; }
+    .summary-table th { background: #f0f0f0; color: #1a1a1a; border-bottom: 1px solid #ccc; }
+    .summary-table td { border-bottom: 1px solid #eee; color: #1a1a1a; }
+    footer { border-top: 1px solid #ccc; }
+    footer p { color: #666; }
+    .skip-link { display: none; }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .timeline-strip { flex-direction: column; }
+    .tl-block::after { right: auto; left: 50%; top: auto; bottom: -1px; transform: translateX(-50%); }
+    .sprint-grid { grid-template-columns: 1fr; }
+    .dep-diagram { padding: 20px 12px; }
+    .hero { padding: 40px 0 24px; }
+    .risk-item { flex-direction: column; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Ir al contenido</a>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header data-mtia="header">
+  <div class="container header-inner">
+    <div class="brand">
+      <svg class="brand-logo" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="36" height="36" rx="8" fill="#122562"/>
+        <rect x="7" y="12" width="4" height="14" rx="2" fill="#fff"/>
+        <rect x="16" y="8" width="4" height="18" rx="2" fill="#fff"/>
+        <rect x="25" y="14" width="4" height="12" rx="2" fill="#fff"/>
+        <circle cx="28" cy="10" r="3" fill="#FFD700"/>
+      </svg>
+      <span class="brand-wordmark"><span class="wm-prefix">Metodolog</span><span class="wm-ia">IA</span></span>
+    </div>
+    <span class="header-tag">06 &middot; Solution Roadmap</span>
+  </div>
+</header>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<main id="main" class="container" style="padding-top:16px; padding-bottom:32px;">
+
+  <!-- Hero -->
+  <section class="hero" data-mtia="hero">
+    <h1>Solution Roadmap &mdash; <span>Nexus Assistant OS</span></h1>
+    <p class="subtitle">3 horizontes &middot; 16 semanas &middot; ~6 FTE-meses &middot; Peak 1-2 FTE</p>
+  </section>
+
+  <!-- TL;DR -->
+  <div class="tldr" data-mtia="tldr">
+    <strong>TL;DR:</strong> Roadmap en 3 horizontes (16 semanas). H1 cierra gaps criticos en 4 semanas. H2 expande integraciones en 6 semanas. H3 escala a multi-tenant B2B en 6 semanas. Magnitud estimada: 4&ndash;6 FTE-meses. Peak: 1&ndash;2 FTE.
+  </div>
+
+  <!-- Disclaimer -->
+  <div class="disclaimer" data-mtia="disclaimer" role="alert">
+    <div class="disclaimer-title">Disclaimer obligatorio</div>
+    <p>Las magnitudes expresadas son estimaciones indicativas basadas en el analisis del discovery. No constituyen cotizacion ni compromiso contractual. Las magnitudes reales dependeran de la validacion tecnica detallada, la disponibilidad de recursos, y las condiciones del entorno de implementacion.</p>
+  </div>
+
+  <!-- ═══ SECTION 1 — Vision General (Timeline) ═══ -->
+  <section data-mtia="section-timeline">
+    <h2 class="section-heading"><span class="num">1</span> Vision General &mdash; Timeline</h2>
+    <div class="timeline-strip" role="img" aria-label="Timeline de 3 horizontes: H1 semanas 1-4, H2 semanas 5-10, H3 semanas 11-16">
+      <div class="tl-block tl-h1" data-gate="G-H1">
+        <span class="tl-weeks">W1 &ndash; W4</span>
+        <span class="tl-label">H1 &middot; SOLIDIFICAR CORE</span>
+        <span class="tl-fte">~1.5 FTE-meses &middot; 4 sprints</span>
+      </div>
+      <div class="tl-block tl-h2" data-gate="G-H2">
+        <span class="tl-weeks">W5 &ndash; W10</span>
+        <span class="tl-label">H2 &middot; EXPANDIR CAPACIDADES</span>
+        <span class="tl-fte">~2.0 FTE-meses &middot; 4 sprints</span>
+      </div>
+      <div class="tl-block tl-h3" data-gate="G-H3">
+        <span class="tl-weeks">W11 &ndash; W16</span>
+        <span class="tl-label">H3 &middot; ESCALAR</span>
+        <span class="tl-fte">~2.5 FTE-meses &middot; 3 sprints</span>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:0.78rem; color:var(--text-muted); margin-top:8px;">
+      Gates de paso: <strong style="color:var(--gold);">G-H1</strong> (W4) &rarr;
+      <strong style="color:var(--blue);">G-H2</strong> (W10) &rarr;
+      <strong style="color:var(--purple);">G-H3</strong> (W16)
+    </p>
+  </section>
+
+  <!-- ═══ SECTION 2 — H1 Detail ═══ -->
+  <section data-mtia="section-h1">
+    <h2 class="section-heading"><span class="num">2</span> H1 &mdash; Solidificar Core <span class="badge badge-h1">~1.5 FTE-meses &middot; W1-4</span></h2>
+
+    <div class="sprint-grid">
+      <!-- S1 -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S1 &middot; W1-2</span>
+          <span class="badge badge-crit">G-06 CRIT</span>
+        </div>
+        <h3>Project State Engine</h3>
+        <div class="criterion">
+          <strong>Criterio:</strong> Proyecto retomado tras 30 dias de inactividad, contexto recuperado en &lt;3s, 0 contaminacion cruzada entre proyectos.
+        </div>
+        <span class="fte-tag">~0.5 FTE-mes</span>
+      </article>
+
+      <!-- S2 -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S2 &middot; W2-3</span>
+          <span class="badge badge-crit">G-05 CRIT</span>
+        </div>
+        <h3>HIL Middleware</h3>
+        <div class="criterion">
+          <strong>Criterio:</strong> 0 acciones ejecutadas sin aprobacion explicita. TTL de 24h para aprobaciones pendientes. Idempotencia garantizada.
+        </div>
+        <span class="fte-tag">~0.4 FTE-mes</span>
+      </article>
+
+      <!-- S3 -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S3 &middot; W3-4</span>
+          <span class="badge badge-alta">G-07 ALTA</span>
+        </div>
+        <h3>Artifact Versioning</h3>
+        <div class="criterion">
+          <strong>Criterio:</strong> URL firmada 7d, versionado incremental, cada artefacto asociado a proyecto. Generacion parcial no se persiste.
+        </div>
+        <span class="fte-tag">~0.3 FTE-mes</span>
+      </article>
+
+      <!-- S4 -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S4 &middot; W4</span>
+          <span class="badge badge-alta">G-02</span>
+        </div>
+        <h3>Memory + Token Budget</h3>
+        <div class="criterion">
+          <strong>Criterio:</strong> TTL funcional con CRON de compresion. Budget enforced &gt;90% del tiempo. Rollback ante fallo de CRON.
+        </div>
+        <span class="fte-tag">~0.3 FTE-mes</span>
+      </article>
+    </div>
+
+    <!-- Gate H1 -->
+    <div class="gate-box">
+      <div class="gate-icon">G1</div>
+      <div class="gate-content">
+        <div class="gate-title">Gate H1 (W4) &mdash; Criterios de Paso</div>
+        <ul>
+          <li>10 HTML consecutivos generados via voz</li>
+          <li>Contexto recuperado tras 5+ dias de inactividad</li>
+          <li>3 acciones L2 aprobadas via HIL</li>
+          <li>0 acciones ejecutadas sin aprobacion</li>
+          <li>Budget enforced &gt;90% del tiempo</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SECTION 3 — H2 Detail ═══ -->
+  <section data-mtia="section-h2">
+    <h2 class="section-heading"><span class="num">3</span> H2 &mdash; Expandir Capacidades <span class="badge badge-h2">~2.0 FTE-meses &middot; W5-10</span></h2>
+
+    <div class="sprint-grid">
+      <!-- S5-6 -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S5-6 &middot; W5-6</span>
+          <span class="badge badge-media">Integracion</span>
+        </div>
+        <h3>Google Tasks + Calendar</h3>
+        <div class="criterion">
+          Integracion bidireccional con Google Tasks y Calendar. CRUD completo con aprobacion L2 para operaciones de escritura.
+        </div>
+        <span class="fte-tag">~0.6 FTE-mes</span>
+      </article>
+
+      <!-- S7-8 -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S7-8 &middot; W7-8</span>
+          <span class="badge badge-media">Pipeline</span>
+        </div>
+        <h3>Deep Research Pipeline</h3>
+        <div class="criterion">
+          Pipeline de investigacion profunda con fuentes multiples, sintesis y citacion. Proteccion contra loops infinitos.
+        </div>
+        <span class="fte-tag">~0.5 FTE-mes</span>
+      </article>
+
+      <!-- S8 n8n -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S8 &middot; W8-9</span>
+          <span class="badge badge-media">Spike</span>
+        </div>
+        <h3>n8n Spike</h3>
+        <div class="criterion">
+          Spike de viabilidad para orquestacion via n8n. Resultado: Go/No-Go que determina simplificacion de H2.
+        </div>
+        <span class="fte-tag">~0.3 FTE-mes</span>
+      </article>
+
+      <!-- S9-10 -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S9-10 &middot; W9-10</span>
+          <span class="badge badge-media">Observabilidad</span>
+        </div>
+        <h3>Observability Dashboard</h3>
+        <div class="criterion">
+          Dashboard de metricas operativas: latencia, token usage, error rates, adoption. Alertas automaticas ante degradacion.
+        </div>
+        <span class="fte-tag">~0.4 FTE-mes</span>
+      </article>
+    </div>
+
+    <!-- Gate H2 -->
+    <div class="gate-box gate-h2">
+      <div class="gate-icon">G2</div>
+      <div class="gate-content">
+        <div class="gate-title">Gate H2 (W10) &mdash; Criterios de Paso</div>
+        <ul>
+          <li>Google Tasks + Calendar funcional (CRUD bidireccional)</li>
+          <li>Deep Research sin loops infinitos en 5 ejecuciones consecutivas</li>
+          <li>Observability Dashboard desplegado con metricas reales</li>
+          <li>Spike n8n documentado con decision Go/No-Go</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SECTION 4 — H3 Detail ═══ -->
+  <section data-mtia="section-h3">
+    <h2 class="section-heading"><span class="num">4</span> H3 &mdash; Escalar <span class="badge badge-h3">~2.5 FTE-meses &middot; W11-16</span></h2>
+
+    <div class="sprint-grid">
+      <!-- S10-11 -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S10-11 &middot; W11-12</span>
+          <span class="badge badge-h3">Aislamiento</span>
+        </div>
+        <h3>Multi-Tenant Isolation</h3>
+        <div class="criterion">
+          Aislamiento completo de datos, contexto y configuracion entre operadores B2B. Row-level security + namespace isolation.
+        </div>
+        <span class="fte-tag">~0.8 FTE-mes</span>
+      </article>
+
+      <!-- S12 -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S12 &middot; W13-14</span>
+          <span class="badge badge-h3">Knowledge</span>
+        </div>
+        <h3>Vector DB Integration</h3>
+        <div class="criterion">
+          Integracion con base vectorial para retrieval semantico sobre documentos del operador. Embeddings + similarity search.
+        </div>
+        <span class="fte-tag">~0.5 FTE-mes</span>
+      </article>
+
+      <!-- S13-14 -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S13-14 &middot; W14-16</span>
+          <span class="badge badge-h3">Producto</span>
+        </div>
+        <h3>B2B Packaging + Gmail</h3>
+        <div class="criterion">
+          Empaquetado como producto B2B: onboarding, billing, Gmail integration para operadores empresariales.
+        </div>
+        <span class="fte-tag">~1.0 FTE-mes</span>
+      </article>
+    </div>
+
+    <!-- Gate H3 -->
+    <div class="gate-box gate-h3">
+      <div class="gate-icon">G3</div>
+      <div class="gate-content">
+        <div class="gate-title">Gate H3 (W16) &mdash; Criterios de Paso</div>
+        <ul>
+          <li>Operador B2B aislado (0 leak cross-tenant)</li>
+          <li>Billing funcional con facturacion automatica</li>
+          <li>Gmail integration operativa para al menos 1 operador piloto</li>
+          <li>Vector DB respondiendo queries en &lt;2s para corpus de 10K docs</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SECTION 5 — Magnitudes Consolidadas ═══ -->
+  <section data-mtia="section-magnitudes">
+    <h2 class="section-heading"><span class="num">5</span> Magnitudes Consolidadas</h2>
+
+    <table class="summary-table" aria-label="Resumen de magnitudes por horizonte">
+      <thead>
+        <tr>
+          <th>Horizonte</th>
+          <th>FTE-meses</th>
+          <th>Duracion</th>
+          <th>Peak FTE</th>
+          <th>Sprints</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-h1">H1</span> Solidificar Core</td>
+          <td>~1.5</td>
+          <td>4 semanas</td>
+          <td>1</td>
+          <td>S1 &ndash; S4</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-h2">H2</span> Expandir Capacidades</td>
+          <td>~2.0</td>
+          <td>6 semanas</td>
+          <td>1 &ndash; 2</td>
+          <td>S5 &ndash; S10</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-h3">H3</span> Escalar</td>
+          <td>~2.5</td>
+          <td>6 semanas</td>
+          <td>2</td>
+          <td>S10 &ndash; S14</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td>Total</td>
+          <td>~6.0</td>
+          <td>16 semanas</td>
+          <td>2</td>
+          <td>14 sprints</td>
+        </tr>
+      </tfoot>
+    </table>
+  </section>
+
+  <!-- ═══ SECTION 6 — Dependencias y Pivot Points ═══ -->
+  <section data-mtia="section-dependencies">
+    <h2 class="section-heading"><span class="num">6</span> Dependencias y Pivot Points</h2>
+
+    <!-- Dependency Diagram -->
+    <h3 style="font-family:var(--font-display); font-weight:700; font-size:1rem; margin-bottom:16px; color:var(--text);">Diagrama de Dependencias</h3>
+    <div class="dep-diagram" aria-label="Diagrama de dependencias entre sprints">
+      <!-- H1 row -->
+      <div class="dep-row">
+        <span class="dep-label dep-label-h1">H1</span>
+        <span class="dep-node">S1 Project State</span>
+        <span class="dep-arrow dep-arrow-strong">&rarr;</span>
+        <span class="dep-node">S2 HIL Middleware</span>
+        <span class="dep-arrow dep-arrow-strong">&rarr;</span>
+        <span class="dep-node">S3 Artifact Versioning</span>
+        <span class="dep-arrow dep-arrow-strong">&rarr;</span>
+        <span class="dep-node">S4 Memory + Budget</span>
+        <span class="dep-gate dep-gate-h1">G-H1</span>
+      </div>
+      <!-- H2 row -->
+      <div class="dep-row">
+        <span class="dep-label dep-label-h2">H2</span>
+        <span class="dep-node">S5-6 GTasks+Cal</span>
+        <span class="dep-arrow dep-arrow-h2">&rarr;</span>
+        <span class="dep-node">S7-8 Research</span>
+        <span class="dep-arrow dep-arrow-h2">&rarr;</span>
+        <span class="dep-node">S8 n8n Spike</span>
+        <span class="dep-arrow dep-arrow-h2">&rarr;</span>
+        <span class="dep-node">S9-10 Observability</span>
+        <span class="dep-gate dep-gate-h2">G-H2</span>
+      </div>
+      <!-- H3 row -->
+      <div class="dep-row">
+        <span class="dep-label dep-label-h3">H3</span>
+        <span class="dep-node">S10-11 Multi-Tenant</span>
+        <span class="dep-arrow dep-arrow-h3">&rarr;</span>
+        <span class="dep-node">S12 Vector DB</span>
+        <span class="dep-arrow dep-arrow-h3">&rarr;</span>
+        <span class="dep-node">S13-14 B2B + Gmail</span>
+        <span class="dep-gate dep-gate-h3">G-H3</span>
+      </div>
+    </div>
+
+    <!-- Key Dependencies -->
+    <h3 style="font-family:var(--font-display); font-weight:700; font-size:1rem; margin:28px 0 16px; color:var(--text);">Dependencias Clave</h3>
+    <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:8px;">
+      <li style="background:var(--card); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius-sm); padding:12px 18px; font-size:0.85rem; color:var(--text-muted);">
+        <strong style="color:var(--gold);">S1 es keystone</strong> &mdash; 0 dependencias upstream. Todo el roadmap comienza aqui.
+      </li>
+      <li style="background:var(--card); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius-sm); padding:12px 18px; font-size:0.85rem; color:var(--text-muted);">
+        <strong style="color:var(--gold);">S2 depende de S1</strong> &mdash; HIL Middleware necesita project context funcional para validar aprobaciones en contexto.
+      </li>
+      <li style="background:var(--card); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius-sm); padding:12px 18px; font-size:0.85rem; color:var(--text-muted);">
+        <strong style="color:var(--blue);">S10 depende de Gate H1 completo</strong> &mdash; Multi-tenant isolation requiere core estable como prerequisito no-negociable.
+      </li>
+    </ul>
+
+    <!-- Pivot Points -->
+    <h3 style="font-family:var(--font-display); font-weight:700; font-size:1rem; margin:28px 0 16px; color:var(--text);">Pivot Points</h3>
+    <div class="pivot-card">
+      <div class="pivot-label">Pivot Point 1 &mdash; n8n Spike (S8)</div>
+      <p>Si el spike de n8n es negativo (complejidad excesiva, latencia inaceptable, o lock-in indeseable), H2 se simplifica eliminando la dependencia de orquestacion externa.</p>
+      <div class="pivot-impact">Impacto: &minus;0.3 FTE-mes en H2</div>
+    </div>
+    <div class="pivot-card">
+      <div class="pivot-label">Pivot Point 2 &mdash; Vector DB (S12)</div>
+      <p>Si Vector DB no aporta mejora significativa vs. text search tradicional en las metricas de precision y recall del operador, S12 se elimina del roadmap.</p>
+      <div class="pivot-impact">Impacto: &minus;0.5 FTE-mes en H3</div>
+    </div>
+  </section>
+
+  <!-- ═══ SECTION 7 — Riesgos del Roadmap ═══ -->
+  <section data-mtia="section-risks">
+    <h2 class="section-heading"><span class="num">7</span> Riesgos del Roadmap</h2>
+
+    <div class="risk-list">
+      <!-- R1 -->
+      <div class="risk-item">
+        <div class="risk-rank risk-rank-high">1</div>
+        <div class="risk-content">
+          <div class="risk-title">Retraso en S1 (Project State Engine) bloquea toda la cadena</div>
+          <div class="risk-desc">S1 es keystone sin dependencias upstream pero con todas las dependencias downstream. Un retraso de 1 semana empuja H1 completo y cascadea a H2/H3.</div>
+          <div class="risk-impact">Impacto: +2 a +4 semanas en timeline total</div>
+        </div>
+      </div>
+
+      <!-- R2 -->
+      <div class="risk-item">
+        <div class="risk-rank risk-rank-high">2</div>
+        <div class="risk-content">
+          <div class="risk-title">Complejidad de multi-tenant subestimada</div>
+          <div class="risk-desc">Row-level security + namespace isolation en un sistema agentico es territorio poco explorado. La estimacion de 0.8 FTE-mes puede quedarse corta si se descubren edge cases de contaminacion cruzada.</div>
+          <div class="risk-impact">Impacto: +0.5 a +1.0 FTE-mes adicional en H3</div>
+        </div>
+      </div>
+
+      <!-- R3 -->
+      <div class="risk-item">
+        <div class="risk-rank risk-rank-high">3</div>
+        <div class="risk-content">
+          <div class="risk-title">Cambios en APIs de Google (Tasks/Calendar/Gmail)</div>
+          <div class="risk-desc">Dependencia de 3 APIs de Google con politicas de deprecacion y rate limits que pueden cambiar durante la ejecucion del roadmap.</div>
+          <div class="risk-impact">Impacto: +1 a +2 semanas de retrabajo en S5-6 o S13-14</div>
+        </div>
+      </div>
+
+      <!-- R4 -->
+      <div class="risk-item">
+        <div class="risk-rank risk-rank-med">4</div>
+        <div class="risk-content">
+          <div class="risk-title">Token budget insuficiente para contextos complejos</div>
+          <div class="risk-desc">La compresion a &le;500 tokens puede degradar la calidad del contexto recuperado en proyectos con historia extensa. Tradeoff calidad vs. costo no validado.</div>
+          <div class="risk-impact">Impacto: Re-arquitectura de S4, +0.3 FTE-mes</div>
+        </div>
+      </div>
+
+      <!-- R5 -->
+      <div class="risk-item">
+        <div class="risk-rank risk-rank-med">5</div>
+        <div class="risk-content">
+          <div class="risk-title">Disponibilidad de FTE durante peak H3</div>
+          <div class="risk-desc">H3 requiere peak de 2 FTE simultaneos. Si el equipo no puede asignar 2 personas full-time en W11-16, los sprints se serializan y la duracion se extiende.</div>
+          <div class="risk-impact">Impacto: +3 a +4 semanas si se serializa</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Disclaimer Final -->
+  <div class="disclaimer" data-mtia="disclaimer-final" role="alert" style="margin-top:48px;">
+    <div class="disclaimer-title">Disclaimer</div>
+    <p>Las magnitudes expresadas son estimaciones indicativas basadas en el analisis del discovery. No constituyen cotizacion ni compromiso contractual. Las magnitudes reales dependeran de la validacion tecnica detallada, la disponibilidad de recursos, y las condiciones del entorno de implementacion.</p>
+  </div>
+
+</main>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer data-mtia="footer">
+  <div class="container">
+    <div class="brand-footer">
+      <svg width="24" height="24" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="36" height="36" rx="8" fill="#122562"/>
+        <rect x="7" y="12" width="4" height="14" rx="2" fill="#fff"/>
+        <rect x="16" y="8" width="4" height="18" rx="2" fill="#fff"/>
+        <rect x="25" y="14" width="4" height="12" rx="2" fill="#fff"/>
+        <circle cx="28" cy="10" r="3" fill="#FFD700"/>
+      </svg>
+      <span style="font-family:var(--font-display); font-weight:800; font-size:1rem;">
+        <span style="color:#fff;">Metodolog</span><span style="color:var(--gold);">IA</span>
+      </span>
+    </div>
+    <p class="copyleft">&copy; 2026 MetodologIA. Copyleft &mdash; Para uso y aprovechamiento de profesionales en la era de la IA.</p>
+    <p style="font-size:0.7rem; color:var(--gray); margin-top:6px; font-family:var(--font-footnote);">
+      Generado por agente agentico &middot; Solution Roadmap &middot; Nexus Assistant OS &middot; 06/11
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

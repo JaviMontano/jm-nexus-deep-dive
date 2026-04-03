@@ -1,0 +1,26 @@
+# IDE and agent configurations (local)
+.agents/
+.claude/
+.codex/
+.cursor/
+.gemini/
+.vscode/
+
+# MCP local config
+.mcp.json
+
+# Session state (ephemeral)
+.specify/sentinel-state.json
+.specify/session-log.json
+.specify/active-workspace
+
+# Workspace scratch
+workspace/
+
+# Plugin state (local)
+discovery/
+project/
+
+# OS files
+.DS_Store
+Thumbs.db

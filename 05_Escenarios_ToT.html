@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="es" data-mtia="document">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>05 — Escenarios Tree-of-Thought | Nexus Assistant OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ── CSS Variables ── */
+    :root {
+      --color-body: #1E3258;
+      --color-card: rgba(255,255,255,0.06);
+      --color-card-border: rgba(255,255,255,0.10);
+      --color-gold: #FFD700;
+      --color-blue: #137DC5;
+      --color-text: #E8E8E8;
+      --color-text-muted: #A0A8B8;
+      --color-navy-deep: #122562;
+      --color-lavender: #BBA0CC;
+      --color-gray: #808080;
+      --color-dark: #1F2833;
+      --color-green: #2ECC71;
+      --color-yellow: #F1C40F;
+      --color-red: #E74C3C;
+      --font-display: 'Poppins', sans-serif;
+      --font-body: 'Montserrat', sans-serif;
+      --font-footnote: 'Trebuchet MS', sans-serif;
+      --radius: 14px;
+      --blur: 16px;
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Skip link ── */
+    .skip-link {
+      position: absolute; left: -9999px; top: auto;
+      background: var(--color-gold); color: var(--color-body);
+      padding: 8px 16px; font-family: var(--font-body);
+      z-index: 1000; border-radius: 4px;
+    }
+    .skip-link:focus { left: 16px; top: 16px; }
+
+    /* ── Body ── */
+    body {
+      background: var(--color-body);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-weight: 400;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── Header ── */
+    header[data-mtia="header"] {
+      background: rgba(18,37,98,0.85);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      border-bottom: 1px solid var(--color-card-border);
+      padding: 18px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand-logo svg { display: block; }
+    .brand-wordmark {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+    .brand-wordmark .wm-white { color: #fff; }
+    .brand-wordmark .wm-gold  { color: var(--color-gold); }
+    .header-doc-title {
+      margin-left: auto;
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      color: var(--color-text-muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* ── Hero / TL;DR ── */
+    .hero[data-mtia="hero"] {
+      padding: 56px 0 40px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .hero h1 .accent { color: var(--color-gold); }
+    .hero .subtitle {
+      font-size: 1rem;
+      color: var(--color-text-muted);
+      margin-bottom: 28px;
+    }
+    .tldr-box {
+      display: inline-block;
+      background: var(--color-card);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      border: 1px solid var(--color-card-border);
+      border-left: 4px solid var(--color-gold);
+      border-radius: var(--radius);
+      padding: 20px 32px;
+      text-align: left;
+      max-width: 760px;
+      font-size: 0.95rem;
+      line-height: 1.75;
+    }
+    .tldr-box strong { color: var(--color-gold); }
+
+    /* ── Section ── */
+    section[data-mtia] {
+      margin-bottom: 48px;
+    }
+    .section-heading {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.35rem;
+      color: #fff;
+      margin-bottom: 20px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--color-gold);
+      display: inline-block;
+    }
+    .section-heading .num {
+      color: var(--color-gold);
+      margin-right: 6px;
+    }
+
+    /* ── Glass Card ── */
+    .card {
+      background: var(--color-card);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      border: 1px solid var(--color-card-border);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      transition: border-color 0.25s;
+    }
+    .card:hover { border-color: rgba(255,255,255,0.18); }
+    .card h3 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+    .card p, .card li {
+      font-size: 0.92rem;
+      color: var(--color-text);
+      line-height: 1.75;
+    }
+    .card ul { padding-left: 20px; margin-top: 8px; }
+    .card li { margin-bottom: 6px; }
+    .card li::marker { color: var(--color-gold); }
+
+    /* ── Recommended Badge ── */
+    .badge-rec {
+      display: inline-block;
+      background: var(--color-gold);
+      color: var(--color-body);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+    .badge-score {
+      display: inline-block;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.6rem;
+      padding: 6px 18px;
+      border-radius: 10px;
+      margin: 12px 0 16px;
+    }
+    .badge-score.high   { background: rgba(46,204,113,0.18); color: var(--color-green); border: 1px solid rgba(46,204,113,0.3); }
+    .badge-score.medium { background: rgba(241,196,15,0.18); color: var(--color-yellow); border: 1px solid rgba(241,196,15,0.3); }
+    .badge-score.low    { background: rgba(231,76,60,0.18); color: var(--color-red); border: 1px solid rgba(231,76,60,0.3); }
+
+    /* ── 6D Score Grid ── */
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+      margin: 16px 0;
+    }
+    .score-item {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--color-card-border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      text-align: center;
+    }
+    .score-item .label {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+    .score-item .value {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+    .score-item .value.v5 { color: var(--color-green); }
+    .score-item .value.v4 { color: #7BED9F; }
+    .score-item .value.v3 { color: var(--color-yellow); }
+    .score-item .value.v2 { color: #E67E22; }
+    .score-item .value.v1 { color: var(--color-red); }
+
+    /* ── SWOT Mini ── */
+    .swot-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .swot-cell {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--color-card-border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+    }
+    .swot-cell .swot-label {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+    .swot-cell.s .swot-label { color: var(--color-green); }
+    .swot-cell.w .swot-label { color: var(--color-red); }
+    .swot-cell.o .swot-label { color: var(--color-blue); }
+    .swot-cell.t .swot-label { color: var(--color-yellow); }
+    .sources-tag {
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+      margin-top: 12px;
+      font-style: italic;
+    }
+
+    /* ── Decision Tree ── */
+    .tree[data-mtia="decision-tree"] {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      padding: 32px 0;
+    }
+    .tree-node {
+      background: var(--color-card);
+      backdrop-filter: blur(var(--blur));
+      border: 1px solid var(--color-card-border);
+      border-radius: 12px;
+      padding: 14px 24px;
+      font-size: 0.88rem;
+      text-align: center;
+      max-width: 380px;
+      width: 100%;
+      position: relative;
+    }
+    .tree-node.question {
+      border-color: var(--color-blue);
+      color: #fff;
+      font-weight: 600;
+    }
+    .tree-node.answer-a {
+      border-color: var(--color-green);
+      background: rgba(46,204,113,0.10);
+    }
+    .tree-node.answer-b {
+      border-color: var(--color-yellow);
+      background: rgba(241,196,15,0.08);
+    }
+    .tree-node.answer-c {
+      border-color: var(--color-red);
+      background: rgba(231,76,60,0.08);
+    }
+    .tree-connector {
+      width: 2px;
+      height: 28px;
+      background: var(--color-card-border);
+    }
+    .tree-branch {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .tree-branch-label {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      display: inline-block;
+    }
+    .tree-branch-label.yes { background: rgba(46,204,113,0.2); color: var(--color-green); }
+    .tree-branch-label.no  { background: rgba(231,76,60,0.2); color: var(--color-red); }
+    .tree-fork {
+      display: flex;
+      gap: 24px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .tree-path {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      min-width: 200px;
+      flex: 1;
+      max-width: 320px;
+    }
+
+    /* ── Comparison Table ── */
+    .comp-table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 20px 0;
+    }
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      min-width: 540px;
+    }
+    .comp-table thead th {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-gold);
+      background: rgba(18,37,98,0.6);
+      padding: 14px 16px;
+      text-align: center;
+      border-bottom: 2px solid var(--color-gold);
+    }
+    .comp-table thead th:first-child { text-align: left; }
+    .comp-table tbody td {
+      padding: 12px 16px;
+      text-align: center;
+      border-bottom: 1px solid var(--color-card-border);
+      font-weight: 500;
+    }
+    .comp-table tbody td:first-child {
+      text-align: left;
+      color: var(--color-text-muted);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .comp-table tbody tr:last-child td {
+      border-bottom: none;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    .cell-green  { color: var(--color-green); background: rgba(46,204,113,0.08); }
+    .cell-yellow { color: var(--color-yellow); background: rgba(241,196,15,0.06); }
+    .cell-red    { color: var(--color-red); background: rgba(231,76,60,0.06); }
+
+    /* ── Gate Box ── */
+    .gate-box {
+      background: rgba(46,204,113,0.08);
+      border: 2px solid var(--color-green);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      text-align: center;
+    }
+    .gate-box h3 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--color-green);
+      margin-bottom: 6px;
+    }
+    .gate-box .gate-score {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 2.4rem;
+      color: var(--color-green);
+      margin: 12px 0;
+    }
+    .gate-box p {
+      font-size: 0.9rem;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+    .gate-tag {
+      display: inline-block;
+      background: rgba(255,215,0,0.15);
+      color: var(--color-gold);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 6px;
+      margin-top: 14px;
+    }
+
+    /* ── Evidence Tag ── */
+    .ev-tag {
+      display: inline-block;
+      font-family: var(--font-footnote);
+      font-size: 0.7rem;
+      letter-spacing: 0.04em;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.06);
+      color: var(--color-text-muted);
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+
+    /* ── Footer ── */
+    footer[data-mtia="footer"] {
+      border-top: 1px solid var(--color-card-border);
+      padding: 32px 0;
+      text-align: center;
+      margin-top: 40px;
+    }
+    .footer-brand {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin-bottom: 6px;
+    }
+    .footer-brand .wm-white { color: #fff; }
+    .footer-brand .wm-gold  { color: var(--color-gold); }
+    .footer-copy {
+      font-family: var(--font-footnote);
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+      line-height: 1.6;
+    }
+    .footer-tagline {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      color: var(--color-lavender);
+      margin-top: 8px;
+      font-style: italic;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .container { padding: 0 16px; }
+      .card { padding: 20px 18px; }
+      .score-grid { grid-template-columns: repeat(3, 1fr); }
+      .swot-grid { grid-template-columns: 1fr; }
+      .tree-fork { flex-direction: column; align-items: center; }
+      .header-doc-title { display: none; }
+      .hero { padding: 36px 0 28px; }
+      .tldr-box { padding: 16px 20px; }
+    }
+
+    /* ── Print ── */
+    @media print {
+      body { background: #fff; color: #1a1a1a; }
+      header[data-mtia="header"] { position: static; background: #fff; border-bottom: 2px solid #1E3258; }
+      .brand-wordmark .wm-white { color: #1E3258; }
+      .card { background: #f5f5f5; border: 1px solid #ccc; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .section-heading { color: #1E3258; border-bottom-color: #1E3258; }
+      .comp-table thead th { background: #e8e8e8; color: #1E3258; }
+      .cell-green  { background: #d5f5e3; color: #196f3d; }
+      .cell-yellow { background: #fef9e7; color: #7d6608; }
+      .cell-red    { background: #fadbd8; color: #922b21; }
+      footer[data-mtia="footer"] { border-top: 1px solid #ccc; }
+      .footer-copy, .footer-tagline { color: #555; }
+      .gate-box { border-color: #196f3d; background: #d5f5e3; }
+      .tree-node { backdrop-filter: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+
+  <!-- ═══ HEADER ═══ -->
+  <header data-mtia="header">
+    <div class="container header-inner">
+      <div class="brand-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect width="36" height="36" rx="8" fill="#122562"/>
+          <rect x="8"  y="10" width="4" height="16" rx="2" fill="#fff"/>
+          <rect x="16" y="10" width="4" height="16" rx="2" fill="#fff"/>
+          <rect x="24" y="10" width="4" height="16" rx="2" fill="#fff"/>
+          <circle cx="28" cy="10" r="3" fill="#FFD700"/>
+        </svg>
+      </div>
+      <span class="brand-wordmark">
+        <span class="wm-white">Metodolog</span><span class="wm-gold">IA</span>
+      </span>
+      <span class="header-doc-title">05 &mdash; Escenarios ToT &middot; Nexus Assistant OS</span>
+    </div>
+  </header>
+
+  <!-- ═══ MAIN ═══ -->
+  <main id="main" class="container">
+
+    <!-- Hero / TL;DR -->
+    <div class="hero" data-mtia="hero">
+      <h1>Escenarios <span class="accent">Tree-of-Thought</span></h1>
+      <p class="subtitle">Nexus Assistant OS &mdash; Documento 05 de Discovery</p>
+      <div class="tldr-box">
+        <strong>TL;DR:</strong> 3 escenarios evaluados con score 6D. Escenario A
+        &ldquo;Evoluci&oacute;n Incremental&rdquo; gana con <strong>4.2/5.0</strong>.
+        State Machine sobre extensi&oacute;n existente, no Swarm ni Rewrite.
+        Auto-aprobado Gate G1.
+      </div>
+    </div>
+
+    <!-- ── S1: Contexto de Decision ── -->
+    <section data-mtia="section-context">
+      <h2 class="section-heading"><span class="num">01</span> Contexto de Decisi&oacute;n</h2>
+      <div class="card">
+        <p>La pregunta central: <strong>&iquest;C&oacute;mo evolucionar un sistema con base s&oacute;lida (87/100) pero 2 gaps cr&iacute;ticos, sin destruir lo que funciona?</strong></p>
+        <p style="margin-top:12px;">Tres escenarios emergen de los 7 documentos de discovery. Cada uno se eval&uacute;a con un score 6D (Impacto, Viabilidad, Esfuerzo, Riesgo, Escalabilidad, Velocidad) en escala 1-5. El &aacute;rbol de decisi&oacute;n identifica el camino &oacute;ptimo.</p>
+      </div>
+    </section>
+
+    <!-- ── S2: Escenario A ── -->
+    <section data-mtia="section-scenario-a">
+      <h2 class="section-heading"><span class="num">02</span> Escenario A &mdash; Evoluci&oacute;n Incremental <span class="badge-rec">Recomendado</span></h2>
+      <div class="card">
+        <h3>Descripci&oacute;n</h3>
+        <p>Extender la arquitectura actual agregando <strong>Project State Engine + HIL + Artifact Versioning</strong>. State Machine. Sin rewrite. Sin nuevo stack.</p>
+
+        <div class="badge-score high">4.2 / 5.0</div>
+
+        <div class="score-grid">
+          <div class="score-item"><div class="label">Impacto</div><div class="value v4">4/5</div></div>
+          <div class="score-item"><div class="label">Viabilidad</div><div class="value v5">5/5</div></div>
+          <div class="score-item"><div class="label">Esfuerzo</div><div class="value v4">4/5</div></div>
+          <div class="score-item"><div class="label">Riesgo</div><div class="value v4">4/5</div></div>
+          <div class="score-item"><div class="label">Escalabilidad</div><div class="value v3">3/5</div></div>
+          <div class="score-item"><div class="label">Velocidad</div><div class="value v5">5/5</div></div>
+        </div>
+
+        <div class="swot-grid">
+          <div class="swot-cell s"><div class="swot-label">Strengths</div>Base s&oacute;lida 87/100. Repo probado, 39 commits, 50 archivos.</div>
+          <div class="swot-cell w"><div class="swot-label">Weaknesses</div>Single developer. Escalabilidad single-tenant en H1.</div>
+          <div class="swot-cell o"><div class="swot-label">Opportunities</div>B2B habilitado en H3. Valor incremental cada sprint.</div>
+          <div class="swot-cell t"><div class="swot-label">Threats</div>LifeSync fragmenta foco si no se prioriza Nexus.</div>
+        </div>
+        <p class="sources-tag">Fuentes: D3, D7, Repo, Constitution <span class="ev-tag">[C&Oacute;DIGO]</span> <span class="ev-tag">[DOC]</span></p>
+      </div>
+    </section>
+
+    <!-- ── S3: Escenario B ── -->
+    <section data-mtia="section-scenario-b">
+      <h2 class="section-heading"><span class="num">03</span> Escenario B &mdash; Swarm Architecture (OpenClaw)</h2>
+      <div class="card">
+        <h3>Descripci&oacute;n</h3>
+        <p>Migrar a Swarm con workers ef&iacute;meros, n8n como ESB, OpenClaw pattern. Rewrite significativo del plano de ejecuci&oacute;n.</p>
+
+        <div class="badge-score medium">2.8 / 5.0</div>
+
+        <div class="score-grid">
+          <div class="score-item"><div class="label">Impacto</div><div class="value v5">5/5</div></div>
+          <div class="score-item"><div class="label">Viabilidad</div><div class="value v2">2/5</div></div>
+          <div class="score-item"><div class="label">Esfuerzo</div><div class="value v2">2/5</div></div>
+          <div class="score-item"><div class="label">Riesgo</div><div class="value v2">2/5</div></div>
+          <div class="score-item"><div class="label">Escalabilidad</div><div class="value v5">5/5</div></div>
+          <div class="score-item"><div class="label">Velocidad</div><div class="value v1">1/5</div></div>
+        </div>
+
+        <div class="swot-grid">
+          <div class="swot-cell s"><div class="swot-label">Strengths</div>Escalabilidad nativa multi-tenant desde d&iacute;a uno.</div>
+          <div class="swot-cell w"><div class="swot-label">Weaknesses</div>Rewrite costoso. 8-12 semanas. Nuevo paradigma.</div>
+          <div class="swot-cell o"><div class="swot-label">Opportunities</div>Market differentiation como plataforma agentic.</div>
+          <div class="swot-cell t"><div class="swot-label">Threats</div>Failure risk alto. Patr&oacute;n no probado en contexto.</div>
+        </div>
+        <p class="sources-tag">Fuentes: D6 (&uacute;nica fuente) <span class="ev-tag">[SUPUESTO]</span> &mdash; Warning: 20% alineaci&oacute;n con repo</p>
+      </div>
+    </section>
+
+    <!-- ── S4: Escenario C ── -->
+    <section data-mtia="section-scenario-c">
+      <h2 class="section-heading"><span class="num">04</span> Escenario C &mdash; Fresh Start (Nuevo Stack)</h2>
+      <div class="card">
+        <h3>Descripci&oacute;n</h3>
+        <p>Comenzar de cero con stack moderno (Next.js + Supabase + Vercel). Abandonar Firebase.</p>
+
+        <div class="badge-score low">2.2 / 5.0</div>
+
+        <div class="score-grid">
+          <div class="score-item"><div class="label">Impacto</div><div class="value v4">4/5</div></div>
+          <div class="score-item"><div class="label">Viabilidad</div><div class="value v1">1/5</div></div>
+          <div class="score-item"><div class="label">Esfuerzo</div><div class="value v1">1/5</div></div>
+          <div class="score-item"><div class="label">Riesgo</div><div class="value v1">1/5</div></div>
+          <div class="score-item"><div class="label">Escalabilidad</div><div class="value v5">5/5</div></div>
+          <div class="score-item"><div class="label">Velocidad</div><div class="value v1">1/5</div></div>
+        </div>
+
+        <div class="swot-grid">
+          <div class="swot-cell s"><div class="swot-label">Strengths</div>Stack moderno. Greenfield sin deuda t&eacute;cnica heredada.</div>
+          <div class="swot-cell w"><div class="swot-label">Weaknesses</div>Destruye 39 commits, 50 archivos, spec 87/100.</div>
+          <div class="swot-cell o"><div class="swot-label">Opportunities</div>Greenfield permite decisiones &oacute;ptimas desde cero.</div>
+          <div class="swot-cell t"><div class="swot-label">Threats</div>0 valor por 4+ meses. 16+ semanas de esfuerzo.</div>
+        </div>
+        <p class="sources-tag">Fuentes: D3, D7 <span class="ev-tag">[INFERENCIA]</span></p>
+      </div>
+    </section>
+
+    <!-- ── S5: Decision Tree ── -->
+    <section data-mtia="section-decision-tree">
+      <h2 class="section-heading"><span class="num">05</span> &Aacute;rbol de Decisi&oacute;n Visual</h2>
+      <div class="card" style="padding:36px 24px;">
+        <div class="tree" data-mtia="decision-tree">
+          <!-- Level 1 -->
+          <div class="tree-node question">&iquest;Hay base s&oacute;lida (spec &ge;80/100)?</div>
+          <div class="tree-connector"></div>
+
+          <div class="tree-fork">
+            <!-- YES branch -->
+            <div class="tree-path">
+              <span class="tree-branch-label yes">S&Iacute;</span>
+              <div class="tree-connector"></div>
+              <div class="tree-node question">&iquest;Hay gaps cr&iacute;ticos identificados?</div>
+              <div class="tree-connector"></div>
+
+              <div class="tree-fork">
+                <!-- YES: gaps -->
+                <div class="tree-path">
+                  <span class="tree-branch-label yes">S&Iacute;</span>
+                  <div class="tree-connector"></div>
+                  <div class="tree-node question">&iquest;Son adiciones o rewrites?</div>
+                  <div class="tree-connector"></div>
+
+                  <div class="tree-fork">
+                    <div class="tree-path">
+                      <span class="tree-branch-label yes">Adiciones</span>
+                      <div class="tree-connector"></div>
+                      <div class="tree-node answer-a"><strong>Escenario A</strong><br>Evoluci&oacute;n Incremental</div>
+                    </div>
+                    <div class="tree-path">
+                      <span class="tree-branch-label no">Nuevo paradigma</span>
+                      <div class="tree-connector"></div>
+                      <div class="tree-node answer-b"><strong>Escenario B</strong><br>Swarm Architecture</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- NO branch -->
+            <div class="tree-path">
+              <span class="tree-branch-label no">NO</span>
+              <div class="tree-connector"></div>
+              <div class="tree-node answer-c"><strong>Escenario C</strong><br>Fresh Start</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── S6: Tabla Comparativa ── -->
+    <section data-mtia="section-comparison">
+      <h2 class="section-heading"><span class="num">06</span> Tabla Comparativa 6D</h2>
+      <div class="card">
+        <div class="comp-table-wrap">
+          <table class="comp-table">
+            <thead>
+              <tr>
+                <th>Dimensi&oacute;n</th>
+                <th>Esc A (4.2)</th>
+                <th>Esc B (2.8)</th>
+                <th>Esc C (2.2)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Impacto estrat&eacute;gico</td>
+                <td class="cell-green">4</td>
+                <td class="cell-green">5</td>
+                <td class="cell-green">4</td>
+              </tr>
+              <tr>
+                <td>Viabilidad t&eacute;cnica</td>
+                <td class="cell-green">5</td>
+                <td class="cell-red">2</td>
+                <td class="cell-red">1</td>
+              </tr>
+              <tr>
+                <td>Esfuerzo</td>
+                <td class="cell-green">4</td>
+                <td class="cell-red">2</td>
+                <td class="cell-red">1</td>
+              </tr>
+              <tr>
+                <td>Riesgo</td>
+                <td class="cell-green">4</td>
+                <td class="cell-red">2</td>
+                <td class="cell-red">1</td>
+              </tr>
+              <tr>
+                <td>Escalabilidad</td>
+                <td class="cell-yellow">3</td>
+                <td class="cell-green">5</td>
+                <td class="cell-green">5</td>
+              </tr>
+              <tr>
+                <td>Velocidad de valor</td>
+                <td class="cell-green">5</td>
+                <td class="cell-red">1</td>
+                <td class="cell-red">1</td>
+              </tr>
+              <tr>
+                <td style="font-family:var(--font-display);color:#fff;">Score Total</td>
+                <td class="cell-green" style="font-size:1.1rem;">4.2</td>
+                <td class="cell-yellow" style="font-size:1.1rem;">2.8</td>
+                <td class="cell-red" style="font-size:1.1rem;">2.2</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── S7: Gate G1 ── -->
+    <section data-mtia="section-gate">
+      <h2 class="section-heading"><span class="num">07</span> Gate G1 &mdash; Auto-Aprobaci&oacute;n</h2>
+      <div class="gate-box">
+        <h3>Escenario A &mdash; APROBADO</h3>
+        <div class="gate-score">4.2 / 5.0</div>
+        <p>&Uacute;nico escenario que entrega valor en &lt;4 semanas sin destruir base probada. Extensi&oacute;n natural del repositorio existente con State Machine, HIL y Artifact Versioning. Decisi&oacute;n reversible si H1 Gate falla.</p>
+        <div class="gate-tag">[SUPUESTO] Decisi&oacute;n reversible</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer data-mtia="footer">
+    <div class="container">
+      <div class="footer-brand">
+        <span class="wm-white">Metodolog</span><span class="wm-gold">IA</span>
+      </div>
+      <div class="footer-copy">
+        &copy; 2026 MetodologIA. Copyleft &mdash; Para uso y aprovechamiento de profesionales en la era de la IA.
+      </div>
+      <div class="footer-tagline">Decisiones informadas, arquitectura intencional, valor incremental.</div>
+    </div>
+  </footer>
+
+</body>
+</html>

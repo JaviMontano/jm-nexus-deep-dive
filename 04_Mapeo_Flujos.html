@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="es" data-mtia="document-root">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>04 — Mapeo de Flujos | Nexus Assistant OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ===== CSS CUSTOM PROPERTIES ===== */
+    :root {
+      --color-body: #1E3258;
+      --color-card: rgba(255,255,255,0.06);
+      --color-card-border: rgba(255,255,255,0.10);
+      --color-gold: #FFD700;
+      --color-blue: #137DC5;
+      --color-navy-deep: #122562;
+      --color-text: #E8E8E8;
+      --color-text-muted: #B0B0B0;
+      --color-dark: #1F2833;
+      --color-lavender: #BBA0CC;
+      --color-gray: #808080;
+      --color-success: #4CAF50;
+      --color-warning: #FF9800;
+      --color-danger: #F44336;
+      --font-display: 'Poppins', sans-serif;
+      --font-body: 'Montserrat', sans-serif;
+      --font-footnote: 'Trebuchet MS', sans-serif;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow-card: 0 4px 24px rgba(0,0,0,0.25);
+      --blur: blur(16px);
+    }
+
+    /* ===== RESET ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ===== SKIP LINK ===== */
+    .skip-link {
+      position: absolute; top: -100%; left: 0;
+      background: var(--color-gold); color: var(--color-body);
+      padding: 8px 16px; z-index: 9999; font-family: var(--font-body);
+    }
+    .skip-link:focus { top: 0; }
+
+    /* ===== BODY ===== */
+    body {
+      background: var(--color-body);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-weight: 400;
+      line-height: 1.7;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== LAYOUT ===== */
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ===== HEADER ===== */
+    header[data-mtia="header"] {
+      background: rgba(18,37,98,0.85);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border-bottom: 1px solid var(--color-card-border);
+      padding: 16px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .logo-mark {
+      flex-shrink: 0;
+    }
+    .brand-text {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.35rem;
+      letter-spacing: 0.02em;
+    }
+    .brand-text .white { color: #fff; }
+    .brand-text .gold  { color: var(--color-gold); }
+    .header-subtitle {
+      margin-left: auto;
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+    }
+
+    /* ===== HERO ===== */
+    .hero[data-mtia="hero"] {
+      padding: 56px 0 32px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .hero h1 span { color: var(--color-gold); }
+    .hero .subtitle {
+      font-size: 1rem;
+      color: var(--color-text-muted);
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* ===== TL;DR CARD ===== */
+    .tldr[data-mtia="tldr"] {
+      background: linear-gradient(135deg, rgba(19,125,197,0.18), rgba(187,160,204,0.10));
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border: 1px solid rgba(19,125,197,0.30);
+      border-left: 4px solid var(--color-gold);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin: 0 auto 48px;
+      max-width: 860px;
+    }
+    .tldr strong {
+      color: var(--color-gold);
+      font-family: var(--font-display);
+      font-weight: 700;
+    }
+
+    /* ===== SECTIONS ===== */
+    section[data-mtia] {
+      margin-bottom: 56px;
+    }
+    .section-heading {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(1.2rem, 3vw, 1.65rem);
+      color: #fff;
+      margin-bottom: 24px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--color-gold);
+      display: inline-block;
+    }
+    .section-heading .num {
+      color: var(--color-gold);
+    }
+
+    /* ===== GLASS CARD ===== */
+    .card {
+      background: var(--color-card);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border: 1px solid var(--color-card-border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow-card);
+      margin-bottom: 24px;
+    }
+
+    /* ===== TABLES ===== */
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 24px;
+      border-radius: var(--radius-sm);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    thead th {
+      background: rgba(18,37,98,0.65);
+      color: var(--color-gold);
+      font-family: var(--font-display);
+      font-weight: 700;
+      text-align: left;
+      padding: 12px 14px;
+      white-space: nowrap;
+      border-bottom: 2px solid var(--color-gold);
+    }
+    tbody td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--color-card-border);
+      vertical-align: top;
+    }
+    tbody tr:hover {
+      background: rgba(255,255,255,0.04);
+    }
+    .mono {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.82rem;
+      color: var(--color-blue);
+    }
+
+    /* ===== BC BADGES ===== */
+    .bc-badge {
+      display: inline-block;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.72rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .bc-ingesta     { background: rgba(76,175,80,0.20);  color: #81C784; border: 1px solid rgba(76,175,80,0.40); }
+    .bc-orquestacion{ background: rgba(19,125,197,0.20);  color: #64B5F6; border: 1px solid rgba(19,125,197,0.40); }
+    .bc-ejecucion   { background: rgba(187,160,204,0.20); color: #CE93D8; border: 1px solid rgba(187,160,204,0.40); }
+    .bc-persistencia{ background: rgba(255,215,0,0.18);   color: var(--color-gold); border: 1px solid rgba(255,215,0,0.35); }
+
+    /* ===== FLOW CARDS ===== */
+    .flow-card {
+      background: var(--color-card);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border: 1px solid var(--color-card-border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-card);
+      position: relative;
+    }
+    .flow-card.killer {
+      border-color: var(--color-gold);
+      box-shadow: 0 0 24px rgba(255,215,0,0.12), var(--shadow-card);
+    }
+    .flow-id {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--color-gold);
+      margin-bottom: 4px;
+    }
+    .flow-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+    .flow-title .killer-badge {
+      background: var(--color-gold);
+      color: var(--color-body);
+      font-size: 0.65rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-left: 8px;
+      vertical-align: middle;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .flow-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 16px;
+      font-size: 0.82rem;
+    }
+    .flow-meta span {
+      color: var(--color-text-muted);
+    }
+    .flow-meta strong {
+      color: var(--color-text);
+    }
+
+    /* ===== FLOW DIAGRAM ===== */
+    .flow-diagram {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+      padding: 16px 0;
+      overflow-x: auto;
+    }
+    .flow-step {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-family: var(--font-display);
+      font-weight: 600;
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+    .flow-step.s-ingesta      { background: rgba(76,175,80,0.15);  color: #81C784; border-color: rgba(76,175,80,0.30); }
+    .flow-step.s-orquestacion { background: rgba(19,125,197,0.15); color: #64B5F6; border-color: rgba(19,125,197,0.30); }
+    .flow-step.s-ejecucion    { background: rgba(187,160,204,0.15);color: #CE93D8; border-color: rgba(187,160,204,0.30); }
+    .flow-step.s-persistencia { background: rgba(255,215,0,0.12);  color: var(--color-gold); border-color: rgba(255,215,0,0.25); }
+    .flow-step.s-checkpoint   { background: rgba(255,152,0,0.15);  color: #FFB74D; border-color: rgba(255,152,0,0.30); }
+    .flow-step.s-external     { background: rgba(128,128,128,0.15);color: #aaa;    border-color: rgba(128,128,128,0.30); }
+    .flow-arrow {
+      color: var(--color-text-muted);
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .flow-note {
+      font-size: 0.82rem;
+      color: var(--color-text-muted);
+      margin-top: 8px;
+      font-style: italic;
+    }
+
+    /* ===== RISK TAG ===== */
+    .risk-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      margin-left: 4px;
+    }
+    .risk-low    { background: rgba(76,175,80,0.20); color: #81C784; }
+    .risk-medium { background: rgba(255,152,0,0.20); color: #FFB74D; }
+    .risk-high   { background: rgba(244,67,54,0.20); color: #EF9A9A; }
+
+    /* ===== DEPENDENCY GRAPH ===== */
+    .dep-graph[data-mtia="dependency-graph"] {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 40px 20px;
+    }
+    .dep-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 160px;
+      min-height: 80px;
+      border-radius: var(--radius);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.82rem;
+      text-align: center;
+      padding: 14px 10px;
+      position: relative;
+    }
+    .dep-node.critical {
+      background: rgba(244,67,54,0.15);
+      border: 2px solid rgba(244,67,54,0.50);
+      color: #EF9A9A;
+    }
+    .dep-node.partial {
+      background: rgba(255,152,0,0.15);
+      border: 2px solid rgba(255,152,0,0.45);
+      color: #FFB74D;
+    }
+    .dep-node.blocked {
+      background: rgba(128,128,128,0.12);
+      border: 2px dashed rgba(128,128,128,0.40);
+      color: var(--color-gray);
+    }
+    .dep-node.done {
+      background: rgba(76,175,80,0.12);
+      border: 2px solid rgba(76,175,80,0.40);
+      color: #81C784;
+    }
+    .dep-node .node-label { font-size: 0.88rem; margin-bottom: 4px; }
+    .dep-node .node-status { font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+    .dep-arrow-h {
+      font-size: 1.6rem;
+      color: var(--color-text-muted);
+      flex-shrink: 0;
+    }
+
+    /* ===== IMPACT METER ===== */
+    .impact-bar {
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+      width: 80px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .impact-fill {
+      height: 100%;
+      border-radius: 3px;
+    }
+    .impact-fill.high   { width: 100%; background: var(--color-danger); }
+    .impact-fill.medium { width: 66%;  background: var(--color-warning); }
+    .impact-fill.low    { width: 33%;  background: var(--color-success); }
+
+    /* ===== SYNC BADGE ===== */
+    .sync-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .sync-async { background: rgba(187,160,204,0.20); color: #CE93D8; }
+    .sync-sync  { background: rgba(19,125,197,0.20);  color: #64B5F6; }
+
+    /* ===== FOOTER ===== */
+    footer[data-mtia="footer"] {
+      background: rgba(18,37,98,0.75);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border-top: 1px solid var(--color-card-border);
+      padding: 28px 0;
+      text-align: center;
+      margin-top: 64px;
+    }
+    .footer-brand {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin-bottom: 6px;
+    }
+    .footer-brand .white { color: #fff; }
+    .footer-brand .gold  { color: var(--color-gold); }
+    .footer-copy {
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+      font-family: var(--font-footnote);
+      margin-bottom: 4px;
+    }
+    .footer-tagline {
+      font-size: 0.72rem;
+      color: var(--color-gray);
+      font-family: var(--font-footnote);
+      font-style: italic;
+    }
+
+    /* ===== LEGEND ===== */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+    }
+    .legend-dot {
+      width: 12px; height: 12px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .container { padding: 0 16px; }
+      .card, .flow-card { padding: 18px; }
+      .header-subtitle { display: none; }
+      .flow-meta { flex-direction: column; gap: 6px; }
+      .dep-graph { flex-direction: column; }
+      .dep-arrow-h { transform: rotate(90deg); }
+      table { font-size: 0.8rem; }
+      thead th, tbody td { padding: 8px 10px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 1.3rem; }
+      .flow-diagram { gap: 2px; }
+      .flow-step { font-size: 0.68rem; padding: 4px 8px; }
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: #fff; color: #1a1a1a; }
+      header[data-mtia="header"] { position: static; background: none; border-bottom: 2px solid #1E3258; }
+      .brand-text .white { color: #1E3258; }
+      .brand-text .gold  { color: #B8860B; }
+      .card, .flow-card, .tldr { background: #f8f8f8; backdrop-filter: none; border-color: #ccc; box-shadow: none; }
+      .section-heading { color: #1E3258; border-bottom-color: #B8860B; }
+      .flow-id, thead th, .bc-badge { color: #1E3258; }
+      footer[data-mtia="footer"] { background: none; border-top: 2px solid #1E3258; }
+      .flow-step { border-color: #ccc; background: #f0f0f0; color: #333; }
+      .dep-node { border-color: #999; background: #f5f5f5; color: #333; }
+      a { color: #1E3258; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Saltar al contenido</a>
+
+  <!-- ===== HEADER ===== -->
+  <header data-mtia="header">
+    <div class="container header-inner">
+      <svg class="logo-mark" width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+        <rect width="36" height="36" rx="8" fill="#122562"/>
+        <rect x="7"  y="10" width="4" height="16" rx="2" fill="#fff"/>
+        <rect x="16" y="10" width="4" height="16" rx="2" fill="#fff"/>
+        <rect x="25" y="10" width="4" height="16" rx="2" fill="#fff"/>
+        <circle cx="29" cy="9" r="3.5" fill="#FFD700"/>
+      </svg>
+      <span class="brand-text"><span class="white">Metodolog</span><span class="gold">IA</span></span>
+      <span class="header-subtitle">Nexus Assistant OS &mdash; Architecture Deep Dive</span>
+    </div>
+  </header>
+
+  <!-- ===== MAIN ===== -->
+  <main id="main" class="container">
+
+    <!-- HERO -->
+    <div class="hero" data-mtia="hero">
+      <h1><span>04</span> &mdash; Mapeo de Flujos</h1>
+      <p class="subtitle">Bounded Contexts, flujos E2E, matriz de integracion, puntos de falla y grafo de dependencias para Nexus Assistant OS.</p>
+    </div>
+
+    <!-- TL;DR -->
+    <div class="tldr" data-mtia="tldr">
+      <strong>TL;DR:</strong> 4 bounded contexts (Ingesta, Orquestacion, Ejecucion, Persistencia), 8 flujos E2E documentados, matriz de integracion, top-5 puntos de falla y grafo de dependencias. El flujo critico es <strong>Voz &rarr; Propuesta</strong> (F-05) &mdash; atraviesa los 4 bounded contexts con latencia de 20-45s.
+    </div>
+
+    <!-- ===== SECTION 1: TAXONOMIA DDD ===== -->
+    <section data-mtia="section-taxonomia">
+      <h2 class="section-heading"><span class="num">01</span> &mdash; Taxonomia DDD: 4 Bounded Contexts</h2>
+
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(76,175,80,0.55)"></div> BC-INGESTA</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(19,125,197,0.55)"></div> BC-ORQUESTACION</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(187,160,204,0.55)"></div> BC-EJECUCION</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(255,215,0,0.45)"></div> BC-PERSISTENCIA</div>
+      </div>
+
+      <div class="card" data-mtia="table-bounded-contexts">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Bounded Context</th>
+                <th>Responsabilidad</th>
+                <th>Entidades</th>
+                <th>Agregado Raiz</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="bc-badge bc-ingesta">BC-INGESTA</span></td>
+                <td>Captura de inputs (texto/voz), validacion, encolamiento</td>
+                <td><span class="mono">TelegramUpdate</span>, <span class="mono">AudioPayload</span>, <span class="mono">PubSubMessage</span></td>
+                <td><span class="mono">IngestaPipeline</span></td>
+              </tr>
+              <tr>
+                <td><span class="bc-badge bc-orquestacion">BC-ORQUESTACION</span></td>
+                <td>Routing, delegacion, composicion de prompts, degradation</td>
+                <td><span class="mono">Intent</span>, <span class="mono">DelegationMode</span>, <span class="mono">PromptTemplate</span>, <span class="mono">CircuitBreakerState</span></td>
+                <td><span class="mono">OrchestrationEngine</span></td>
+              </tr>
+              <tr>
+                <td><span class="bc-badge bc-ejecucion">BC-EJECUCION</span></td>
+                <td>Agentes especializados, skills, workflows, tools, HIL</td>
+                <td><span class="mono">Agent</span>, <span class="mono">Skill</span>, <span class="mono">Workflow</span>, <span class="mono">Tool</span>, <span class="mono">PendingAction</span></td>
+                <td><span class="mono">ExecutionContext</span></td>
+              </tr>
+              <tr>
+                <td><span class="bc-badge bc-persistencia">BC-PERSISTENCIA</span></td>
+                <td>Estado de proyectos, memoria, artefactos, audit</td>
+                <td><span class="mono">Project</span>, <span class="mono">Artifact</span>, <span class="mono">Memory</span>, <span class="mono">AuditEntry</span></td>
+                <td><span class="mono">StateManager</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 2: 8 FLUJOS E2E ===== -->
+    <section data-mtia="section-flujos">
+      <h2 class="section-heading"><span class="num">02</span> &mdash; 8 Flujos E2E</h2>
+
+      <!-- F-01 -->
+      <div class="flow-card" data-mtia="flow-01">
+        <div class="flow-id">F-01</div>
+        <div class="flow-title">Texto simple &rarr; Respuesta (CHITCHAT)</div>
+        <div class="flow-meta">
+          <span>Latencia: <strong>&lt;15s</strong></span>
+          <span>Level: <strong>L0</strong></span>
+          <span>Riesgo: <span class="risk-tag risk-low">Bajo</span></span>
+        </div>
+        <div class="flow-diagram">
+          <span class="flow-step s-external">Telegram</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-ingesta">Webhook</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-checkpoint">CP1</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-ingesta">Pub/Sub</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-ingesta">Worker</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-checkpoint">CP2</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-orquestacion">Router (CHITCHAT)</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-orquestacion">Orchestrator</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-ejecucion">Agent</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-checkpoint">CP3</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-external">Telegram Response</span>
+        </div>
+      </div>
+
+      <!-- F-02 -->
+      <div class="flow-card" data-mtia="flow-02">
+        <div class="flow-id">F-02</div>
+        <div class="flow-title">Audio &rarr; Transcripcion &rarr; Respuesta</div>
+        <div class="flow-meta">
+          <span>Latencia: <strong>+5-10s</strong> (transcripcion)</span>
+          <span>Level: <strong>L0</strong></span>
+          <span>Riesgo: <span class="risk-tag risk-medium">Medio</span></span>
+        </div>
+        <div class="flow-diagram">
+          <span class="flow-step s-external">Telegram (audio)</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-ingesta">Webhook</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-ingesta">Whisper</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-ingesta">Texto</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-orquestacion" style="opacity:0.6">... F-01 pipeline</span>
+        </div>
+        <p class="flow-note">Chunking aplicado si audio &gt;60s.</p>
+      </div>
+
+      <!-- F-03 -->
+      <div class="flow-card" data-mtia="flow-03">
+        <div class="flow-id">F-03</div>
+        <div class="flow-title">Query de proyecto &rarr; Contexto recuperado</div>
+        <div class="flow-meta">
+          <span>Latencia: <strong>&lt;15s</strong></span>
+          <span>Level: <strong>L0</strong></span>
+          <span>Riesgo: <span class="risk-tag risk-high">Alto</span></span>
+        </div>
+        <div class="flow-diagram">
+          <span class="flow-step s-external">Telegram</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-ingesta">Ingesta</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-orquestacion">Router (PROJECT_QUERY)</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-orquestacion">Orchestrator</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-persistencia">Firestore (projects)</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-orquestacion">Prompt Composer</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-ejecucion">Agent</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-external">Response</span>
+        </div>
+        <p class="flow-note">Dependencia critica: M-09 (Project State) &mdash; NO EXISTE AUN.</p>
+      </div>
+
+      <!-- F-04 -->
+      <div class="flow-card" data-mtia="flow-04">
+        <div class="flow-id">F-04</div>
+        <div class="flow-title">Research profundo &rarr; Sintesis</div>
+        <div class="flow-meta">
+          <span>Latencia: <strong>15-30s</strong></span>
+          <span>Level: <strong>L0</strong></span>
+          <span>Riesgo: <span class="risk-tag risk-medium">Medio</span></span>
+        </div>
+        <div class="flow-diagram">
+          <span class="flow-step s-external">Telegram</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-ingesta">Ingesta</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-orquestacion">Router (RESEARCH)</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-orquestacion">Terna Orchestrator</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-ejecucion">Researcher x3</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-ejecucion">Web + KB Search</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-ejecucion">Consolidacion</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-checkpoint">CP3</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-external">Response + citaciones</span>
+        </div>
+        <p class="flow-note">Riesgo: loops en agentes y prompt injection via fuentes externas.</p>
+      </div>
+
+      <!-- F-05 KILLER -->
+      <div class="flow-card killer" data-mtia="flow-05">
+        <div class="flow-id">F-05</div>
+        <div class="flow-title">Generacion de propuesta HTML <span class="killer-badge">Killer Use Case</span></div>
+        <div class="flow-meta">
+          <span>Latencia: <strong>20-45s</strong> (async)</span>
+          <span>Level: <strong>L1</strong></span>
+          <span>Riesgo: <span class="risk-tag risk-high">Alto</span></span>
+        </div>
+        <div class="flow-diagram">
+          <span class="flow-step s-external">Telegram (voz)</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-ingesta">Whisper</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-orquestacion">Router (ARTIFACT_GENERATION)</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-orquestacion">Orchestrator</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-ejecucion">Agent + Proposal Engine</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-ejecucion">HTML Gen</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-persistencia">Cloud Storage</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-persistencia">URL firmada 7d</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-external">Telegram link</span>
+        </div>
+        <p class="flow-note">Atraviesa los 4 Bounded Contexts. Riesgo: generacion parcial, timeout, HTML malformado.</p>
+      </div>
+
+      <!-- F-06 -->
+      <div class="flow-card" data-mtia="flow-06">
+        <div class="flow-id">F-06</div>
+        <div class="flow-title">Accion L2 con aprobacion HIL</div>
+        <div class="flow-meta">
+          <span>Latencia: <strong>variable</strong> (humano en loop)</span>
+          <span>Level: <strong>L2</strong></span>
+          <span>Riesgo: <span class="risk-tag risk-medium">Medio</span></span>
+        </div>
+        <div class="flow-diagram">
+          <span class="flow-step s-ejecucion">Agent propone accion</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-orquestacion">Orchestrator evalua L2</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-persistencia">pending_action</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-external">Telegram Inline Buttons</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-external">Operador aprueba</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-ejecucion">Ejecutar</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-persistencia">Audit log</span>
+        </div>
+        <p class="flow-note">Dependencia critica: M-08 (HIL) &mdash; PARCIAL.</p>
+      </div>
+
+      <!-- F-07 -->
+      <div class="flow-card" data-mtia="flow-07">
+        <div class="flow-id">F-07</div>
+        <div class="flow-title">Compresion nocturna de memoria (CRON)</div>
+        <div class="flow-meta">
+          <span>Latencia: <strong>batch</strong></span>
+          <span>Level: <strong>N/A</strong></span>
+          <span>Riesgo: <span class="risk-tag risk-medium">Medio</span></span>
+        </div>
+        <div class="flow-diagram">
+          <span class="flow-step s-external">CRON trigger</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-persistencia">Proyectos ACTIVE</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-ejecucion">LLM comprime</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-persistencia">compressed_context &le;500 tok</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-persistencia">compression_log</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-persistencia">Persist (txn)</span>
+        </div>
+        <p class="flow-note">Riesgo: perdida de informacion en compresion agresiva.</p>
+      </div>
+
+      <!-- F-08 -->
+      <div class="flow-card" data-mtia="flow-08">
+        <div class="flow-id">F-08</div>
+        <div class="flow-title">Degradacion por falla de provider</div>
+        <div class="flow-meta">
+          <span>Latencia: <strong>+2-5s</strong> por salto</span>
+          <span>Level: <strong>L0</strong></span>
+          <span>Riesgo: <span class="risk-tag risk-high">Alto</span></span>
+        </div>
+        <div class="flow-diagram">
+          <span class="flow-step s-orquestacion">Request</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-ejecucion" style="text-decoration:line-through;opacity:0.5">Groq</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-orquestacion">CB OPEN</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-ejecucion">OpenRouter</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-ejecucion" style="opacity:0.6">Gemini (fallback)</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step s-orquestacion" style="opacity:0.5">DIRECT (ultimo recurso)</span>
+        </div>
+        <p class="flow-note">Recovery: Half-Open probe despues de cooldown configurable.</p>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 3: MATRIZ DE INTEGRACION ===== -->
+    <section data-mtia="section-integracion">
+      <h2 class="section-heading"><span class="num">03</span> &mdash; Matriz de Integracion entre BCs</h2>
+
+      <div class="card" data-mtia="table-integracion">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Origen &rarr; Destino</th>
+                <th>Mecanismo</th>
+                <th>Sincronicidad</th>
+                <th>Datos</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="bc-badge bc-ingesta">INGESTA</span> &rarr; <span class="bc-badge bc-orquestacion">ORQUESTACION</span></td>
+                <td><span class="mono">Pub/Sub</span></td>
+                <td><span class="sync-badge sync-async">Async</span></td>
+                <td>Payload (<span class="mono">user_id</span>, <span class="mono">text</span>, <span class="mono">timestamp</span>)</td>
+              </tr>
+              <tr>
+                <td><span class="bc-badge bc-orquestacion">ORQUESTACION</span> &rarr; <span class="bc-badge bc-ejecucion">EJECUCION</span></td>
+                <td><span class="mono">Function call</span></td>
+                <td><span class="sync-badge sync-sync">Sync</span></td>
+                <td>Intent + Context + Prompt</td>
+              </tr>
+              <tr>
+                <td><span class="bc-badge bc-ejecucion">EJECUCION</span> &rarr; <span class="bc-badge bc-persistencia">PERSISTENCIA</span></td>
+                <td><span class="mono">Firestore write</span></td>
+                <td><span class="sync-badge sync-sync">Sync (txn)</span></td>
+                <td>State mutations</td>
+              </tr>
+              <tr>
+                <td><span class="bc-badge bc-persistencia">PERSISTENCIA</span> &rarr; <span class="bc-badge bc-orquestacion">ORQUESTACION</span></td>
+                <td><span class="mono">Firestore read</span></td>
+                <td><span class="sync-badge sync-sync">Sync</span></td>
+                <td>Context retrieval</td>
+              </tr>
+              <tr>
+                <td><span class="bc-badge bc-ejecucion">EJECUCION</span> &rarr; <span class="bc-badge bc-ingesta">INGESTA</span></td>
+                <td><span class="mono">Telegram API</span></td>
+                <td><span class="sync-badge sync-async">Async</span></td>
+                <td>Response message</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 4: TOP-5 PUNTOS DE FALLA ===== -->
+    <section data-mtia="section-fallas">
+      <h2 class="section-heading"><span class="num">04</span> &mdash; Top-5 Puntos de Falla</h2>
+
+      <div class="card" data-mtia="table-fallas">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Punto de Falla</th>
+                <th>Impacto</th>
+                <th>Mitigacion Existente</th>
+                <th>Gap</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:700;color:var(--color-gold)">1</td>
+                <td>Telegram webhook timeout (10s)</td>
+                <td>
+                  Request perdido
+                  <div class="impact-bar"><div class="impact-fill high"></div></div>
+                </td>
+                <td>Pub/Sub ACK &lt;2s</td>
+                <td><span class="risk-tag risk-low">Ninguno</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;color:var(--color-gold)">2</td>
+                <td>LLM provider down</td>
+                <td>
+                  Sin routing
+                  <div class="impact-bar"><div class="impact-fill high"></div></div>
+                </td>
+                <td>Circuit Breaker cascade (F-08)</td>
+                <td><span class="risk-tag risk-low">Ninguno</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;color:var(--color-gold)">3</td>
+                <td>Firestore write conflict</td>
+                <td>
+                  State corruption
+                  <div class="impact-bar"><div class="impact-fill medium"></div></div>
+                </td>
+                <td>Transactions</td>
+                <td><span class="risk-tag risk-medium">CRON no confirmado</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;color:var(--color-gold)">4</td>
+                <td>Context bloat &gt;500 tokens</td>
+                <td>
+                  Costos + alucinaciones
+                  <div class="impact-bar"><div class="impact-fill medium"></div></div>
+                </td>
+                <td>CRON compresion (F-07)</td>
+                <td><span class="risk-tag risk-medium">CRON no confirmado</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;color:var(--color-gold)">5</td>
+                <td>Prompt injection via research</td>
+                <td>
+                  Memory contamination
+                  <div class="impact-bar"><div class="impact-fill high"></div></div>
+                </td>
+                <td>CP3 soft scan</td>
+                <td><span class="risk-tag risk-high">CP3 solo detecta, no bloquea</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 5: GRAFO DE DEPENDENCIAS ===== -->
+    <section data-mtia="section-dependencias">
+      <h2 class="section-heading"><span class="num">05</span> &mdash; Grafo de Dependencias</h2>
+
+      <div class="card" data-mtia="dependency-card">
+        <p style="text-align:center;font-size:0.85rem;color:var(--color-text-muted);margin-bottom:24px;">
+          Cadena critica de milestones &mdash; cada nodo bloquea al siguiente.
+        </p>
+
+        <div class="dep-graph" data-mtia="dependency-graph">
+          <div class="dep-node critical">
+            <div class="node-label">M-09</div>
+            <div>Project State</div>
+            <div class="node-status">No existe</div>
+          </div>
+          <div class="dep-arrow-h">&rarr;</div>
+          <div class="dep-node partial">
+            <div class="node-label">M-08</div>
+            <div>HIL Engine</div>
+            <div class="node-status">Parcial</div>
+          </div>
+          <div class="dep-arrow-h">&rarr;</div>
+          <div class="dep-node blocked">
+            <div class="node-label">M-11</div>
+            <div>Multi-tenant</div>
+            <div class="node-status">Bloqueado</div>
+          </div>
+          <div class="dep-arrow-h">&rarr;</div>
+          <div class="dep-node blocked">
+            <div class="node-label">$$</div>
+            <div>Monetizacion</div>
+            <div class="node-status">Bloqueado</div>
+          </div>
+        </div>
+
+        <div style="margin-top:32px;">
+          <p style="font-size:0.85rem;color:var(--color-text-muted);margin-bottom:16px;text-align:center;">
+            Dependencias transversales de los flujos sobre los milestones:
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Flujo</th>
+                  <th>Depende de</th>
+                  <th>Estado</th>
+                  <th>Impacto si falta</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight:600;color:var(--color-gold)">F-03</td>
+                  <td>M-09 (Project State)</td>
+                  <td><span class="risk-tag risk-high">No existe</span></td>
+                  <td>Sin contexto de proyecto, respuestas genericas</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;color:var(--color-gold)">F-05</td>
+                  <td>M-09 + Proposal Engine</td>
+                  <td><span class="risk-tag risk-high">No existe</span></td>
+                  <td>Killer use case no funcional</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;color:var(--color-gold)">F-06</td>
+                  <td>M-08 (HIL)</td>
+                  <td><span class="risk-tag risk-medium">Parcial</span></td>
+                  <td>Acciones L2 sin aprobacion segura</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;color:var(--color-gold)">F-07</td>
+                  <td>M-09 + CRON infra</td>
+                  <td><span class="risk-tag risk-medium">Parcial</span></td>
+                  <td>Context bloat sin control</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;color:var(--color-gold)">F-08</td>
+                  <td>Circuit Breaker config</td>
+                  <td><span class="risk-tag risk-low">Implementado</span></td>
+                  <td>Mitigado &mdash; cascade funcional</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer data-mtia="footer">
+    <div class="container">
+      <div class="footer-brand">
+        <span class="white">Metodolog</span><span class="gold">IA</span>
+      </div>
+      <div class="footer-copy">&copy; 2026 MetodologIA. Copyleft &mdash; Para uso y aprovechamiento de profesionales en la era de la IA.</div>
+      <div class="footer-tagline">Arquitectura agentica documentada para humanos que orquestan maquinas.</div>
+    </div>
+  </footer>
+</body>
+</html>

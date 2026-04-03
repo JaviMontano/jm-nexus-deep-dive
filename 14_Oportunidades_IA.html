@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="es" data-mtia="report-oportunidades-ia">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>14 — Oportunidades de IA | Nexus Assistant OS</title>
+  <style>
+    /* ── MetodologIA Aesthetic Standard ── */
+    :root {
+      --bg-body: #1E3258;
+      --bg-card: rgba(255,255,255,0.06);
+      --card-blur: blur(16px);
+      --gold: #FFD700;
+      --blue: #137DC5;
+      --navy-deep: #122562;
+      --dark-bg: #1F2833;
+      --lavender: #BBA0CC;
+      --gray: #808080;
+      --text: #E8E8E8;
+      --text-muted: #B0B0B0;
+      --font-display: 'Poppins', sans-serif;
+      --font-body: 'Montserrat', sans-serif;
+      --font-footnote: 'Trebuchet MS', sans-serif;
+      --radius: 14px;
+      --max-w: 1080px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Montserrat:wght@400;500;600&display=swap');
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-body);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-weight: 400;
+      line-height: 1.7;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--gold); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+    .skip-link {
+      position: absolute; top: -100%; left: 1rem;
+      background: var(--gold); color: var(--navy-deep);
+      padding: .5rem 1rem; border-radius: 4px;
+      font-weight: 700; z-index: 1000;
+    }
+    .skip-link:focus { top: 1rem; }
+
+    /* ── Header ── */
+    header[data-mtia="header"] {
+      background: linear-gradient(135deg, var(--navy-deep) 0%, var(--bg-body) 100%);
+      border-bottom: 2px solid var(--gold);
+      padding: 1.5rem 2rem;
+    }
+    .header-inner {
+      max-width: var(--max-w); margin: 0 auto;
+      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+    }
+    .logo-brand { display: flex; align-items: center; gap: .75rem; }
+    .brand-wordmark {
+      font-family: var(--font-display); font-weight: 800; font-size: 1.35rem;
+    }
+    .brand-wordmark .white { color: #fff; }
+    .brand-wordmark .gold { color: var(--gold); }
+    .header-meta { margin-left: auto; text-align: right; font-size: .82rem; color: var(--text-muted); }
+
+    /* ── Main ── */
+    main { max-width: var(--max-w); margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+    /* ── TLDR ── */
+    .tldr-banner {
+      background: var(--bg-card); backdrop-filter: var(--card-blur); -webkit-backdrop-filter: var(--card-blur);
+      border-left: 4px solid var(--gold); border-radius: var(--radius);
+      padding: 1.5rem 2rem; margin-bottom: 2.5rem;
+    }
+    .tldr-banner h2 {
+      font-family: var(--font-display); font-weight: 700; font-size: 1.05rem;
+      color: var(--gold); margin-bottom: .5rem;
+    }
+    .tldr-banner p { font-size: .95rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── Section cards ── */
+    .section-card {
+      background: var(--bg-card); backdrop-filter: var(--card-blur); -webkit-backdrop-filter: var(--card-blur);
+      border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .section-card h2 {
+      font-family: var(--font-display); font-weight: 700; font-size: 1.3rem;
+      color: #fff; margin-bottom: 1rem; border-bottom: 2px solid var(--gold);
+      padding-bottom: .5rem;
+    }
+    .section-card h3 {
+      font-family: var(--font-display); font-weight: 700; font-size: 1.05rem;
+      color: var(--gold); margin: 1.2rem 0 .6rem;
+    }
+    .section-card p, .section-card li { font-size: .92rem; }
+    .section-card ul, .section-card ol { padding-left: 1.4rem; margin-bottom: .8rem; }
+    .section-card li { margin-bottom: .4rem; }
+
+    /* ── Tables ── */
+    .table-wrap { overflow-x: auto; margin: 1rem 0; }
+    table {
+      width: 100%; border-collapse: collapse; font-size: .85rem;
+    }
+    thead th {
+      background: var(--navy-deep); color: var(--gold);
+      font-family: var(--font-display); font-weight: 700;
+      padding: .65rem .8rem; text-align: left; white-space: nowrap;
+    }
+    tbody td {
+      padding: .6rem .8rem; border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+    /* ── Badges ── */
+    .badge { display: inline-block; padding: .15rem .55rem; border-radius: 6px; font-size: .78rem; font-weight: 600; }
+    .badge-high   { background: #2ecc71; color: #000; }
+    .badge-medium { background: var(--gold); color: #000; }
+    .badge-low    { background: #e74c3c; color: #fff; }
+    .badge-h1     { background: var(--blue); color: #fff; }
+    .badge-h2     { background: var(--lavender); color: #000; }
+    .badge-h3     { background: var(--gray); color: #fff; }
+
+    /* ── Impact-Effort Matrix ── */
+    .matrix-container {
+      margin: 1.5rem 0;
+      display: grid;
+      grid-template-columns: 2.5rem 1fr 1fr;
+      grid-template-rows: auto 1fr 1fr 2rem;
+      gap: 0;
+      min-height: 360px;
+    }
+    .matrix-ylabel {
+      grid-column: 1; grid-row: 2 / 4;
+      writing-mode: vertical-rl; text-orientation: mixed;
+      transform: rotate(180deg);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-weight: 700; font-size: .85rem;
+      color: var(--gold);
+    }
+    .matrix-xlabel {
+      grid-column: 2 / 4; grid-row: 4;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-weight: 700; font-size: .85rem;
+      color: var(--gold);
+    }
+    .matrix-cell {
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 1rem;
+      display: flex; flex-direction: column; gap: .5rem;
+      position: relative;
+    }
+    .matrix-cell .cell-label {
+      position: absolute; top: .4rem; left: .6rem;
+      font-size: .7rem; font-weight: 600; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: .06em;
+    }
+    .matrix-cell .opp-tag {
+      display: inline-block; padding: .25rem .6rem;
+      background: rgba(255,255,255,0.08); border-radius: 6px;
+      font-size: .78rem; font-weight: 600; margin-top: 1.2rem;
+    }
+    .q-quick   { background: rgba(46,204,113,0.2); }
+    .q-strat   { background: rgba(19,125,197,0.2); }
+    .q-fill    { background: rgba(255,215,0,0.15); }
+    .q-depri   { background: rgba(255,255,255,0.04); }
+    .opp-gold  { color: var(--gold); }
+    .opp-blue  { color: var(--blue); }
+    .opp-lav   { color: var(--lavender); }
+
+    /* ── Stack card ── */
+    .stack-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem; margin: 1rem 0;
+    }
+    .stack-item {
+      background: rgba(255,255,255,0.04); border-radius: 10px;
+      padding: 1rem 1.2rem; border-top: 3px solid var(--blue);
+    }
+    .stack-item h4 {
+      font-family: var(--font-display); font-weight: 700; font-size: .95rem;
+      color: var(--blue); margin-bottom: .4rem;
+    }
+    .stack-item .role { font-size: .78rem; color: var(--gold); font-weight: 600; margin-bottom: .3rem; }
+
+    /* ── Quick win / strategic card ── */
+    .highlight-card {
+      background: rgba(255,255,255,0.04); border-radius: 10px;
+      padding: 1.2rem 1.5rem; margin-bottom: 1rem;
+      border-left: 3px solid var(--gold);
+    }
+    .highlight-card.strategic { border-left-color: var(--blue); }
+    .highlight-card h4 {
+      font-family: var(--font-display); font-weight: 700; font-size: .98rem;
+      color: var(--gold); margin-bottom: .5rem;
+    }
+    .highlight-card.strategic h4 { color: var(--blue); }
+
+    /* ── Footer ── */
+    footer[data-mtia="footer"] {
+      background: var(--navy-deep); border-top: 2px solid var(--gold);
+      padding: 2rem 1.5rem; text-align: center;
+    }
+    .footer-brand {
+      font-family: var(--font-display); font-weight: 800; font-size: 1.1rem;
+      margin-bottom: .3rem;
+    }
+    .footer-brand .white { color: #fff; }
+    .footer-brand .gold  { color: var(--gold); }
+    .footer-copy {
+      font-family: var(--font-footnote); font-size: .78rem; color: var(--text-muted);
+      margin-bottom: .3rem;
+    }
+    .footer-tagline {
+      font-family: var(--font-footnote); font-size: .72rem; color: var(--gray);
+      font-style: italic;
+    }
+
+    /* ── Print ── */
+    @media print {
+      body { background: #fff; color: #1a1a1a; }
+      header, footer { border-color: #1a1a1a; }
+      .section-card { border: 1px solid #ccc; break-inside: avoid; }
+      .badge-high { background: #d4edda; color: #155724; }
+      .badge-low  { background: #f8d7da; color: #721c24; }
+      .badge-medium { background: #fff3cd; color: #856404; }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      header[data-mtia="header"] { padding: 1rem; }
+      .header-inner { flex-direction: column; align-items: flex-start; }
+      .header-meta { margin-left: 0; text-align: left; margin-top: .5rem; }
+      main { padding: 1.5rem 1rem 3rem; }
+      .section-card { padding: 1.2rem; }
+      .matrix-container { grid-template-columns: 2rem 1fr 1fr; min-height: 280px; }
+      .stack-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Saltar al contenido</a>
+
+<!-- ══════════════════════════════════════════ HEADER ══════════════════════════════════════════ -->
+<header data-mtia="header">
+  <div class="header-inner">
+    <div class="logo-brand">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="36" height="36" rx="8" fill="#122562"/>
+        <rect x="8" y="10" width="4" height="16" rx="2" fill="#fff"/>
+        <rect x="16" y="10" width="4" height="16" rx="2" fill="#fff"/>
+        <rect x="24" y="10" width="4" height="16" rx="2" fill="#fff"/>
+        <circle cx="28" cy="8" r="3" fill="#FFD700"/>
+      </svg>
+      <span class="brand-wordmark"><span class="white">Metodolog</span><span class="gold">IA</span></span>
+    </div>
+    <div class="header-meta">
+      <div>Nexus Assistant OS &mdash; Discovery Deep Dive</div>
+      <div>Documento 14 de 15 &bull; 2026-04-02</div>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════ MAIN ══════════════════════════════════════════ -->
+<main id="main-content" data-mtia="main-content">
+
+  <h1 style="font-family:var(--font-display);font-weight:700;font-size:1.8rem;margin-bottom:.3rem;">14 &mdash; Oportunidades de IA</h1>
+  <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:2rem;">Nexus Assistant OS &bull; Discovery Deep Dive</p>
+
+  <!-- TL;DR -->
+  <div class="tldr-banner" data-mtia="tldr">
+    <h2>TL;DR</h2>
+    <p>8 oportunidades de aceleracion con IA identificadas. Las top 3: (1) Semantic Router mejorado con fine-tuning, (2) RAG con Vector DB para KB, (3) Proactive Intelligence via analisis de patrones. Quick win inmediato: IA-04 auto-compression mejorada. Stack recomendado: Groq (routing) + OpenRouter (execution) + Gemini (complex); agregar Pinecone/Weaviate en H3.</p>
+  </div>
+
+  <!-- ═══════ SECTION 1: Oportunidades Identificadas ═══════ -->
+  <section class="section-card" data-mtia="section-oportunidades">
+    <h2>1. Oportunidades Identificadas</h2>
+    <p style="margin-bottom:1rem;color:var(--text-muted);font-size:.88rem;">8 oportunidades evaluadas por impacto, esfuerzo y horizonte de implementacion.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Oportunidad</th>
+            <th>Descripcion</th>
+            <th>Impacto</th>
+            <th>Esfuerzo</th>
+            <th>Horizonte</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>IA-01</td>
+            <td>Router Fine-Tuning</td>
+            <td>Fine-tune Groq custom model para clasificacion de intents. Precision actual 95% &rarr; target 99%.</td>
+            <td><span class="badge badge-high">Alto</span></td>
+            <td><span class="badge badge-medium">Medio</span></td>
+            <td><span class="badge badge-h2">H2</span></td>
+          </tr>
+          <tr>
+            <td>IA-02</td>
+            <td>RAG con Vector DB</td>
+            <td>Reemplazar text search con semantic search usando embeddings + vector database para Knowledge Base.</td>
+            <td><span class="badge badge-high">Alto</span></td>
+            <td><span class="badge badge-low">Alto</span></td>
+            <td><span class="badge badge-h3">H3</span></td>
+          </tr>
+          <tr>
+            <td>IA-03</td>
+            <td>Proactive Intelligence</td>
+            <td>Detectar proyectos estancados, sugerir acciones proactivamente, alertas basadas en patrones de actividad.</td>
+            <td><span class="badge badge-high">Alto</span></td>
+            <td><span class="badge badge-medium">Medio</span></td>
+            <td><span class="badge badge-h2">H2</span></td>
+          </tr>
+          <tr>
+            <td>IA-04</td>
+            <td>Auto-Compression Mejorada</td>
+            <td>LLM optimizado para comprimir/resumir contexto de proyectos. Mejora calidad de context window.</td>
+            <td><span class="badge badge-medium">Medio</span></td>
+            <td><span class="badge badge-high">Bajo</span></td>
+            <td><span class="badge badge-h1">H1</span></td>
+          </tr>
+          <tr>
+            <td>IA-05</td>
+            <td>Voice-to-Structured-Data</td>
+            <td>Audio &rarr; JSON estructurado directo (no solo texto). Extraccion de entidades, fechas, montos desde voz.</td>
+            <td><span class="badge badge-high">Alto</span></td>
+            <td><span class="badge badge-medium">Medio</span></td>
+            <td><span class="badge badge-h2">H2</span></td>
+          </tr>
+          <tr>
+            <td>IA-06</td>
+            <td>Multi-Agent Collaboration</td>
+            <td>Agentes que se consultan entre si: ProposalAgent pide datos a ResearchAgent sin intervencion humana.</td>
+            <td><span class="badge badge-medium">Medio</span></td>
+            <td><span class="badge badge-low">Alto</span></td>
+            <td><span class="badge badge-h3">H3</span></td>
+          </tr>
+          <tr>
+            <td>IA-07</td>
+            <td>Template Learning</td>
+            <td>Aprender de propuestas exitosas para mejorar generacion futura. Feedback loop con metricas de conversion.</td>
+            <td><span class="badge badge-medium">Medio</span></td>
+            <td><span class="badge badge-medium">Medio</span></td>
+            <td><span class="badge badge-h2">H2</span></td>
+          </tr>
+          <tr>
+            <td>IA-08</td>
+            <td>Anomaly Detection</td>
+            <td>Detectar uso inusual, posible prompt injection, o patrones de abuso. Seguridad proactiva del sistema.</td>
+            <td><span class="badge badge-medium">Medio</span></td>
+            <td><span class="badge badge-medium">Medio</span></td>
+            <td><span class="badge badge-h2">H2</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION 2: Matriz Impacto-Esfuerzo ═══════ -->
+  <section class="section-card" data-mtia="section-matriz">
+    <h2>2. Matriz Impacto-Esfuerzo</h2>
+    <p style="margin-bottom:1rem;color:var(--text-muted);font-size:.88rem;">Distribucion de las 8 oportunidades en cuadrantes de priorizacion.</p>
+
+    <div class="matrix-container">
+      <div class="matrix-ylabel">IMPACTO &rarr;</div>
+
+      <!-- Top-Left: Quick Wins (Alto impacto, Bajo esfuerzo) -->
+      <div class="matrix-cell q-quick" style="grid-column:2;grid-row:2;">
+        <span class="cell-label">Quick Wins</span>
+        <span class="opp-tag"><span class="opp-gold">IA-04</span> Auto-Compression</span>
+      </div>
+
+      <!-- Top-Right: Strategic (Alto impacto, Alto esfuerzo) -->
+      <div class="matrix-cell q-strat" style="grid-column:3;grid-row:2;">
+        <span class="cell-label">Strategic Bets</span>
+        <span class="opp-tag"><span class="opp-blue">IA-01</span> Router Fine-Tuning</span>
+        <span class="opp-tag"><span class="opp-blue">IA-02</span> RAG + Vector DB</span>
+        <span class="opp-tag"><span class="opp-blue">IA-03</span> Proactive Intelligence</span>
+        <span class="opp-tag"><span class="opp-blue">IA-05</span> Voice-to-Structured</span>
+      </div>
+
+      <!-- Bottom-Left: Fill-ins (Bajo impacto, Bajo esfuerzo) -->
+      <div class="matrix-cell q-fill" style="grid-column:2;grid-row:3;">
+        <span class="cell-label">Fill-ins</span>
+        <span class="opp-tag"><span class="opp-lav">IA-07</span> Template Learning</span>
+        <span class="opp-tag"><span class="opp-lav">IA-08</span> Anomaly Detection</span>
+      </div>
+
+      <!-- Bottom-Right: Deprioritize (Bajo impacto, Alto esfuerzo) -->
+      <div class="matrix-cell q-depri" style="grid-column:3;grid-row:3;">
+        <span class="cell-label">Evaluar</span>
+        <span class="opp-tag"><span class="opp-lav">IA-06</span> Multi-Agent Collab</span>
+      </div>
+
+      <div class="matrix-xlabel">ESFUERZO &rarr;</div>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION 3: Quick Wins ═══════ -->
+  <section class="section-card" data-mtia="section-quick-wins">
+    <h2>3. Quick Wins (H1)</h2>
+
+    <div class="highlight-card">
+      <h4>IA-04 &mdash; Auto-Compression Mejorada</h4>
+      <p><strong>Estado actual:</strong> Compresion basica de contexto que pierde matices y relaciones entre proyectos.</p>
+      <p><strong>Propuesta:</strong> Usar un LLM pequeno (Groq llama-3.1-8b) dedicado exclusivamente a comprimir contexto de proyectos preservando: nombres clave, fechas criticas, estado actual, y relaciones inter-proyecto.</p>
+      <p><strong>Beneficio esperado:</strong> Contexto 3x mas denso sin perdida de informacion critica. Mejor calidad de respuestas en todos los agents downstream.</p>
+      <p><strong>Esfuerzo:</strong> 2-3 dias de implementacion. Prompt engineering + evaluation pipeline.</p>
+      <p><strong>Metricas:</strong> Compression ratio (target: 4:1 vs actual 2:1), information retention score (target: &gt;95%), downstream agent quality (A/B test).</p>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION 4: Strategic Bets ═══════ -->
+  <section class="section-card" data-mtia="section-strategic-bets">
+    <h2>4. Strategic Bets (H2-H3)</h2>
+
+    <div class="highlight-card strategic">
+      <h4>IA-02 &mdash; RAG con Vector DB</h4>
+      <p><strong>Estado actual:</strong> Text search basico sobre Knowledge Base plana. No captura relaciones semanticas.</p>
+      <p><strong>Propuesta:</strong> Implementar pipeline RAG completo: embedding model (OpenAI ada-002 o similar) + vector database (Pinecone/Weaviate) + retrieval-augmented generation para consultas.</p>
+      <p><strong>Impacto:</strong> Transformacional. Habilita busqueda por significado, no por palabras clave. Permite KB escalable a miles de documentos sin degradacion.</p>
+      <p><strong>Prerequisitos:</strong> Definir schema de chunks, estrategia de embedding, evaluacion de precision (recall@k, MRR).</p>
+      <p><strong>Horizonte:</strong> H3 &mdash; Requiere infraestructura adicional y expertise en embeddings.</p>
+    </div>
+
+    <div class="highlight-card strategic">
+      <h4>IA-03 &mdash; Proactive Intelligence</h4>
+      <p><strong>Estado actual:</strong> El sistema solo responde a peticiones explicitas. Unica proactividad: resumen matutino via cron.</p>
+      <p><strong>Propuesta:</strong> Analizar patrones de actividad para detectar: proyectos sin actualizacion &gt;7 dias, deadlines proximos sin progreso, anomalias en frecuencia de uso. Generar alertas contextuales.</p>
+      <p><strong>Impacto:</strong> Alto. Transforma Nexus de reactivo a proactivo. El operador recibe valor sin pedirlo.</p>
+      <p><strong>Prerequisitos:</strong> Event logging robusto, pattern detection engine, notification priority system.</p>
+      <p><strong>Horizonte:</strong> H2 &mdash; Esfuerzo medio, alto retorno en engagement.</p>
+    </div>
+
+    <div class="highlight-card strategic">
+      <h4>IA-01 &mdash; Router Fine-Tuning</h4>
+      <p><strong>Estado actual:</strong> Groq con prompt engineering para clasificacion. Precision ~95% en intents conocidos, degrada en edge cases.</p>
+      <p><strong>Propuesta:</strong> Fine-tune de modelo Groq con dataset curado de intents + edge cases. Objetivo: 99% precision, latencia &lt;100ms mantenida.</p>
+      <p><strong>Impacto:</strong> Alto. El router es el punto de entrada de todo el sistema. 4% de mejora en precision = cientos de interacciones bien enrutadas.</p>
+      <p><strong>Horizonte:</strong> H2 &mdash; Requiere dataset curado (minimo 1000 ejemplos) y pipeline de evaluacion.</p>
+    </div>
+
+    <div class="highlight-card strategic">
+      <h4>IA-05 &mdash; Voice-to-Structured-Data</h4>
+      <p><strong>Estado actual:</strong> Whisper transcribe audio a texto plano. No extrae entidades, fechas ni estructura.</p>
+      <p><strong>Propuesta:</strong> Pipeline post-Whisper que extrae JSON estructurado: {proyecto, accion, fecha, monto, prioridad}. Reduce pasos manuales y mejora precision de agents downstream.</p>
+      <p><strong>Impacto:</strong> Alto. Voice-first es el diferenciador clave de Nexus. Mejorar este pipeline amplifica todo el sistema.</p>
+      <p><strong>Horizonte:</strong> H2 &mdash; Combina NER + structured output prompting.</p>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION 5: AI Stack Recommendation ═══════ -->
+  <section class="section-card" data-mtia="section-ai-stack">
+    <h2>5. AI Stack Recommendation</h2>
+    <p style="margin-bottom:1rem;">Stack actual y evoluciones recomendadas por horizonte.</p>
+
+    <h3>Stack Actual</h3>
+    <div class="stack-grid">
+      <div class="stack-item">
+        <h4>Groq</h4>
+        <div class="role">Routing / Classification</div>
+        <p style="font-size:.85rem;">Ultra-baja latencia para intent classification. Modelo llama-3.1-8b via API.</p>
+      </div>
+      <div class="stack-item">
+        <h4>OpenRouter</h4>
+        <div class="role">Execution / Generation</div>
+        <p style="font-size:.85rem;">Multi-model routing para generacion de contenido. Acceso a Claude, GPT-4, Gemini via un solo endpoint.</p>
+      </div>
+      <div class="stack-item">
+        <h4>Gemini</h4>
+        <div class="role">Complex / Long-Context</div>
+        <p style="font-size:.85rem;">Tareas que requieren context window largo (research, synthesis) o multimodal.</p>
+      </div>
+      <div class="stack-item">
+        <h4>Whisper</h4>
+        <div class="role">Speech-to-Text</div>
+        <p style="font-size:.85rem;">Transcripcion de audio. Pipeline de voz para input hands-free.</p>
+      </div>
+    </div>
+
+    <h3>Adiciones Recomendadas</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Componente</th><th>Horizonte</th><th>Proposito</th><th>Opciones Evaluadas</th><th>Recomendacion</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Vector Database</td>
+            <td><span class="badge badge-h3">H3</span></td>
+            <td>Almacenamiento y busqueda de embeddings para RAG.</td>
+            <td>Pinecone, Weaviate, Qdrant, ChromaDB</td>
+            <td><strong>Pinecone</strong> (managed, zero-ops) o <strong>Weaviate</strong> (self-hosted, flexible).</td>
+          </tr>
+          <tr>
+            <td>Embedding Model</td>
+            <td><span class="badge badge-h3">H3+</span></td>
+            <td>Generar embeddings para vector search y similarity.</td>
+            <td>OpenAI ada-002, Cohere embed, BGE, E5</td>
+            <td><strong>OpenAI ada-002</strong> inicialmente; evaluar modelos open-source para cost optimization.</td>
+          </tr>
+          <tr>
+            <td>Fine-Tuning Platform</td>
+            <td><span class="badge badge-h2">H2</span></td>
+            <td>Fine-tune del router model con dataset curado.</td>
+            <td>Groq hosted, Together.ai, Anyscale</td>
+            <td><strong>Groq</strong> si ofrece fine-tuning; fallback <strong>Together.ai</strong>.</td>
+          </tr>
+          <tr>
+            <td>Event Store</td>
+            <td><span class="badge badge-h2">H2</span></td>
+            <td>Logging de eventos para proactive intelligence y analytics.</td>
+            <td>PostgreSQL + TimescaleDB, ClickHouse, SQLite</td>
+            <td><strong>PostgreSQL + TimescaleDB</strong> (time-series queries para pattern detection).</td>
+          </tr>
+          <tr>
+            <td>NER Pipeline</td>
+            <td><span class="badge badge-h2">H2</span></td>
+            <td>Extraccion de entidades desde texto/voz transcrita.</td>
+            <td>SpaCy, LLM-based NER, GLiNER</td>
+            <td><strong>LLM-based NER</strong> via structured output (JSON mode) para flexibilidad maxima.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Principios de Seleccion</h3>
+    <ul>
+      <li><strong>Managed first:</strong> Preferir servicios managed sobre self-hosted hasta H3+. Minimizar overhead de ops para equipo de 1.</li>
+      <li><strong>Multi-provider:</strong> No lock-in a un solo LLM. OpenRouter como abstraccion. Mantener capacidad de switch entre modelos.</li>
+      <li><strong>Cost-aware:</strong> Monitorear costo por interaccion. Target: &lt;$0.02 por interaccion promedio en H1.</li>
+      <li><strong>Latency-first para routing:</strong> El router debe mantener &lt;200ms end-to-end. Es el cuello de botella percibido por el usuario.</li>
+      <li><strong>Quality-first para generation:</strong> Las propuestas son el output de mayor valor. Usar el mejor modelo disponible para generacion, independiente de costo.</li>
+    </ul>
+  </section>
+
+</main>
+
+<!-- ══════════════════════════════════════════ FOOTER ══════════════════════════════════════════ -->
+<footer data-mtia="footer">
+  <div class="footer-brand"><span class="white">Metodolog</span><span class="gold">IA</span></div>
+  <div class="footer-copy">&copy; 2026 MetodologIA. Copyleft &mdash; Para uso y aprovechamiento de profesionales en la era de la IA.</div>
+  <div class="footer-tagline">Asistentes agenticos que amplifican la inteligencia humana.</div>
+</footer>
+
+</body>
+</html>

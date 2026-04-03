@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="es" data-mtia="stakeholder-map">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>01 — Stakeholder Map | Nexus Assistant OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ── Reset & Base ─────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-body:      #1E3258;
+      --color-deep:      #122562;
+      --color-gold:      #FFD700;
+      --color-blue:      #137DC5;
+      --color-dark:      #1F2833;
+      --color-lilac:     #BBA0CC;
+      --color-gray:      #808080;
+      --color-text:      #E8E8E8;
+      --color-card-bg:   rgba(255,255,255,0.06);
+      --color-card-border: rgba(255,255,255,0.10);
+      --font-display:    'Poppins', sans-serif;
+      --font-body:       'Montserrat', sans-serif;
+      --font-footnote:   'Trebuchet MS', sans-serif;
+      --radius:          12px;
+      --blur:            16px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      font-weight: 400;
+      background: var(--color-body);
+      color: var(--color-text);
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+    a { color: var(--color-blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Skip link ────────────────────────────────── */
+    .skip-link {
+      position: absolute; top: -100%; left: 1rem;
+      background: var(--color-gold); color: var(--color-deep);
+      padding: .5rem 1rem; border-radius: var(--radius);
+      font-weight: 700; z-index: 999;
+    }
+    .skip-link:focus { top: 1rem; }
+
+    /* ── Layout ───────────────────────────────────── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+
+    /* ── Header ───────────────────────────────────── */
+    header[data-mtia="header"] {
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--color-card-border);
+    }
+    .header-inner {
+      display: flex; align-items: center; gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .brand { display: flex; align-items: center; gap: .6rem; }
+    .brand-text {
+      font-family: var(--font-display);
+      font-weight: 800; font-size: 1.4rem;
+    }
+    .brand-text .white { color: #fff; }
+    .brand-text .gold  { color: var(--color-gold); }
+    .header-meta {
+      margin-left: auto;
+      font-size: .8rem; color: var(--color-gray);
+      font-family: var(--font-footnote);
+    }
+
+    /* ── Hero / TL;DR ─────────────────────────────── */
+    .hero[data-mtia="hero"] {
+      padding: 2.5rem 0 1.5rem;
+    }
+    .hero h1 {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      margin-bottom: .75rem;
+    }
+    .hero h1 .accent { color: var(--color-gold); }
+    .tldr {
+      background: var(--color-card-bg);
+      backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur));
+      border: 1px solid var(--color-card-border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      font-size: .95rem;
+      border-left: 4px solid var(--color-gold);
+    }
+    .tldr strong { color: var(--color-gold); }
+
+    /* ── Section ───────────────────────────────────── */
+    section[data-mtia] {
+      padding: 2rem 0;
+    }
+    .section-heading {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 1.35rem; margin-bottom: 1.25rem;
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .section-heading .num {
+      background: var(--color-gold); color: var(--color-deep);
+      font-size: .75rem; font-weight: 700;
+      padding: .2rem .55rem; border-radius: 6px;
+    }
+
+    /* ── Glass card ────────────────────────────────── */
+    .glass {
+      background: var(--color-card-bg);
+      backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur));
+      border: 1px solid var(--color-card-border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    /* ── Tables ────────────────────────────────────── */
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: .88rem;
+    }
+    thead th {
+      background: rgba(255,255,255,0.08);
+      font-family: var(--font-display); font-weight: 600;
+      text-align: left; padding: .65rem .75rem;
+      white-space: nowrap;
+      border-bottom: 2px solid var(--color-gold);
+    }
+    tbody td {
+      padding: .6rem .75rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      vertical-align: top;
+    }
+    tbody tr:hover { background: rgba(255,255,255,0.04); }
+
+    /* Strategy badges */
+    .badge {
+      display: inline-block; font-size: .72rem; font-weight: 600;
+      padding: .15rem .5rem; border-radius: 4px;
+      text-transform: uppercase; letter-spacing: .03em;
+    }
+    .badge--manage   { background: var(--color-gold); color: var(--color-deep); }
+    .badge--informed  { background: var(--color-blue); color: #fff; }
+    .badge--satisfied { background: var(--color-lilac); color: var(--color-deep); }
+    .badge--monitor   { background: var(--color-gray); color: #fff; }
+
+    /* Type badges */
+    .type-badge {
+      display: inline-block; font-size: .7rem; font-weight: 600;
+      padding: .1rem .4rem; border-radius: 3px;
+    }
+    .type-badge--primario   { background: rgba(255,215,0,.18); color: var(--color-gold); border: 1px solid rgba(255,215,0,.3); }
+    .type-badge--secundario { background: rgba(19,125,197,.18); color: var(--color-blue); border: 1px solid rgba(19,125,197,.3); }
+    .type-badge--terciario  { background: rgba(128,128,128,.18); color: var(--color-gray); border: 1px solid rgba(128,128,128,.3); }
+
+    /* ── 2x2 Matrix Grid ──────────────────────────── */
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 1rem;
+      position: relative;
+    }
+    .matrix-grid::before {
+      content: '';
+      position: absolute; top: 0; bottom: 0;
+      left: 50%; width: 2px;
+      background: rgba(255,255,255,0.12);
+    }
+    .matrix-grid::after {
+      content: '';
+      position: absolute; left: 0; right: 0;
+      top: 50%; height: 2px;
+      background: rgba(255,255,255,0.12);
+    }
+    .matrix-quadrant {
+      padding: 1.25rem;
+      border-radius: var(--radius);
+      position: relative; z-index: 1;
+    }
+    .matrix-quadrant h4 {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: .85rem; margin-bottom: .65rem;
+    }
+    .q-manage  { background: rgba(255,215,0,.10); }
+    .q-manage h4 { color: var(--color-gold); }
+    .q-informed { background: rgba(19,125,197,.10); }
+    .q-informed h4 { color: var(--color-blue); }
+    .q-satisfied { background: rgba(187,160,204,.10); }
+    .q-satisfied h4 { color: var(--color-lilac); }
+    .q-monitor  { background: rgba(128,128,128,.10); }
+    .q-monitor h4 { color: var(--color-gray); }
+
+    .dot {
+      display: inline-flex; align-items: center; gap: .4rem;
+      margin: .3rem 0; font-size: .85rem;
+    }
+    .dot::before {
+      content: ''; width: 10px; height: 10px;
+      border-radius: 50%; flex-shrink: 0;
+    }
+    .q-manage .dot::before  { background: var(--color-gold); }
+    .q-informed .dot::before { background: var(--color-blue); }
+    .q-satisfied .dot::before { background: var(--color-lilac); }
+    .q-monitor .dot::before  { background: var(--color-gray); }
+
+    .axis-label {
+      font-family: var(--font-footnote);
+      font-size: .72rem; color: var(--color-gray);
+      text-transform: uppercase; letter-spacing: .08em;
+    }
+    .axis-x {
+      display: flex; justify-content: space-between;
+      margin-top: .5rem;
+    }
+    .axis-y {
+      display: flex; flex-direction: column; justify-content: space-between;
+      position: absolute; left: -1.1rem; top: 0; bottom: 0;
+      writing-mode: vertical-rl; transform: rotate(180deg);
+    }
+    .matrix-wrapper {
+      position: relative; padding-left: 1.8rem; padding-bottom: 1.8rem;
+    }
+
+    /* ── RACI color coding ────────────────────────── */
+    .raci-cell { text-align: center; font-weight: 600; font-size: .82rem; }
+    .raci-R { color: var(--color-gold); }
+    .raci-A { color: var(--color-blue); }
+    .raci-C { color: var(--color-lilac); }
+    .raci-I { color: var(--color-gray); }
+    .raci-RA { color: var(--color-gold); }
+    .raci-legend {
+      display: flex; flex-wrap: wrap; gap: 1rem;
+      margin-top: 1rem; font-size: .78rem;
+    }
+    .raci-legend span { display: flex; align-items: center; gap: .3rem; }
+    .raci-legend .swatch {
+      width: 12px; height: 12px; border-radius: 3px;
+    }
+
+    /* ── Readiness bar ────────────────────────────── */
+    .readiness-row {
+      display: flex; align-items: center; gap: .75rem;
+      margin-bottom: .85rem;
+    }
+    .readiness-label {
+      flex: 0 0 150px; font-size: .88rem; font-weight: 500;
+    }
+    .readiness-bar-track {
+      flex: 1; height: 22px; border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden; position: relative;
+    }
+    .readiness-bar-fill {
+      height: 100%; border-radius: 6px;
+      transition: width .6s ease;
+    }
+    .readiness-score {
+      flex: 0 0 55px; text-align: right;
+      font-family: var(--font-display); font-weight: 700;
+      font-size: .9rem;
+    }
+    .overall-score {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 1.6rem; color: var(--color-gold);
+      margin-bottom: .25rem;
+    }
+    .overall-verdict {
+      font-size: .95rem; color: var(--color-text);
+    }
+    .overall-verdict strong { color: var(--color-gold); }
+
+    /* ── Evidence tag ──────────────────────────────── */
+    .evidence-tag {
+      display: inline-block;
+      font-family: var(--font-footnote);
+      font-size: .68rem; font-weight: 600;
+      padding: .1rem .45rem; border-radius: 3px;
+      background: rgba(255,215,0,.15);
+      color: var(--color-gold);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin-top: .75rem;
+    }
+
+    /* ── Footer ───────────────────────────────────── */
+    footer[data-mtia="footer"] {
+      border-top: 1px solid var(--color-card-border);
+      padding: 1.5rem 0;
+      margin-top: 2rem;
+    }
+    .footer-inner {
+      display: flex; flex-wrap: wrap; justify-content: space-between;
+      align-items: center; gap: .75rem;
+      font-size: .78rem; color: var(--color-gray);
+      font-family: var(--font-footnote);
+    }
+    .footer-brand {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: .85rem;
+    }
+    .footer-brand .gold { color: var(--color-gold); }
+
+    /* ── Print ─────────────────────────────────────── */
+    @media print {
+      body { background: #fff; color: #1a1a1a; }
+      .glass { background: #f5f5f5; backdrop-filter: none; border-color: #ddd; }
+      .skip-link { display: none; }
+      header, footer { break-inside: avoid; }
+      section { break-inside: avoid; }
+      .matrix-quadrant { border: 1px solid #ccc; }
+      thead th { background: #eee; border-bottom-color: #333; }
+      .badge--manage { background: #FFD700; }
+      .raci-R, .raci-RA { color: #b8860b; }
+      .raci-A { color: #137DC5; }
+      .raci-C { color: #7b5b8d; }
+      .raci-I { color: #666; }
+    }
+
+    /* ── Responsive ────────────────────────────────── */
+    @media (max-width: 768px) {
+      .matrix-grid { grid-template-columns: 1fr; }
+      .matrix-grid::before { display: none; }
+      .matrix-grid::after { display: none; }
+      .axis-y { display: none; }
+      .matrix-wrapper { padding-left: 0; }
+      .readiness-label { flex: 0 0 110px; font-size: .82rem; }
+      .header-meta { margin-left: 0; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Ir al contenido</a>
+
+  <!-- ════════ HEADER ════════ -->
+  <header data-mtia="header">
+    <div class="container header-inner">
+      <div class="brand">
+        <!-- SVG squircle logo: 3 white pillars + gold circle -->
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect width="36" height="36" rx="8" fill="#122562"/>
+          <rect x="8" y="10" width="3.5" height="16" rx="1.5" fill="#fff"/>
+          <rect x="16.25" y="10" width="3.5" height="16" rx="1.5" fill="#fff"/>
+          <rect x="24.5" y="10" width="3.5" height="16" rx="1.5" fill="#fff"/>
+          <circle cx="28" cy="10" r="3" fill="#FFD700"/>
+        </svg>
+        <span class="brand-text"><span class="white">Metodolog</span><span class="gold">IA</span></span>
+      </div>
+      <div class="header-meta">Nexus Architecture Deep Dive &middot; 01 Stakeholder Map &middot; 2026-04-02</div>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+
+    <!-- ════════ HERO / TL;DR ════════ -->
+    <div class="hero" data-mtia="hero">
+      <h1>01 &mdash; Stakeholder Map <span class="accent">Nexus Assistant OS</span></h1>
+      <div class="tldr">
+        <strong>TL;DR:</strong> Mapa de stakeholders del ecosistema Nexus. 5 stakeholders primarios, modelo RACI, matriz influencia-interes, y plan de comunicacion. Sistema de dogfooding extremo con un fundador como operador principal y 4 Chief Officers como usuarios secundarios.
+      </div>
+    </div>
+
+    <!-- ════════ S1: STAKEHOLDER REGISTER ════════ -->
+    <section data-mtia="stakeholder-register">
+      <h2 class="section-heading"><span class="num">S1</span> Stakeholder Register</h2>
+      <div class="glass">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Stakeholder</th>
+                <th>Rol</th>
+                <th>Tipo</th>
+                <th>Influencia</th>
+                <th>Interes</th>
+                <th>Estrategia</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>SH-01</td>
+                <td><strong>Daniel Zuluaga</strong></td>
+                <td>Chief Efficiency Officer, Fundador</td>
+                <td><span class="type-badge type-badge--primario">Primario</span></td>
+                <td>Alta</td>
+                <td>Alta</td>
+                <td><span class="badge badge--manage">Manage Closely</span></td>
+              </tr>
+              <tr>
+                <td>SH-02</td>
+                <td><strong>German Sepulveda</strong></td>
+                <td>Chief Ecosystem Officer</td>
+                <td><span class="type-badge type-badge--primario">Primario</span></td>
+                <td>Media</td>
+                <td>Alta</td>
+                <td><span class="badge badge--informed">Keep Informed</span></td>
+              </tr>
+              <tr>
+                <td>SH-03</td>
+                <td><strong>Javier Montano</strong></td>
+                <td>Chief Empowerment Officer</td>
+                <td><span class="type-badge type-badge--primario">Primario</span></td>
+                <td>Media</td>
+                <td>Alta</td>
+                <td><span class="badge badge--informed">Keep Informed</span></td>
+              </tr>
+              <tr>
+                <td>SH-04</td>
+                <td><strong>Katherine Oquendo</strong></td>
+                <td>Chief Enablement Officer</td>
+                <td><span class="type-badge type-badge--primario">Primario</span></td>
+                <td>Media</td>
+                <td>Media</td>
+                <td><span class="badge badge--satisfied">Keep Satisfied</span></td>
+              </tr>
+              <tr>
+                <td>SH-05</td>
+                <td><strong>Deonto (Mirror Instance)</strong></td>
+                <td>Experimental Operator</td>
+                <td><span class="type-badge type-badge--secundario">Secundario</span></td>
+                <td>Baja</td>
+                <td>Alta</td>
+                <td><span class="badge badge--monitor">Monitor</span></td>
+              </tr>
+              <tr>
+                <td>SH-06</td>
+                <td><strong>Clientes B2B (Futuros)</strong></td>
+                <td>External Users</td>
+                <td><span class="type-badge type-badge--terciario">Terciario</span></td>
+                <td>Baja</td>
+                <td>Baja</td>
+                <td><span class="badge badge--monitor">Inform (H3)</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="evidence-tag">[SUPUESTO] Stakeholders inferidos de PREMISE.md del repo</div>
+      </div>
+    </section>
+
+    <!-- ════════ S2: INFLUENCE-INTEREST MATRIX ════════ -->
+    <section data-mtia="influence-interest-matrix">
+      <h2 class="section-heading"><span class="num">S2</span> Matriz Influencia-Interes</h2>
+      <div class="glass">
+        <div class="matrix-wrapper">
+          <div class="axis-y">
+            <span class="axis-label">Alta influencia</span>
+            <span class="axis-label">Baja influencia</span>
+          </div>
+          <div class="matrix-grid">
+            <!-- Top-left: High Influence + Low Interest -->
+            <div class="matrix-quadrant q-satisfied">
+              <h4>Keep Satisfied</h4>
+              <p class="axis-label" style="margin-bottom:.5rem">Alta influencia &middot; Bajo interes</p>
+              <div class="dot">Katherine Oquendo (SH-04)</div>
+            </div>
+            <!-- Top-right: High Influence + High Interest -->
+            <div class="matrix-quadrant q-manage">
+              <h4>Manage Closely</h4>
+              <p class="axis-label" style="margin-bottom:.5rem">Alta influencia &middot; Alto interes</p>
+              <div class="dot">Daniel Zuluaga (SH-01)</div>
+            </div>
+            <!-- Bottom-left: Low Influence + Low Interest -->
+            <div class="matrix-quadrant q-monitor">
+              <h4>Monitor</h4>
+              <p class="axis-label" style="margin-bottom:.5rem">Baja influencia &middot; Bajo interes</p>
+              <div class="dot">Clientes B2B (SH-06)</div>
+            </div>
+            <!-- Bottom-right: Low Influence + High Interest -->
+            <div class="matrix-quadrant q-informed">
+              <h4>Keep Informed</h4>
+              <p class="axis-label" style="margin-bottom:.5rem">Baja influencia &middot; Alto interes</p>
+              <div class="dot">German Sepulveda (SH-02)</div>
+              <div class="dot">Javier Montano (SH-03)</div>
+              <div class="dot">Deonto (SH-05)</div>
+            </div>
+          </div>
+          <div class="axis-x">
+            <span class="axis-label">Bajo interes</span>
+            <span class="axis-label">Alto interes</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ S3: RACI MATRIX ════════ -->
+    <section data-mtia="raci-matrix">
+      <h2 class="section-heading"><span class="num">S3</span> RACI Matrix</h2>
+      <div class="glass">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Actividad</th>
+                <th style="text-align:center">Daniel</th>
+                <th style="text-align:center">German</th>
+                <th style="text-align:center">Javier</th>
+                <th style="text-align:center">Katherine</th>
+                <th style="text-align:center">Deonto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Decisiones de arquitectura</td>
+                <td class="raci-cell raci-A">A</td>
+                <td class="raci-cell raci-C">C</td>
+                <td class="raci-cell raci-C">C</td>
+                <td class="raci-cell raci-I">I</td>
+                <td class="raci-cell raci-I">I</td>
+              </tr>
+              <tr>
+                <td>Aprobacion de features (H1)</td>
+                <td class="raci-cell raci-RA">R/A</td>
+                <td class="raci-cell raci-I">I</td>
+                <td class="raci-cell raci-I">I</td>
+                <td class="raci-cell raci-I">I</td>
+                <td class="raci-cell" style="color:var(--color-gray)">&mdash;</td>
+              </tr>
+              <tr>
+                <td>Testing / Dogfooding</td>
+                <td class="raci-cell raci-R">R</td>
+                <td class="raci-cell raci-R">R</td>
+                <td class="raci-cell raci-R">R</td>
+                <td class="raci-cell raci-R">R</td>
+                <td class="raci-cell raci-R">R</td>
+              </tr>
+              <tr>
+                <td>B2B Strategy (H3)</td>
+                <td class="raci-cell raci-A">A</td>
+                <td class="raci-cell raci-R">R</td>
+                <td class="raci-cell raci-C">C</td>
+                <td class="raci-cell raci-I">I</td>
+                <td class="raci-cell" style="color:var(--color-gray)">&mdash;</td>
+              </tr>
+              <tr>
+                <td>Content creation</td>
+                <td class="raci-cell raci-C">C</td>
+                <td class="raci-cell raci-R">R</td>
+                <td class="raci-cell raci-R">R</td>
+                <td class="raci-cell raci-R">R</td>
+                <td class="raci-cell" style="color:var(--color-gray)">&mdash;</td>
+              </tr>
+              <tr>
+                <td>Research requests</td>
+                <td class="raci-cell raci-R">R</td>
+                <td class="raci-cell raci-R">R</td>
+                <td class="raci-cell raci-R">R</td>
+                <td class="raci-cell raci-R">R</td>
+                <td class="raci-cell raci-R">R</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="raci-legend">
+          <span><span class="swatch" style="background:var(--color-gold)"></span> R = Responsible</span>
+          <span><span class="swatch" style="background:var(--color-blue)"></span> A = Accountable</span>
+          <span><span class="swatch" style="background:var(--color-lilac)"></span> C = Consulted</span>
+          <span><span class="swatch" style="background:var(--color-gray)"></span> I = Informed</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ S4: COMMUNICATION PLAN ════════ -->
+    <section data-mtia="communication-plan">
+      <h2 class="section-heading"><span class="num">S4</span> Plan de Comunicacion</h2>
+      <div class="glass">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Canal</th>
+                <th>Frecuencia</th>
+                <th>Audiencia</th>
+                <th>Contenido</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Telegram (el propio bot)</strong></td>
+                <td>Continuo</td>
+                <td>Todos SH</td>
+                <td>Status, resultados, notificaciones</td>
+              </tr>
+              <tr>
+                <td><strong>Meeting semanal</strong></td>
+                <td>Semanal</td>
+                <td>SH-01 a SH-04</td>
+                <td>Avance H1, decisiones, blockers</td>
+              </tr>
+              <tr>
+                <td><strong>Dashboard Firebase</strong></td>
+                <td>On-demand</td>
+                <td>SH-01</td>
+                <td>Metricas, token consumption, health</td>
+              </tr>
+              <tr>
+                <td><strong>Release notes</strong></td>
+                <td>Por gate</td>
+                <td>Todos</td>
+                <td>Cambios, nuevas capabilities</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ S5: CHANGE READINESS ════════ -->
+    <section data-mtia="change-readiness">
+      <h2 class="section-heading"><span class="num">S5</span> Change Readiness Assessment</h2>
+      <div class="glass">
+        <!-- Liderazgo -->
+        <div class="readiness-row">
+          <div class="readiness-label">Liderazgo</div>
+          <div class="readiness-bar-track">
+            <div class="readiness-bar-fill" style="width:90%; background: linear-gradient(90deg, var(--color-blue), var(--color-gold));"></div>
+          </div>
+          <div class="readiness-score" style="color:var(--color-gold)">9/10</div>
+        </div>
+        <p style="font-size:.82rem; margin:-0.5rem 0 1rem 0; padding-left:160px; color:var(--color-gray);">Fundador es el principal impulsor y operador</p>
+
+        <!-- Cultura -->
+        <div class="readiness-row">
+          <div class="readiness-label">Cultura</div>
+          <div class="readiness-bar-track">
+            <div class="readiness-bar-fill" style="width:80%; background: linear-gradient(90deg, var(--color-blue), var(--color-gold));"></div>
+          </div>
+          <div class="readiness-score" style="color:var(--color-gold)">8/10</div>
+        </div>
+        <p style="font-size:.82rem; margin:-0.5rem 0 1rem 0; padding-left:160px; color:var(--color-gray);">Equipo MetodologIA alineado con IA y automatizacion</p>
+
+        <!-- Capacidad tecnica -->
+        <div class="readiness-row">
+          <div class="readiness-label">Capacidad tecnica</div>
+          <div class="readiness-bar-track">
+            <div class="readiness-bar-fill" style="width:70%; background: linear-gradient(90deg, var(--color-blue), var(--color-lilac));"></div>
+          </div>
+          <div class="readiness-score" style="color:var(--color-lilac)">7/10</div>
+        </div>
+        <p style="font-size:.82rem; margin:-0.5rem 0 1rem 0; padding-left:160px; color:var(--color-gray);">Stack avanzado pero single developer</p>
+
+        <!-- Urgencia -->
+        <div class="readiness-row">
+          <div class="readiness-label">Urgencia</div>
+          <div class="readiness-bar-track">
+            <div class="readiness-bar-fill" style="width:80%; background: linear-gradient(90deg, var(--color-blue), var(--color-gold));"></div>
+          </div>
+          <div class="readiness-score" style="color:var(--color-gold)">8/10</div>
+        </div>
+        <p style="font-size:.82rem; margin:-0.5rem 0 1rem 0; padding-left:160px; color:var(--color-gray);">2 gaps criticos bloquean evolucion</p>
+
+        <!-- Recursos -->
+        <div class="readiness-row">
+          <div class="readiness-label">Recursos</div>
+          <div class="readiness-bar-track">
+            <div class="readiness-bar-fill" style="width:50%; background: linear-gradient(90deg, var(--color-gray), var(--color-lilac));"></div>
+          </div>
+          <div class="readiness-score" style="color:var(--color-lilac)">5/10</div>
+        </div>
+        <p style="font-size:.82rem; margin:-0.5rem 0 1.5rem 0; padding-left:160px; color:var(--color-gray);">Recurso limitado (1 developer). Risk: fragmentacion con LifeSync</p>
+
+        <!-- Overall -->
+        <div style="border-top:1px solid var(--color-card-border); padding-top:1.25rem; text-align:center;">
+          <div class="overall-score">7.4 / 10</div>
+          <div class="overall-verdict"><strong>FAVORABLE</strong> con riesgo de capacidad</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ════════ FOOTER ════════ -->
+  <footer data-mtia="footer">
+    <div class="container footer-inner">
+      <div>
+        <span class="footer-brand">Metodolog<span class="gold">IA</span></span>
+        &middot; Copyleft &mdash; Para uso y aprovechamiento de profesionales en la era de la IA.
+      </div>
+      <div>Generado por agentes MetodologIA &middot; 2026-04-02</div>
+    </div>
+  </footer>
+</body>
+</html>

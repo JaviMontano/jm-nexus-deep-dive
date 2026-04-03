@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Hallazgos Tecnicos Deep-Dive — Nexus Assistant OS — MetodologIA">
+<meta name="generator" content="MetodologIA Agentic Report Engine">
+<title>11 — Hallazgos Tecnicos | Nexus Assistant OS | MetodologIA</title>
+<style>
+/* ── MetodologIA Aesthetic Standard ── */
+:root {
+  --color-body: #1E3258;
+  --color-deep: #122562;
+  --color-gold: #FFD700;
+  --color-blue: #137DC5;
+  --color-dark: #1F2833;
+  --color-lilac: #BBA0CC;
+  --color-gray: #808080;
+  --color-text: #E8E8E8;
+  --color-text-muted: #A0A8B8;
+  --color-card: rgba(18,37,98,0.35);
+  --color-card-border: rgba(255,215,0,0.18);
+  --color-glass: rgba(255,255,255,0.06);
+  --color-glass-border: rgba(255,255,255,0.12);
+  --color-severity-critico: #FF4C4C;
+  --color-severity-alto: #FF9A3C;
+  --color-severity-medio: #FFD700;
+  --color-severity-bajo: #4CAF50;
+  --font-display: 'Poppins', system-ui, sans-serif;
+  --font-body: 'Montserrat', system-ui, sans-serif;
+  --font-footnote: 'Trebuchet MS', sans-serif;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow-glass: 0 8px 32px rgba(0,0,0,0.25);
+  --max-w: 1120px;
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--color-body);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+a { color: var(--color-gold); text-decoration: none; }
+a:hover { text-decoration: underline; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
+
+/* ── Skip link ── */
+.skip-link {
+  position: absolute; top: -100%; left: 1rem;
+  background: var(--color-gold); color: var(--color-deep);
+  padding: .5rem 1rem; border-radius: var(--radius-sm);
+  font-weight: 700; z-index: 9999;
+}
+.skip-link:focus { top: 1rem; }
+
+/* ── Layout ── */
+.wrapper { max-width: var(--max-w); margin: 0 auto; padding: 0 1.5rem; }
+
+/* ── Header ── */
+header[data-mtia="header"] {
+  background: linear-gradient(135deg, var(--color-deep) 0%, var(--color-body) 100%);
+  border-bottom: 2px solid var(--color-gold);
+  padding: 1.5rem 0;
+  position: sticky; top: 0; z-index: 100;
+  backdrop-filter: blur(12px);
+}
+.header-inner { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.logo-group { display: flex; align-items: center; gap: .75rem; }
+.brand-text {
+  font-family: var(--font-display); font-weight: 800; font-size: 1.25rem;
+  color: #fff; letter-spacing: .02em;
+}
+.brand-text .ia { color: var(--color-gold); }
+.header-meta {
+  margin-left: auto;
+  font-family: var(--font-footnote); font-size: .8rem; color: var(--color-text-muted);
+  text-align: right;
+}
+
+/* ── Hero ── */
+section[data-mtia="hero"] {
+  padding: 3rem 0 2rem;
+  text-align: center;
+}
+.hero-badge {
+  display: inline-block;
+  background: var(--color-gold); color: var(--color-deep);
+  font-family: var(--font-display); font-weight: 700; font-size: .75rem;
+  padding: .3rem .9rem; border-radius: 50px;
+  text-transform: uppercase; letter-spacing: .08em;
+  margin-bottom: 1rem;
+}
+h1 {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  color: #fff; margin-bottom: .5rem;
+}
+.hero-sub {
+  font-size: 1rem; color: var(--color-text-muted);
+  max-width: 700px; margin: 0 auto;
+}
+
+/* ── TL;DR Card ── */
+.tldr-card {
+  background: var(--color-glass);
+  border: 1px solid var(--color-gold);
+  border-radius: var(--radius);
+  padding: 1.5rem 2rem;
+  margin: 2rem auto;
+  max-width: 900px;
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-glass);
+}
+.tldr-card h2 {
+  font-family: var(--font-display); font-weight: 700; font-size: 1rem;
+  color: var(--color-gold); margin-bottom: .5rem;
+  text-transform: uppercase; letter-spacing: .06em;
+}
+.tldr-card p { font-size: .95rem; line-height: 1.6; }
+.tldr-highlight { color: var(--color-gold); font-weight: 700; }
+
+/* ── Section ── */
+section[data-mtia] { padding: 2.5rem 0; }
+.section-header {
+  display: flex; align-items: center; gap: .75rem;
+  margin-bottom: 1.5rem; border-bottom: 1px solid var(--color-glass-border);
+  padding-bottom: .75rem;
+}
+.section-number {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.8rem;
+  color: var(--color-gold); line-height: 1;
+}
+.section-title {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  color: #fff;
+}
+
+/* ── Glass card ── */
+.glass-card {
+  background: var(--color-glass);
+  border: 1px solid var(--color-glass-border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-glass);
+  transition: border-color .2s, transform .2s;
+}
+.glass-card:hover { border-color: var(--color-gold); transform: translateY(-2px); }
+
+/* ── Pattern Cards Grid ── */
+.pattern-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+.pattern-card { position: relative; overflow: hidden; }
+.pattern-card .pattern-icon {
+  font-size: 1.6rem; margin-bottom: .5rem; display: block;
+}
+.pattern-card h3 {
+  font-family: var(--font-display); font-weight: 700; font-size: 1rem;
+  color: #fff; margin-bottom: .4rem;
+}
+.pattern-card .file-ref {
+  font-family: var(--font-footnote); font-size: .75rem;
+  color: var(--color-blue); display: block; margin-bottom: .5rem;
+  word-break: break-all;
+}
+.pattern-card p { font-size: .88rem; color: var(--color-text-muted); line-height: 1.55; }
+.pattern-card .assessment {
+  display: inline-block; margin-top: .6rem;
+  font-size: .75rem; font-weight: 700; padding: .2rem .6rem;
+  border-radius: 50px; text-transform: uppercase; letter-spacing: .04em;
+}
+.assessment-solid { background: rgba(76,175,80,0.2); color: #4CAF50; border: 1px solid rgba(76,175,80,0.3); }
+.assessment-good  { background: rgba(19,125,197,0.2); color: var(--color-blue); border: 1px solid rgba(19,125,197,0.3); }
+
+/* ── Tables ── */
+.table-wrap { overflow-x: auto; margin: 1rem 0; border-radius: var(--radius); }
+table {
+  width: 100%; border-collapse: collapse;
+  font-size: .85rem;
+  background: var(--color-glass);
+  backdrop-filter: blur(10px);
+}
+thead { background: rgba(18,37,98,0.6); }
+th {
+  font-family: var(--font-display); font-weight: 700; font-size: .78rem;
+  color: var(--color-gold); text-transform: uppercase; letter-spacing: .04em;
+  padding: .75rem 1rem; text-align: left;
+  border-bottom: 2px solid var(--color-gold);
+}
+td {
+  padding: .7rem 1rem;
+  border-bottom: 1px solid var(--color-glass-border);
+  vertical-align: top;
+}
+tr:hover td { background: rgba(255,215,0,0.04); }
+
+/* Severity badges */
+.sev { display: inline-block; padding: .15rem .55rem; border-radius: 50px; font-size: .72rem; font-weight: 700; text-transform: uppercase; white-space: nowrap; }
+.sev-critico { background: rgba(255,76,76,0.18); color: var(--color-severity-critico); border: 1px solid rgba(255,76,76,0.3); }
+.sev-alto    { background: rgba(255,154,60,0.18); color: var(--color-severity-alto);    border: 1px solid rgba(255,154,60,0.3); }
+.sev-medio   { background: rgba(255,215,0,0.18);  color: var(--color-severity-medio);   border: 1px solid rgba(255,215,0,0.3); }
+.sev-bajo    { background: rgba(76,175,80,0.18);  color: var(--color-severity-bajo);    border: 1px solid rgba(76,175,80,0.3); }
+
+/* Completion bar */
+.completion-bar { display: flex; align-items: center; gap: .5rem; }
+.bar-track {
+  flex: 1; height: 8px; background: rgba(255,255,255,0.08);
+  border-radius: 4px; overflow: hidden;
+}
+.bar-fill { height: 100%; border-radius: 4px; transition: width .4s; }
+.bar-fill-90 { width: 90%; background: var(--color-severity-bajo); }
+.bar-fill-85 { width: 85%; background: var(--color-severity-bajo); }
+.bar-fill-80 { width: 80%; background: var(--color-blue); }
+.bar-fill-75 { width: 75%; background: var(--color-severity-medio); }
+.bar-fill-70 { width: 70%; background: var(--color-severity-medio); }
+.bar-fill-95 { width: 95%; background: var(--color-severity-bajo); }
+.bar-fill-60 { width: 60%; background: var(--color-severity-alto); }
+.bar-pct { font-size: .78rem; font-weight: 700; min-width: 36px; text-align: right; }
+
+/* ── Stack chips ── */
+.stack-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+.stack-card h3 {
+  font-family: var(--font-display); font-weight: 700; font-size: .95rem;
+  color: var(--color-gold); margin-bottom: .5rem;
+}
+.stack-card ul { list-style: none; padding: 0; }
+.stack-card li {
+  font-size: .85rem; padding: .25rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--color-text-muted);
+}
+.stack-card li::before { content: ""; display: inline-block; width: 6px; height: 6px; background: var(--color-blue); border-radius: 50%; margin-right: .5rem; vertical-align: middle; }
+.chip {
+  display: inline-block; padding: .15rem .5rem; border-radius: 50px;
+  font-size: .7rem; font-weight: 700; margin-left: .3rem;
+}
+.chip-lock { background: rgba(255,154,60,0.15); color: var(--color-severity-alto); }
+.chip-ok   { background: rgba(76,175,80,0.15); color: var(--color-severity-bajo); }
+.chip-info { background: rgba(19,125,197,0.15); color: var(--color-blue); }
+
+/* ── Finding list ── */
+.finding-list { display: flex; flex-direction: column; gap: .75rem; }
+.finding-item {
+  display: grid; grid-template-columns: auto 1fr; gap: .75rem;
+  align-items: start;
+}
+.finding-icon {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .85rem; font-weight: 700; flex-shrink: 0;
+}
+.fi-green  { background: rgba(76,175,80,0.18); color: var(--color-severity-bajo); }
+.fi-yellow { background: rgba(255,215,0,0.18); color: var(--color-severity-medio); }
+.fi-orange { background: rgba(255,154,60,0.18); color: var(--color-severity-alto); }
+.fi-red    { background: rgba(255,76,76,0.18); color: var(--color-severity-critico); }
+.finding-text { font-size: .88rem; }
+.finding-text strong { color: #fff; }
+
+/* ── Open question badge ── */
+.open-question {
+  display: inline-flex; align-items: center; gap: .4rem;
+  background: rgba(187,160,204,0.15); color: var(--color-lilac);
+  padding: .3rem .8rem; border-radius: var(--radius-sm);
+  font-size: .82rem; font-weight: 700; margin-top: .5rem;
+}
+
+/* ── Debt summary ── */
+.debt-summary {
+  display: flex; flex-wrap: wrap; gap: 1rem;
+  margin-top: 1.5rem; justify-content: center;
+}
+.debt-summary-card {
+  text-align: center; padding: 1rem 1.5rem;
+  border-radius: var(--radius);
+  background: var(--color-glass); border: 1px solid var(--color-glass-border);
+  min-width: 140px;
+}
+.debt-summary-card .big-num {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 2rem; color: var(--color-gold);
+}
+.debt-summary-card .label {
+  font-size: .75rem; color: var(--color-text-muted); text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+/* ── Footer ── */
+footer[data-mtia="footer"] {
+  border-top: 2px solid var(--color-gold);
+  padding: 2rem 0; margin-top: 3rem;
+  text-align: center;
+}
+.footer-brand {
+  font-family: var(--font-display); font-weight: 800; font-size: 1.1rem;
+  color: #fff; margin-bottom: .5rem;
+}
+.footer-brand .ia { color: var(--color-gold); }
+.footer-copy {
+  font-family: var(--font-footnote); font-size: .78rem;
+  color: var(--color-text-muted); line-height: 1.6;
+}
+.footer-agentic {
+  font-size: .7rem; color: var(--color-gray);
+  margin-top: .5rem; font-style: italic;
+}
+
+/* ── Print ── */
+@media print {
+  body { background: #fff; color: #1a1a1a; }
+  header[data-mtia="header"] { position: static; background: #fff; border-bottom-color: #1a1a1a; }
+  .brand-text { color: #1a1a1a; }
+  .brand-text .ia { color: #B8860B; }
+  .glass-card, .tldr-card, table { background: #f9f9f9; border-color: #ccc; backdrop-filter: none; box-shadow: none; }
+  th { color: #1a1a1a; border-bottom-color: #1a1a1a; }
+  td { border-bottom-color: #ddd; }
+  h1, h2, h3, .section-title, .section-number { color: #1a1a1a; }
+  .hero-sub, p, li, .finding-text { color: #333; }
+  footer[data-mtia="footer"] { border-top-color: #1a1a1a; }
+  .footer-brand { color: #1a1a1a; }
+  a { color: #137DC5; }
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .header-inner { flex-direction: column; align-items: flex-start; }
+  .header-meta { margin-left: 0; text-align: left; }
+  .pattern-grid { grid-template-columns: 1fr; }
+  .stack-grid { grid-template-columns: 1fr; }
+  th, td { padding: .5rem .6rem; font-size: .78rem; }
+  .debt-summary { flex-direction: column; align-items: center; }
+}
+@media (max-width: 480px) {
+  .wrapper { padding: 0 1rem; }
+  .tldr-card { padding: 1rem 1.25rem; }
+}
+
+/* ── Font import ── */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Poppins:wght@700;800&display=swap');
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Saltar al contenido</a>
+
+<!-- ════════════════════════════════════════════════════════════════
+     HEADER
+     ════════════════════════════════════════════════════════════ -->
+<header data-mtia="header">
+  <div class="wrapper header-inner">
+    <div class="logo-group">
+      <!-- MetodologIA SVG Logo: 36x36 squircle, 3 white pillars + gold circle -->
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="36" height="36" rx="8" fill="#122562"/>
+        <rect x="8" y="14" width="3.5" height="14" rx="1.5" fill="#fff"/>
+        <rect x="16.25" y="10" width="3.5" height="18" rx="1.5" fill="#fff"/>
+        <rect x="24.5" y="14" width="3.5" height="14" rx="1.5" fill="#fff"/>
+        <circle cx="27" cy="9" r="3.2" fill="#FFD700"/>
+      </svg>
+      <span class="brand-text">Metodolog<span class="ia">IA</span></span>
+    </div>
+    <div class="header-meta">
+      Deep-Dive Report &middot; Nexus Assistant OS<br>
+      2026-04-02 &middot; Artefacto 11
+    </div>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════════════════════════════
+     MAIN
+     ════════════════════════════════════════════════════════════ -->
+<main id="main">
+
+  <!-- Hero -->
+  <section data-mtia="hero">
+    <div class="wrapper">
+      <span class="hero-badge">Deep-Dive &middot; Artefacto 11</span>
+      <h1>Hallazgos T&eacute;cnicos</h1>
+      <p class="hero-sub">An&aacute;lisis exhaustivo de patrones arquitect&oacute;nicos, brechas de cobertura constitucional, stack tecnol&oacute;gico, seguridad, performance, modelo de datos, testing y deuda t&eacute;cnica cuantificada para <strong>Nexus Assistant OS</strong>.</p>
+    </div>
+  </section>
+
+  <!-- TL;DR -->
+  <section data-mtia="tldr">
+    <div class="wrapper">
+      <div class="tldr-card">
+        <h2>TL;DR</h2>
+        <p>
+          <span class="tldr-highlight">12 hallazgos t&eacute;cnicos profundos.</span>
+          El sistema implementa <span class="tldr-highlight">7 patrones arquitect&oacute;nicos s&oacute;lidos</span>
+          pero tiene <span class="tldr-highlight">6 casos borde no cubiertos</span> en la Constitution,
+          <span class="tldr-highlight">1 issue HIGH en CP3</span>,
+          y <span class="tldr-highlight">0 %</span> de las 2 capacidades cr&iacute;ticas
+          (Project State, HIL).
+          Deuda t&eacute;cnica estimada: <span class="tldr-highlight">~15-23 FTE-d&iacute;as</span>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────
+       S1 — Patrones Arquitectonicos
+       ────────────────────────────────────────────────────────── -->
+  <section data-mtia="section-1">
+    <div class="wrapper">
+      <div class="section-header">
+        <span class="section-number">01</span>
+        <span class="section-title">Patrones Arquitect&oacute;nicos Implementados</span>
+      </div>
+
+      <div class="pattern-grid">
+        <!-- P1 -->
+        <div class="glass-card pattern-card">
+          <span class="pattern-icon" aria-hidden="true">&#x1F4E8;</span>
+          <h3>Pub/Sub Async</h3>
+          <span class="file-ref">src/infrastructure/pubsub/</span>
+          <p>Desacopla recepci&oacute;n de mensajes Telegram del procesamiento de agentes. ACK &lt;2 s garantizado. Firebase Pub/Sub como broker central.</p>
+          <span class="assessment assessment-solid">S&oacute;lido</span>
+        </div>
+        <!-- P2 -->
+        <div class="glass-card pattern-card">
+          <span class="pattern-icon" aria-hidden="true">&#x1F6E1;</span>
+          <h3>Circuit Breaker</h3>
+          <span class="file-ref">src/agents/circuit-breaker.ts</span>
+          <p>Protege llamadas a proveedores LLM externos. Abre tras N fallos consecutivos. Permite fallback a proveedor secundario sin colapso de cascada.</p>
+          <span class="assessment assessment-solid">S&oacute;lido</span>
+        </div>
+        <!-- P3 -->
+        <div class="glass-card pattern-card">
+          <span class="pattern-icon" aria-hidden="true">&#x1F916;</span>
+          <h3>Declarative Agents</h3>
+          <span class="file-ref">src/agents/*.agent.ts + Zod schemas</span>
+          <p>Agentes definidos declarativamente con validaci&oacute;n Zod en tiempo de carga. Reduce errores de configuraci&oacute;n en runtime. Composici&oacute;n flexible.</p>
+          <span class="assessment assessment-solid">S&oacute;lido</span>
+        </div>
+        <!-- P4 -->
+        <div class="glass-card pattern-card">
+          <span class="pattern-icon" aria-hidden="true">&#x1F3AF;</span>
+          <h3>Multi-modal Delegation</h3>
+          <span class="file-ref">src/orchestrator/delegation.ts</span>
+          <p>El orquestador enruta a agentes especializados seg&uacute;n tipo de input (texto, imagen, audio, documento). Modelo de delegaci&oacute;n extensible.</p>
+          <span class="assessment assessment-good">Bien implementado</span>
+        </div>
+        <!-- P5 -->
+        <div class="glass-card pattern-card">
+          <span class="pattern-icon" aria-hidden="true">&#x26A1;</span>
+          <h3>Graceful Degradation</h3>
+          <span class="file-ref">src/agents/fallback-chain.ts</span>
+          <p>Cascada Groq &rarr; OpenRouter &rarr; Gemini. Si un proveedor falla, el siguiente absorbe. Degrada calidad pero mantiene disponibilidad.</p>
+          <span class="assessment assessment-solid">S&oacute;lido</span>
+        </div>
+        <!-- P6 -->
+        <div class="glass-card pattern-card">
+          <span class="pattern-icon" aria-hidden="true">&#x1F9E9;</span>
+          <h3>Prompt Composition</h3>
+          <span class="file-ref">src/prompts/composer.ts</span>
+          <p>Prompts ensamblados por capas: system base + constitution excerpt + agent persona + context window. Modular y testeable.</p>
+          <span class="assessment assessment-good">Bien implementado</span>
+        </div>
+        <!-- P7 -->
+        <div class="glass-card pattern-card">
+          <span class="pattern-icon" aria-hidden="true">&#x1F4BE;</span>
+          <h3>3-Tier Memory</h3>
+          <span class="file-ref">src/memory/ (short, mid, long)</span>
+          <p>Memoria de sesi&oacute;n (short), conversaci&oacute;n (mid) y persistente (long) en Firestore. Arquitectura correcta, pero gaps en Project State y pending_actions.</p>
+          <span class="assessment assessment-good">Bien implementado</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────
+       S2 — Constitution-to-Code Mapping
+       ────────────────────────────────────────────────────────── -->
+  <section data-mtia="section-2">
+    <div class="wrapper">
+      <div class="section-header">
+        <span class="section-number">02</span>
+        <span class="section-title">Constitution-to-Code Mapping Detallado</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Principio</th>
+              <th>Archivo</th>
+              <th>Completitud</th>
+              <th>Gap</th>
+              <th>Caso Borde</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>I &mdash; Sovereignty</strong></td>
+              <td>constitution.ts, orchestrator.ts</td>
+              <td>
+                <div class="completion-bar">
+                  <div class="bar-track"><div class="bar-fill bar-fill-90"></div></div>
+                  <span class="bar-pct">90 %</span>
+                </div>
+              </td>
+              <td>Sin enforcement en runtime para operaciones privilegiadas</td>
+              <td><span class="sev sev-medio">CB-01</span></td>
+            </tr>
+            <tr>
+              <td><strong>II &mdash; Brand Voice</strong></td>
+              <td>prompts/brand-voice.ts, CP3</td>
+              <td>
+                <div class="completion-bar">
+                  <div class="bar-track"><div class="bar-fill bar-fill-80"></div></div>
+                  <span class="bar-pct">80 %</span>
+                </div>
+              </td>
+              <td>CP3 detect-only, no corrige desviaciones de voz</td>
+              <td><span class="sev sev-alto">CB-02</span></td>
+            </tr>
+            <tr>
+              <td><strong>III &mdash; Defense</strong></td>
+              <td>checkpoints/cp1.ts, cp2.ts, cp3.ts</td>
+              <td>
+                <div class="completion-bar">
+                  <div class="bar-track"><div class="bar-fill bar-fill-85"></div></div>
+                  <span class="bar-pct">85 %</span>
+                </div>
+              </td>
+              <td>Research injection pasa CP3 con soft scan</td>
+              <td><span class="sev sev-alto">CB-03</span></td>
+            </tr>
+            <tr>
+              <td><strong>IV &mdash; Degradation</strong></td>
+              <td>fallback-chain.ts, circuit-breaker.ts</td>
+              <td>
+                <div class="completion-bar">
+                  <div class="bar-track"><div class="bar-fill bar-fill-90"></div></div>
+                  <span class="bar-pct">90 %</span>
+                </div>
+              </td>
+              <td>Modo DIRECT presenta ca&iacute;da de calidad sin notificaci&oacute;n</td>
+              <td><span class="sev sev-medio">CB-04</span></td>
+            </tr>
+            <tr>
+              <td><strong>V &mdash; Memory</strong></td>
+              <td>memory/short.ts, mid.ts, long.ts</td>
+              <td>
+                <div class="completion-bar">
+                  <div class="bar-track"><div class="bar-fill bar-fill-75"></div></div>
+                  <span class="bar-pct">75 %</span>
+                </div>
+              </td>
+              <td>Sin tests de cross-instance memory coherence</td>
+              <td><span class="sev sev-medio">CB-05</span></td>
+            </tr>
+            <tr>
+              <td><strong>VI &mdash; TDD</strong></td>
+              <td>vitest.config.ts, tests/</td>
+              <td>
+                <div class="completion-bar">
+                  <div class="bar-track"><div class="bar-fill bar-fill-70"></div></div>
+                  <span class="bar-pct">70 %</span>
+                </div>
+              </td>
+              <td>Coverage real desconocido; Constitution exige 80 % global</td>
+              <td><span class="sev sev-alto">CB-06</span></td>
+            </tr>
+            <tr>
+              <td><strong>VII &mdash; Spec-First</strong></td>
+              <td>agents/*.agent.ts, Zod schemas</td>
+              <td>
+                <div class="completion-bar">
+                  <div class="bar-track"><div class="bar-fill bar-fill-95"></div></div>
+                  <span class="bar-pct">95 %</span>
+                </div>
+              </td>
+              <td>Pr&aacute;cticamente completo; Zod valida en carga</td>
+              <td><span class="sev sev-bajo">&#x2014;</span></td>
+            </tr>
+            <tr>
+              <td><strong>VIII &mdash; Data Lifecycle</strong></td>
+              <td>memory/, firestore rules</td>
+              <td>
+                <div class="completion-bar">
+                  <div class="bar-track"><div class="bar-fill bar-fill-60"></div></div>
+                  <span class="bar-pct">60 %</span>
+                </div>
+              </td>
+              <td>CRON de compresi&oacute;n no confirmado; TTL no visible</td>
+              <td><span class="sev sev-critico">CB-06</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────
+       S3 — Stack Analysis
+       ────────────────────────────────────────────────────────── -->
+  <section data-mtia="section-3">
+    <div class="wrapper">
+      <div class="section-header">
+        <span class="section-number">03</span>
+        <span class="section-title">Stack Analysis</span>
+      </div>
+
+      <div class="stack-grid">
+        <div class="glass-card stack-card">
+          <h3>TypeScript</h3>
+          <ul>
+            <li>Bien tipado, strict mode habilitado</li>
+            <li>Validaci&oacute;n Zod en agent loading <span class="chip chip-ok">OK</span></li>
+            <li>Interfaces claras entre capas</li>
+          </ul>
+        </div>
+        <div class="glass-card stack-card">
+          <h3>Firebase</h3>
+          <ul>
+            <li>Firestore (data persistence)</li>
+            <li>Cloud Functions (compute)</li>
+            <li>Storage (archivos/KB)</li>
+            <li>Secret Manager (credenciales) <span class="chip chip-ok">OK</span></li>
+            <li>Pub/Sub (event bus)</li>
+            <li>Lock-in <span class="chip chip-lock">MEDIO</span></li>
+          </ul>
+        </div>
+        <div class="glass-card stack-card">
+          <h3>Telegram</h3>
+          <ul>
+            <li>Canal &uacute;nico de interacci&oacute;n <span class="chip chip-info">Single</span></li>
+            <li>Sin fallback a canal alternativo</li>
+            <li>Aceptable para dogfooding/MVP</li>
+          </ul>
+        </div>
+        <div class="glass-card stack-card">
+          <h3>Multi-LLM Cascade</h3>
+          <ul>
+            <li>Groq &rarr; r&aacute;pido/econ&oacute;mico <span class="chip chip-ok">FAST</span></li>
+            <li>OpenRouter &rarr; flexible/multi-model</li>
+            <li>Gemini &rarr; tareas complejas/largas</li>
+            <li>Cascada inteligente por complejidad</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────
+       S4 — Hallazgos de Seguridad
+       ────────────────────────────────────────────────────────── -->
+  <section data-mtia="section-4">
+    <div class="wrapper">
+      <div class="section-header">
+        <span class="section-number">04</span>
+        <span class="section-title">Hallazgos de Seguridad</span>
+      </div>
+
+      <div class="glass-card">
+        <div class="finding-list">
+          <div class="finding-item">
+            <div class="finding-icon fi-green">&#10003;</div>
+            <div class="finding-text"><strong>CP1 / CP2 &mdash; HARD blocks.</strong> S&oacute;lidos. Bloqueo efectivo de contenido prohibido y l&iacute;mites de tama&ntilde;o/frecuencia.</div>
+          </div>
+          <div class="finding-item">
+            <div class="finding-icon fi-orange">!</div>
+            <div class="finding-text"><strong>CP3 &mdash; SOFT pass.</strong> <span class="sev sev-alto">HIGH</span> &mdash; Mischaracteriza su propio rol: se describe como filtro final pero opera como scan informativo. Research injection podr&iacute;a pasar sin bloqueo.</div>
+          </div>
+          <div class="finding-item">
+            <div class="finding-icon fi-yellow">~</div>
+            <div class="finding-text"><strong>IAM.</strong> Constitution exige isolation de agentes, pero no existen tests de enforcement que verifiquen que un agente no pueda escalar privilegios.</div>
+          </div>
+          <div class="finding-item">
+            <div class="finding-icon fi-green">&#10003;</div>
+            <div class="finding-text"><strong>Secrets.</strong> Firebase Secret Manager utilizado correctamente para API keys de proveedores LLM.</div>
+          </div>
+          <div class="finding-item">
+            <div class="finding-icon fi-yellow">~</div>
+            <div class="finding-text"><strong>Prompt Injection.</strong> CP3 realiza soft scan. Research sandbox para ejecuci&oacute;n aislada no confirmado en el c&oacute;digo.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────
+       S5 — Hallazgos de Performance
+       ────────────────────────────────────────────────────────── -->
+  <section data-mtia="section-5">
+    <div class="wrapper">
+      <div class="section-header">
+        <span class="section-number">05</span>
+        <span class="section-title">Hallazgos de Performance</span>
+      </div>
+
+      <div class="glass-card">
+        <div class="finding-list">
+          <div class="finding-item">
+            <div class="finding-icon fi-green">&#10003;</div>
+            <div class="finding-text"><strong>ACK &lt;2 s v&iacute;a Pub/Sub.</strong> Correctamente desacoplado. El usuario recibe confirmaci&oacute;n de recepci&oacute;n instant&aacute;nea.</div>
+          </div>
+          <div class="finding-item">
+            <div class="finding-icon fi-green">&#10003;</div>
+            <div class="finding-text"><strong>Budgets de tiempo.</strong> Single 15 s, Terna 30 s, Committee 60 s. Razonables para las modalidades de operaci&oacute;n declaradas.</div>
+          </div>
+          <div class="finding-item">
+            <div class="finding-icon fi-yellow">~</div>
+            <div class="finding-text"><strong>KB &gt;100 MB split.</strong> Riesgo de cold start en Cloud Functions al cargar knowledge bases grandes. Sin lazy loading confirmado.</div>
+          </div>
+          <div class="finding-item">
+            <div class="finding-icon fi-yellow">~</div>
+            <div class="finding-text"><strong>Token tracking b&aacute;sico.</strong> Archivos tokens.ts y quota-notifications.ts existen, pero no hay presupuesto por request ni alertas granulares de FinOps.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────
+       S6 — Hallazgos de Data Model
+       ────────────────────────────────────────────────────────── -->
+  <section data-mtia="section-6">
+    <div class="wrapper">
+      <div class="section-header">
+        <span class="section-number">06</span>
+        <span class="section-title">Hallazgos de Data Model</span>
+      </div>
+
+      <div class="glass-card">
+        <div class="finding-list">
+          <div class="finding-item">
+            <div class="finding-icon fi-green">&#10003;</div>
+            <div class="finding-text"><strong>3-tier memory existe</strong> (short/mid/long en Firestore). Arquitectura coherente con el dise&ntilde;o constitucional.</div>
+          </div>
+          <div class="finding-item">
+            <div class="finding-icon fi-red">&#10007;</div>
+            <div class="finding-text"><strong>Sin Project State ni pending_actions.</strong> Capacidad cr&iacute;tica ausente &mdash; no hay forma de rastrear estado de proyectos multi-sesi&oacute;n.</div>
+          </div>
+          <div class="finding-item">
+            <div class="finding-icon fi-orange">!</div>
+            <div class="finding-text"><strong>Sin CRON de compresi&oacute;n confirmado.</strong> La memoria a largo plazo podr&iacute;a crecer sin l&iacute;mite.</div>
+          </div>
+          <div class="finding-item">
+            <div class="finding-icon fi-orange">!</div>
+            <div class="finding-text"><strong>Sin TTL enforcement visible.</strong> No se encontraron reglas de expiraci&oacute;n autom&aacute;tica en documentos Firestore.</div>
+          </div>
+          <div class="finding-item">
+            <div class="finding-icon fi-yellow">~</div>
+            <div class="finding-text"><strong>Audit log no visible.</strong> No se identific&oacute; una colecci&oacute;n dedicada para trazabilidad de operaciones.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────
+       S7 — Hallazgos de Testing
+       ────────────────────────────────────────────────────────── -->
+  <section data-mtia="section-7">
+    <div class="wrapper">
+      <div class="section-header">
+        <span class="section-number">07</span>
+        <span class="section-title">Hallazgos de Testing</span>
+      </div>
+
+      <div class="glass-card">
+        <div class="finding-list">
+          <div class="finding-item">
+            <div class="finding-icon fi-green">&#10003;</div>
+            <div class="finding-text"><strong>vitest.config.ts existe.</strong> Framework de testing configurado.</div>
+          </div>
+          <div class="finding-item">
+            <div class="finding-icon fi-green">&#10003;</div>
+            <div class="finding-text"><strong>tests/ directory presente.</strong> Hay tests escritos.</div>
+          </div>
+          <div class="finding-item">
+            <div class="finding-icon fi-green">&#10003;</div>
+            <div class="finding-text"><strong>coverage/ directory presente.</strong> Se ha generado al menos un reporte de cobertura.</div>
+          </div>
+          <div class="finding-item">
+            <div class="finding-icon fi-orange">!</div>
+            <div class="finding-text"><strong>Constitution exige 80 % global + 100 % security.</strong> No se pudo verificar cumplimiento actual.</div>
+          </div>
+        </div>
+        <div class="open-question">
+          &#x2753; PREGUNTA ABIERTA &mdash; Coverage real desconocido. Ejecutar <code>npx vitest run --coverage</code> para confirmar.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────
+       S8 — Deuda Tecnica Cuantificada
+       ────────────────────────────────────────────────────────── -->
+  <section data-mtia="section-8">
+    <div class="wrapper">
+      <div class="section-header">
+        <span class="section-number">08</span>
+        <span class="section-title">Deuda T&eacute;cnica Cuantificada</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Tipo</th>
+              <th>Severidad</th>
+              <th>FTE-d&iacute;as</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Project State Engine</strong></td>
+              <td>Gap funcional</td>
+              <td><span class="sev sev-critico">CR&Iacute;TICO</span></td>
+              <td>5 &ndash; 8</td>
+            </tr>
+            <tr>
+              <td><strong>HIL Middleware</strong></td>
+              <td>Gap seguridad</td>
+              <td><span class="sev sev-critico">CR&Iacute;TICO</span></td>
+              <td>3 &ndash; 5</td>
+            </tr>
+            <tr>
+              <td><strong>CP3 Enforcement</strong></td>
+              <td>Bug de spec</td>
+              <td><span class="sev sev-alto">ALTO</span></td>
+              <td>1 &ndash; 2</td>
+            </tr>
+            <tr>
+              <td><strong>Token Budget per-request</strong></td>
+              <td>Gap FinOps</td>
+              <td><span class="sev sev-medio">MEDIO</span></td>
+              <td>2 &ndash; 3</td>
+            </tr>
+            <tr>
+              <td><strong>CRON Compresi&oacute;n</strong></td>
+              <td>Gap operativo</td>
+              <td><span class="sev sev-medio">MEDIO</span></td>
+              <td>2 &ndash; 3</td>
+            </tr>
+            <tr>
+              <td><strong>KB Lazy Loading</strong></td>
+              <td>Performance</td>
+              <td><span class="sev sev-medio">MEDIO</span></td>
+              <td>1 &ndash; 2</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3" style="text-align:right; font-weight:700; color:var(--color-gold);">Total estimado</td>
+              <td style="font-weight:700; color:var(--color-gold); font-size:1.1rem;">~15 &ndash; 23</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="debt-summary">
+        <div class="debt-summary-card">
+          <div class="big-num">2</div>
+          <div class="label">Cr&iacute;ticos</div>
+        </div>
+        <div class="debt-summary-card">
+          <div class="big-num">1</div>
+          <div class="label">Alto</div>
+        </div>
+        <div class="debt-summary-card">
+          <div class="big-num">3</div>
+          <div class="label">Medio</div>
+        </div>
+        <div class="debt-summary-card">
+          <div class="big-num">~19</div>
+          <div class="label">FTE-d&iacute;as promedio</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ════════════════════════════════════════════════════════════════
+     FOOTER
+     ════════════════════════════════════════════════════════════ -->
+<footer data-mtia="footer">
+  <div class="wrapper">
+    <!-- SVG logo repeat -->
+    <svg width="28" height="28" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="margin-bottom:.5rem;">
+      <rect width="36" height="36" rx="8" fill="#122562"/>
+      <rect x="8" y="14" width="3.5" height="14" rx="1.5" fill="#fff"/>
+      <rect x="16.25" y="10" width="3.5" height="18" rx="1.5" fill="#fff"/>
+      <rect x="24.5" y="14" width="3.5" height="14" rx="1.5" fill="#fff"/>
+      <circle cx="27" cy="9" r="3.2" fill="#FFD700"/>
+    </svg>
+    <div class="footer-brand">Metodolog<span class="ia">IA</span></div>
+    <div class="footer-copy">
+      &copy; 2026 MetodologIA. Copyleft &mdash; Para uso y aprovechamiento de profesionales en la era de la IA.
+    </div>
+    <div class="footer-agentic">
+      Generado por MetodologIA Agentic Report Engine &middot; Artefacto 11 &middot; Nexus Assistant OS Deep-Dive &middot; 2026-04-02
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

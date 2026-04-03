@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A8 — Risk Register Consolidado | Nexus Assistant OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1E3258;
+    --card: rgba(255,255,255,0.06);
+    --card-border: rgba(255,255,255,0.10);
+    --gold: #FFD700;
+    --blue: #137DC5;
+    --navy-deep: #122562;
+    --dark: #1F2833;
+    --lavender: #BBA0CC;
+    --gray: #808080;
+    --text: #E8E8E8;
+    --text-muted: #A0AEC0;
+    --font-display: 'Poppins', sans-serif;
+    --font-body: 'Montserrat', sans-serif;
+    --red: #E53E3E;
+    --orange: #ED8936;
+    --yellow: #ECC94B;
+    --green: #48BB78;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-weight: 400;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Skip link */
+  .skip-link {
+    position: absolute; left: -9999px; top: 0;
+    background: var(--gold); color: var(--navy-deep);
+    padding: 0.5rem 1rem; z-index: 1000;
+    font-family: var(--font-display); font-weight: 700;
+  }
+  .skip-link:focus { left: 0; }
+
+  /* Header */
+  header {
+    background: rgba(18,37,98,0.6);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--card-border);
+    padding: 1.25rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.75rem;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .brand-logo {
+    width: 36px; height: 36px; flex-shrink: 0;
+  }
+  .brand-wordmark {
+    font-family: var(--font-display); font-weight: 800;
+    font-size: 1.35rem; letter-spacing: 0.5px;
+  }
+  .brand-wordmark .wm-white { color: #fff; }
+  .brand-wordmark .wm-gold  { color: var(--gold); }
+  .header-tag {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 0.75rem; color: var(--gold);
+    background: rgba(255,215,0,0.12);
+    padding: 0.25rem 0.75rem; border-radius: 999px;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+
+  /* Main */
+  main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+
+  /* Title block */
+  .title-block { margin-bottom: 2.5rem; }
+  .title-block h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    color: #fff; margin-bottom: 0.35rem;
+  }
+  .title-block h1 span { color: var(--gold); }
+  .title-block p {
+    font-size: 1rem; color: var(--text-muted);
+    max-width: 680px;
+  }
+
+  /* Section titles */
+  .section-title {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 1.25rem; color: #fff;
+    margin: 2.5rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--gold);
+    display: inline-block;
+  }
+
+  /* Table wrapper */
+  .table-wrap {
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
+    background: var(--card);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--card-border);
+  }
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  thead th {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.8px;
+    color: var(--gold);
+    background: rgba(18,37,98,0.5);
+    padding: 0.85rem 0.75rem;
+    text-align: left; white-space: nowrap;
+    position: sticky; top: 0;
+  }
+  tbody td {
+    padding: 0.7rem 0.75rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    vertical-align: top;
+  }
+  tbody tr:hover { background: rgba(255,255,255,0.04); }
+
+  /* Score badges */
+  .score {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 2rem; padding: 0.15rem 0.5rem;
+    border-radius: 6px; font-family: var(--font-display);
+    font-weight: 700; font-size: 0.8rem; color: #fff;
+  }
+  .score-9  { background: var(--red); }
+  .score-6  { background: var(--orange); }
+  .score-4  { background: var(--yellow); color: #1a1a1a; }
+  .score-3  { background: var(--green); color: #1a1a1a; }
+  .score-2  { background: var(--green); color: #1a1a1a; }
+
+  /* Probability / Impact pills */
+  .pill {
+    display: inline-block; padding: 0.1rem 0.45rem;
+    border-radius: 4px; font-size: 0.75rem; font-weight: 600;
+    font-family: var(--font-display);
+  }
+  .pill-A { background: rgba(229,62,62,0.25); color: #FC8181; }
+  .pill-M { background: rgba(236,201,75,0.2); color: #ECC94B; }
+  .pill-B { background: rgba(72,187,120,0.2); color: #68D391; }
+
+  .fase-tag {
+    font-size: 0.75rem; font-weight: 600;
+    font-family: var(--font-display);
+    color: var(--blue);
+  }
+
+  /* Distribution cards */
+  .dist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem; margin-top: 1rem;
+  }
+  .dist-card {
+    background: var(--card);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    position: relative; overflow: hidden;
+  }
+  .dist-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .dist-card.critical::before { background: var(--red); }
+  .dist-card.high::before    { background: var(--orange); }
+  .dist-card.medium::before  { background: var(--yellow); }
+  .dist-card.low::before     { background: var(--green); }
+  .dist-card h3 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 0.95rem; margin-bottom: 0.5rem;
+  }
+  .dist-card.critical h3 { color: #FC8181; }
+  .dist-card.high h3     { color: var(--orange); }
+  .dist-card.medium h3   { color: var(--yellow); }
+  .dist-card.low h3      { color: #68D391; }
+  .dist-card ul {
+    list-style: none; padding: 0;
+  }
+  .dist-card li {
+    font-size: 0.85rem; color: var(--text-muted);
+    padding: 0.15rem 0;
+  }
+  .dist-card li code {
+    font-family: var(--font-display); font-weight: 600;
+    color: #fff; font-size: 0.8rem;
+  }
+
+  /* Top risk detail cards */
+  .risk-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.25rem; margin-top: 1rem;
+  }
+  .risk-detail {
+    background: var(--card);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    position: relative; overflow: hidden;
+  }
+  .risk-detail::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: var(--red);
+  }
+  .risk-detail .rd-header {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .risk-detail .rd-id {
+    font-family: var(--font-display); font-weight: 800;
+    font-size: 1.1rem; color: #FC8181;
+  }
+  .risk-detail .rd-title {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 1rem; color: #fff;
+  }
+  .risk-detail .rd-score {
+    margin-left: auto;
+  }
+  .risk-detail h4 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 0.8rem; text-transform: uppercase;
+    letter-spacing: 0.8px; color: var(--gold);
+    margin: 1rem 0 0.35rem;
+  }
+  .risk-detail p, .risk-detail li {
+    font-size: 0.88rem; color: var(--text-muted);
+    line-height: 1.55;
+  }
+  .risk-detail ul {
+    list-style: disc; padding-left: 1.25rem;
+  }
+  .risk-detail li { margin-bottom: 0.25rem; }
+
+  /* Legend */
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 1rem;
+    margin: 1.5rem 0 0.5rem;
+    font-size: 0.8rem; color: var(--text-muted);
+    align-items: center;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 0.35rem;
+  }
+  .legend-dot {
+    width: 12px; height: 12px; border-radius: 3px;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    font-size: 0.8rem; color: var(--gray);
+    border-top: 1px solid var(--card-border);
+    margin-top: 2rem;
+  }
+  footer .footer-brand {
+    font-family: var(--font-display); font-weight: 800;
+    font-size: 0.85rem; margin-bottom: 0.25rem;
+  }
+  footer .footer-brand .wm-white { color: var(--text-muted); }
+  footer .footer-brand .wm-gold  { color: var(--gold); }
+
+  /* Print */
+  @media print {
+    body { background: #fff; color: #1a1a1a; }
+    header { position: static; background: none; backdrop-filter: none; border-bottom: 2px solid #1E3258; }
+    .brand-wordmark .wm-white { color: #1E3258; }
+    .table-wrap { border: 1px solid #ccc; backdrop-filter: none; background: none; }
+    thead th { background: #f0f0f0; color: #1E3258; }
+    tbody td { border-top-color: #ddd; color: #333; }
+    .dist-card, .risk-detail { backdrop-filter: none; background: #f9f9f9; border-color: #ccc; }
+    .dist-card li, .risk-detail p, .risk-detail li { color: #333; }
+    .risk-detail .rd-title, .dist-card li code { color: #1a1a1a; }
+    footer { color: #666; }
+    footer .footer-brand .wm-white { color: #1E3258; }
+  }
+
+  @media (max-width: 640px) {
+    header { padding: 1rem; }
+    main { padding: 1.25rem 1rem 2rem; }
+    table { font-size: 0.78rem; }
+    thead th, tbody td { padding: 0.6rem 0.5rem; }
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Saltar al contenido</a>
+
+<!-- HEADER -->
+<header>
+  <div class="brand">
+    <svg class="brand-logo" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="36" height="36" rx="8" fill="#122562"/>
+      <rect x="7" y="10" width="4" height="16" rx="2" fill="#fff"/>
+      <rect x="16" y="10" width="4" height="16" rx="2" fill="#fff"/>
+      <rect x="25" y="10" width="4" height="16" rx="2" fill="#fff"/>
+      <circle cx="29" cy="8" r="3.5" fill="#FFD700"/>
+    </svg>
+    <span class="brand-wordmark"><span class="wm-white">Metodolog</span><span class="wm-gold">IA</span></span>
+  </div>
+  <span class="header-tag">A8 &mdash; Risk Register</span>
+</header>
+
+<!-- MAIN -->
+<main id="main" data-mtia="risk-register">
+
+  <!-- Title -->
+  <div class="title-block">
+    <h1>Risk Register &mdash; <span>Nexus Assistant OS</span></h1>
+    <p>18 riesgos con mitigaci&oacute;n, indicadores tempranos y fase afectada. Priorizados por Score = Probabilidad &times; Impacto.</p>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend" aria-label="Leyenda de colores de riesgo">
+    <span style="font-weight:600;color:#fff;">Leyenda Score:</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--red);"></span> Cr&iacute;tico (9)</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--orange);"></span> Alto (6)</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--yellow);"></span> Medio (4)</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green);"></span> Bajo (&le;3)</span>
+    <span class="legend-item" style="margin-left:1rem;"><strong>P/I:</strong> B=Baja(1) &middot; M=Media(2) &middot; A=Alta(3)</span>
+  </div>
+
+  <!-- Section 1: Main Table -->
+  <h2 class="section-title">1. Registro Consolidado de Riesgos</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Riesgo</th>
+          <th>P</th>
+          <th>I</th>
+          <th>Score</th>
+          <th>Mitigaci&oacute;n</th>
+          <th>Fase</th>
+          <th>Indicador Temprano</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>R-04</code></td>
+          <td>L0-L4 no implementado</td>
+          <td><span class="pill pill-A">A</span></td>
+          <td><span class="pill pill-A">A</span></td>
+          <td><span class="score score-9">9</span></td>
+          <td>HIL en S2</td>
+          <td><span class="fase-tag">H1</span></td>
+          <td>Acci&oacute;n sin aprobaci&oacute;n</td>
+        </tr>
+        <tr>
+          <td><code>R-10</code></td>
+          <td>Webhook timeout</td>
+          <td><span class="pill pill-A">A</span></td>
+          <td><span class="pill pill-A">A</span></td>
+          <td><span class="score score-9">9</span></td>
+          <td>Pub/Sub ACK &lt;2s</td>
+          <td><span class="fase-tag">H1</span></td>
+          <td>Telegram 504</td>
+        </tr>
+        <tr>
+          <td><code>R-13</code></td>
+          <td>Context bloat</td>
+          <td><span class="pill pill-A">A</span></td>
+          <td><span class="pill pill-A">A</span></td>
+          <td><span class="score score-9">9</span></td>
+          <td>500 token cap + CRON</td>
+          <td><span class="fase-tag">H1</span></td>
+          <td>compressed_context &gt;800</td>
+        </tr>
+        <tr>
+          <td><code>R-01</code></td>
+          <td>Firestore insuficiente multi-tenant</td>
+          <td><span class="pill pill-M">M</span></td>
+          <td><span class="pill pill-A">A</span></td>
+          <td><span class="score score-6">6</span></td>
+          <td>Spike Redis H3</td>
+          <td><span class="fase-tag">H3</span></td>
+          <td>Latencia &gt;200ms</td>
+        </tr>
+        <tr>
+          <td><code>R-02</code></td>
+          <td>LifeSync fragmenta esfuerzo</td>
+          <td><span class="pill pill-A">A</span></td>
+          <td><span class="pill pill-M">M</span></td>
+          <td><span class="score score-6">6</span></td>
+          <td>Secuenciar Nexus primero</td>
+          <td><span class="fase-tag">Todas</span></td>
+          <td>Fundador cambia foco mid-sprint</td>
+        </tr>
+        <tr>
+          <td><code>R-DRIFT</code></td>
+          <td>Vision Drift D6</td>
+          <td><span class="pill pill-M">M</span></td>
+          <td><span class="pill pill-A">A</span></td>
+          <td><span class="score score-6">6</span></td>
+          <td>D-02 State Machine</td>
+          <td><span class="fase-tag">H3</span></td>
+          <td>Presi&oacute;n Swarm sin evidencia</td>
+        </tr>
+        <tr>
+          <td><code>R-08</code></td>
+          <td>CRON pierde info</td>
+          <td><span class="pill pill-M">M</span></td>
+          <td><span class="pill pill-A">A</span></td>
+          <td><span class="score score-6">6</span></td>
+          <td>compression_log</td>
+          <td><span class="fase-tag">H1</span></td>
+          <td>&ldquo;Bot olvid&oacute; X&rdquo;</td>
+        </tr>
+        <tr>
+          <td><code>R-11</code></td>
+          <td>Prompt injection research</td>
+          <td><span class="pill pill-M">M</span></td>
+          <td><span class="pill pill-A">A</span></td>
+          <td><span class="score score-6">6</span></td>
+          <td>Sandbox + CP3</td>
+          <td><span class="fase-tag">H2</span></td>
+          <td>Output con instrucciones</td>
+        </tr>
+        <tr>
+          <td><code>R-14</code></td>
+          <td>Overengineering multi-tenant</td>
+          <td><span class="pill pill-M">M</span></td>
+          <td><span class="pill pill-A">A</span></td>
+          <td><span class="score score-6">6</span></td>
+          <td>Gate H1 obligatorio</td>
+          <td><span class="fase-tag">H3</span></td>
+          <td>H3 work antes de H1</td>
+        </tr>
+        <tr>
+          <td><code>R-IDEM</code></td>
+          <td>Telegram reenv&iacute;o duplicado</td>
+          <td><span class="pill pill-A">A</span></td>
+          <td><span class="pill pill-M">M</span></td>
+          <td><span class="score score-6">6</span></td>
+          <td>Deduplicar update_id</td>
+          <td><span class="fase-tag">H1</span></td>
+          <td>Acciones duplicadas</td>
+        </tr>
+        <tr>
+          <td><code>R-00</code></td>
+          <td>Inferencias sin c&oacute;digo TS</td>
+          <td><span class="pill pill-M">M</span></td>
+          <td><span class="pill pill-M">M</span></td>
+          <td><span class="score score-4">4</span></td>
+          <td>Validar contra repo</td>
+          <td><span class="fase-tag">Todas</span></td>
+          <td>Primer sprint con discrepancia</td>
+        </tr>
+        <tr>
+          <td><code>R-05</code></td>
+          <td>Memory sin VDB</td>
+          <td><span class="pill pill-M">M</span></td>
+          <td><span class="pill pill-M">M</span></td>
+          <td><span class="score score-4">4</span></td>
+          <td>Text search H1</td>
+          <td><span class="fase-tag">H1-H2</span></td>
+          <td>Retrieval irrelevante &gt;20%</td>
+        </tr>
+        <tr>
+          <td><code>R-SPEC</code></td>
+          <td>CP3 mischaracterizes</td>
+          <td><span class="pill pill-M">M</span></td>
+          <td><span class="pill pill-M">M</span></td>
+          <td><span class="score score-4">4</span></td>
+          <td>Fix spec + c&oacute;digo</td>
+          <td><span class="fase-tag">H1</span></td>
+          <td>Brand violations</td>
+        </tr>
+        <tr>
+          <td><code>R-KB</code></td>
+          <td>KB &gt;100MB cold start</td>
+          <td><span class="pill pill-M">M</span></td>
+          <td><span class="pill pill-M">M</span></td>
+          <td><span class="score score-4">4</span></td>
+          <td>Lazy loading</td>
+          <td><span class="fase-tag">H1</span></td>
+          <td>Function timeout</td>
+        </tr>
+        <tr>
+          <td><code>R-TRUNC</code></td>
+          <td>Token truncamiento agresivo</td>
+          <td><span class="pill pill-M">M</span></td>
+          <td><span class="pill pill-M">M</span></td>
+          <td><span class="score score-4">4</span></td>
+          <td>Budget + monitoreo</td>
+          <td><span class="fase-tag">H1</span></td>
+          <td>Respuestas incompletas &gt;10%</td>
+        </tr>
+        <tr>
+          <td><code>R-AUTH</code></td>
+          <td>OAuth token expiration</td>
+          <td><span class="pill pill-M">M</span></td>
+          <td><span class="pill pill-M">M</span></td>
+          <td><span class="score score-4">4</span></td>
+          <td>Refresh + retry</td>
+          <td><span class="fase-tag">H2</span></td>
+          <td>401 errors</td>
+        </tr>
+        <tr>
+          <td><code>R-MIRROR</code></td>
+          <td>Cross-instance leak</td>
+          <td><span class="pill pill-B">B</span></td>
+          <td><span class="pill pill-A">A</span></td>
+          <td><span class="score score-3">3</span></td>
+          <td>Test aislamiento</td>
+          <td><span class="fase-tag">H1</span></td>
+          <td>Datos cruzados</td>
+        </tr>
+        <tr>
+          <td><code>R-03</code></td>
+          <td>n8n complejidad prematura</td>
+          <td><span class="pill pill-B">B</span></td>
+          <td><span class="pill pill-M">M</span></td>
+          <td><span class="score score-2">2</span></td>
+          <td>Diferido H2</td>
+          <td><span class="fase-tag">H2</span></td>
+          <td>&gt;3 integraciones manuales</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Section 2: Risk Distribution -->
+  <h2 class="section-title">2. Distribuci&oacute;n de Riesgos</h2>
+  <div class="dist-grid">
+    <div class="dist-card critical">
+      <h3>Cr&iacute;tico &mdash; Score 9</h3>
+      <ul>
+        <li><code>R-04</code> L0-L4 no implementado</li>
+        <li><code>R-10</code> Webhook timeout</li>
+        <li><code>R-13</code> Context bloat</li>
+      </ul>
+      <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem;">Todos en <strong style="color:#fff;">H1</strong> &mdash; requieren atenci&oacute;n inmediata.</p>
+    </div>
+    <div class="dist-card high">
+      <h3>Alto &mdash; Score 6</h3>
+      <ul>
+        <li><code>R-01</code> Firestore multi-tenant</li>
+        <li><code>R-02</code> LifeSync fragmentaci&oacute;n</li>
+        <li><code>R-DRIFT</code> Vision Drift D6</li>
+        <li><code>R-08</code> CRON pierde info</li>
+        <li><code>R-11</code> Prompt injection</li>
+        <li><code>R-14</code> Overengineering</li>
+        <li><code>R-IDEM</code> Reenv&iacute;o duplicado</li>
+      </ul>
+      <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem;">Distribuidos entre <strong style="color:#fff;">H1, H2, H3</strong>.</p>
+    </div>
+    <div class="dist-card medium">
+      <h3>Medio &mdash; Score 4</h3>
+      <ul>
+        <li><code>R-00</code> Inferencias sin c&oacute;digo</li>
+        <li><code>R-05</code> Memory sin VDB</li>
+        <li><code>R-SPEC</code> CP3 mischaracterizes</li>
+        <li><code>R-KB</code> KB cold start</li>
+        <li><code>R-TRUNC</code> Token truncamiento</li>
+        <li><code>R-AUTH</code> OAuth expiration</li>
+      </ul>
+    </div>
+    <div class="dist-card low">
+      <h3>Bajo &mdash; Score &le;3</h3>
+      <ul>
+        <li><code>R-03</code> n8n complejidad (2)</li>
+        <li><code>R-MIRROR</code> Cross-instance leak (3)</li>
+      </ul>
+      <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem;">Monitorear; no requieren acci&oacute;n inmediata.</p>
+    </div>
+  </div>
+
+  <!-- Section 3: Top 3 Risk Detail Cards -->
+  <h2 class="section-title">3. Top 3 Riesgos &mdash; Detalle</h2>
+  <div class="risk-detail-grid">
+
+    <!-- R-04 -->
+    <div class="risk-detail">
+      <div class="rd-header">
+        <span class="rd-id">R-04</span>
+        <span class="rd-title">L0-L4 no implementado</span>
+        <span class="score score-9 rd-score">9</span>
+      </div>
+      <p>El sistema de niveles de autonom&iacute;a (L0 informar &rarr; L4 aut&oacute;nomo) no est&aacute; implementado. Sin &eacute;l, el agente puede ejecutar acciones cr&iacute;ticas sin aprobaci&oacute;n humana.</p>
+      <h4>Estrategia de Mitigaci&oacute;n</h4>
+      <ul>
+        <li>Implementar Human-in-the-Loop (HIL) obligatorio en Sprint 2.</li>
+        <li>Iniciar con L0 (solo informar) y L1 (pedir confirmaci&oacute;n) como valores por defecto.</li>
+        <li>Escalar a L2-L4 solo tras 2 semanas sin incidentes en el nivel anterior.</li>
+        <li>Auditor&iacute;a semanal de acciones ejecutadas vs. nivel de autonom&iacute;a.</li>
+      </ul>
+      <h4>Condiciones de Disparo</h4>
+      <ul>
+        <li>Cualquier acci&oacute;n ejecutada sin registro de aprobaci&oacute;n en el log.</li>
+        <li>Usuarios reportan acciones que no solicitaron.</li>
+      </ul>
+      <h4>Ruta de Escalaci&oacute;n</h4>
+      <p>Bloqueo inmediato de L2+ &rarr; Revisar implementaci&oacute;n HIL con founder &rarr; Hotfix en &lt;24h &rarr; Post-mortem obligatorio.</p>
+    </div>
+
+    <!-- R-10 -->
+    <div class="risk-detail">
+      <div class="rd-header">
+        <span class="rd-id">R-10</span>
+        <span class="rd-title">Webhook timeout</span>
+        <span class="score score-9 rd-score">9</span>
+      </div>
+      <p>Los webhooks de Telegram tienen un l&iacute;mite estricto de respuesta. Si el procesamiento del agente excede el timeout, Telegram reintenta y el usuario recibe errores 504.</p>
+      <h4>Estrategia de Mitigaci&oacute;n</h4>
+      <ul>
+        <li>Implementar patr&oacute;n Pub/Sub: ACK inmediato (&lt;2s) + procesamiento as&iacute;ncrono.</li>
+        <li>Cola de mensajes con Cloud Tasks o Pub/Sub de GCP.</li>
+        <li>Respuesta provisional al usuario mientras se procesa la solicitud completa.</li>
+        <li>Circuit breaker para llamadas a LLM que excedan 8s.</li>
+      </ul>
+      <h4>Condiciones de Disparo</h4>
+      <ul>
+        <li>Errores 504 en logs de Telegram webhook.</li>
+        <li>Tiempo de respuesta promedio &gt;5s en m&eacute;tricas de Cloud Functions.</li>
+      </ul>
+      <h4>Ruta de Escalaci&oacute;n</h4>
+      <p>Alerta autom&aacute;tica en Slack &rarr; Activar cola Pub/Sub (si no activa) &rarr; Reducir complejidad del prompt temporal &rarr; Revisar infraestructura si persiste &gt;1h.</p>
+    </div>
+
+    <!-- R-13 -->
+    <div class="risk-detail">
+      <div class="rd-header">
+        <span class="rd-id">R-13</span>
+        <span class="rd-title">Context bloat</span>
+        <span class="score score-9 rd-score">9</span>
+      </div>
+      <p>El contexto conversacional crece sin control, superando l&iacute;mites de tokens del modelo. Esto causa respuestas truncadas, p&eacute;rdida de informaci&oacute;n relevante y costos elevados de API.</p>
+      <h4>Estrategia de Mitigaci&oacute;n</h4>
+      <ul>
+        <li>Cap de 500 tokens por mensaje de contexto inyectado.</li>
+        <li>CRON de compresi&oacute;n cada 6 horas: resumir conversaciones antiguas.</li>
+        <li>M&eacute;trica <code>compressed_context</code> con umbral de alerta en 800 tokens.</li>
+        <li>Pol&iacute;tica de retenci&oacute;n: solo &uacute;ltimas 48h en contexto activo, resto en storage.</li>
+      </ul>
+      <h4>Condiciones de Disparo</h4>
+      <ul>
+        <li><code>compressed_context</code> supera 800 tokens por 3 ciclos consecutivos.</li>
+        <li>Respuestas del modelo se truncan o pierden coherencia con el historial.</li>
+      </ul>
+      <h4>Ruta de Escalaci&oacute;n</h4>
+      <p>Compresi&oacute;n forzada inmediata &rarr; Reducir ventana de retenci&oacute;n a 24h &rarr; Evaluar migraci&oacute;n a modelo con mayor ventana de contexto &rarr; Revisar estrategia de memory con founder.</p>
+    </div>
+
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand"><span class="wm-white">Metodolog</span><span class="wm-gold">IA</span></div>
+  <p>&copy; 2026 MetodologIA. Copyleft &mdash; Para uso y aprovechamiento de profesionales en la era de la IA.</p>
+</footer>
+
+</body>
+</html>

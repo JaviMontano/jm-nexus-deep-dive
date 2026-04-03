@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A3 — Gap Analysis Heat Map | Nexus Assistant OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ── Reset & Base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    background: #1E3258;
+    color: #E8E8E8;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  a { color: #137DC5; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── Skip link ── */
+  .skip-link {
+    position: absolute; left: -9999px; top: auto;
+    background: #FFD700; color: #1E3258; padding: .5rem 1rem;
+    font-weight: 700; z-index: 1000;
+  }
+  .skip-link:focus { left: 1rem; top: 1rem; }
+
+  /* ── Layout ── */
+  .page-wrapper { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+
+  /* ── Header ── */
+  header[data-mtia="header"] {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.5rem 0; border-bottom: 1px solid rgba(255,255,255,.1);
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .brand { display: flex; align-items: center; gap: .75rem; }
+  .brand-logo {
+    width: 36px; height: 36px; flex-shrink: 0;
+  }
+  .brand-wordmark {
+    font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 1.35rem;
+    letter-spacing: .02em;
+  }
+  .brand-wordmark .wm-white { color: #fff; }
+  .brand-wordmark .wm-gold  { color: #FFD700; }
+  .header-label {
+    font-family: 'Montserrat', sans-serif; font-size: .8rem;
+    color: rgba(255,255,255,.5); letter-spacing: .08em; text-transform: uppercase;
+  }
+
+  /* ── Hero ── */
+  .hero[data-mtia="hero"] {
+    text-align: center; padding: 3rem 1rem 2rem;
+  }
+  .hero h1 {
+    font-family: 'Poppins', sans-serif; font-weight: 700;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    color: #FFD700; margin-bottom: .5rem;
+  }
+  .hero .subtitle {
+    font-size: clamp(.95rem, 2vw, 1.15rem);
+    color: rgba(255,255,255,.7); max-width: 700px; margin: 0 auto;
+  }
+
+  /* ── Glass Card ── */
+  .card {
+    background: rgba(255,255,255,.06);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 14px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+  .card h2 {
+    font-family: 'Poppins', sans-serif; font-weight: 700;
+    font-size: 1.35rem; color: #FFD700; margin-bottom: 1.25rem;
+  }
+  .card h3 {
+    font-family: 'Poppins', sans-serif; font-weight: 600;
+    font-size: 1.05rem; color: #137DC5; margin-bottom: .75rem;
+  }
+
+  /* ── Table ── */
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: .85rem;
+  }
+  thead th {
+    font-family: 'Poppins', sans-serif; font-weight: 600;
+    text-transform: uppercase; font-size: .72rem; letter-spacing: .06em;
+    color: rgba(255,255,255,.6); padding: .65rem .6rem;
+    border-bottom: 2px solid rgba(255,255,255,.15);
+    text-align: left; white-space: nowrap;
+  }
+  tbody td {
+    padding: .6rem; border-bottom: 1px solid rgba(255,255,255,.06);
+    vertical-align: top;
+  }
+  tbody tr:hover { background: rgba(255,255,255,.04); }
+
+  /* ── Severity badges ── */
+  .sev { display: inline-block; padding: .2rem .55rem; border-radius: 4px; font-weight: 600; font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; }
+  .sev-crit { background: #D32F2F; color: #fff; }
+  .sev-alta { background: #E65100; color: #fff; }
+  .sev-media { background: #F9A825; color: #1E3258; }
+  .sev-baja { background: #2E7D32; color: #fff; }
+
+  /* Severity row tints */
+  tr.row-crit  { background: rgba(211,47,47,.08); }
+  tr.row-alta  { background: rgba(230,81,0,.06); }
+  tr.row-media { background: rgba(249,168,37,.04); }
+  tr.row-baja  { background: rgba(46,125,50,.04); }
+
+  /* ── CSS Progress bar ── */
+  .gap-bar {
+    display: flex; align-items: center; gap: .5rem; min-width: 110px;
+  }
+  .gap-bar-track {
+    flex: 1; height: 8px; background: rgba(255,255,255,.1);
+    border-radius: 4px; overflow: hidden; min-width: 60px;
+  }
+  .gap-bar-fill {
+    height: 100%; border-radius: 4px; transition: width .4s ease;
+  }
+  .gap-bar-label { font-size: .78rem; font-weight: 600; min-width: 32px; text-align: right; }
+
+  .fill-crit  { background: #D32F2F; }
+  .fill-alta  { background: #E65100; }
+  .fill-media { background: #F9A825; }
+  .fill-baja  { background: #2E7D32; }
+
+  /* ── Summary bars ── */
+  .summary-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .summary-item {
+    background: rgba(255,255,255,.04);
+    border-radius: 10px; padding: 1rem 1.25rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .summary-count {
+    font-family: 'Poppins', sans-serif; font-weight: 700;
+    font-size: 2rem; line-height: 1;
+  }
+  .summary-count.cnt-crit  { color: #D32F2F; }
+  .summary-count.cnt-alta  { color: #E65100; }
+  .summary-count.cnt-media { color: #F9A825; }
+  .summary-count.cnt-baja  { color: #2E7D32; }
+  .summary-label { font-size: .85rem; color: rgba(255,255,255,.7); }
+  .summary-ids { font-size: .78rem; color: rgba(255,255,255,.45); margin-top: .15rem; }
+
+  /* ── Dependency flowchart ── */
+  .dep-chain { display: flex; flex-direction: column; gap: 2rem; }
+  .dep-row {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 0;
+  }
+  .dep-node {
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 8px; padding: .5rem .9rem;
+    font-size: .82rem; font-weight: 500; white-space: nowrap;
+    position: relative;
+  }
+  .dep-node.node-crit  { border-color: #D32F2F; background: rgba(211,47,47,.15); }
+  .dep-node.node-alta  { border-color: #E65100; background: rgba(230,81,0,.12); }
+  .dep-node.node-media { border-color: #F9A825; background: rgba(249,168,37,.10); }
+  .dep-node.node-baja  { border-color: #2E7D32; background: rgba(46,125,50,.10); }
+  .dep-node.node-goal  { border-color: #FFD700; background: rgba(255,215,0,.12); color: #FFD700; font-weight: 700; }
+  .dep-node .node-id { font-weight: 700; color: #FFD700; }
+  .dep-arrow {
+    display: flex; align-items: center; padding: 0 .35rem;
+    color: rgba(255,255,255,.35); font-size: 1.1rem; font-weight: 700;
+  }
+  .dep-arrow.thick { color: #D32F2F; font-size: 1.3rem; }
+  .dep-plus {
+    padding: 0 .4rem; color: rgba(255,255,255,.3); font-weight: 700; font-size: .9rem;
+  }
+  .dep-label {
+    font-size: .75rem; color: rgba(255,255,255,.4); margin-top: .35rem; padding-left: .25rem;
+  }
+
+  /* ── Trade-offs table ── */
+  .chosen { background: rgba(255,215,0,.10); font-weight: 600; }
+
+  /* ── Footer ── */
+  footer[data-mtia="footer"] {
+    text-align: center; padding: 2rem 1rem 1.5rem;
+    border-top: 1px solid rgba(255,255,255,.08);
+    font-size: .78rem; color: rgba(255,255,255,.4);
+    margin-top: 1rem;
+  }
+  footer .brand-wordmark { font-size: 1rem; margin-bottom: .35rem; }
+
+  /* ── Print ── */
+  @media print {
+    body { background: #fff; color: #222; }
+    .card { background: #f9f9f9; border: 1px solid #ddd; backdrop-filter: none; box-shadow: none; }
+    .sev-crit  { background: #D32F2F; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .sev-alta  { background: #E65100; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .sev-media { background: #F9A825; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .sev-baja  { background: #2E7D32; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .gap-bar-track { background: #ddd; }
+    .fill-crit, .fill-alta, .fill-media, .fill-baja { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    footer { color: #666; }
+    .hero h1 { color: #1E3258; }
+    .card h2 { color: #1E3258; }
+    .dep-node .node-id { color: #1E3258; }
+    thead th { color: #555; }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .page-wrapper { padding: 0 .75rem 2rem; }
+    .card { padding: 1.25rem; }
+    table { font-size: .78rem; }
+    .dep-row { gap: .25rem; }
+    .dep-node { font-size: .75rem; padding: .35rem .6rem; }
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Saltar al contenido</a>
+
+<div class="page-wrapper">
+
+  <!-- ════ HEADER ════ -->
+  <header data-mtia="header">
+    <div class="brand">
+      <svg class="brand-logo" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="36" height="36" rx="8" fill="#122562"/>
+        <rect x="7" y="10" width="4" height="16" rx="2" fill="#fff"/>
+        <rect x="16" y="6" width="4" height="20" rx="2" fill="#fff"/>
+        <rect x="25" y="12" width="4" height="14" rx="2" fill="#fff"/>
+        <circle cx="28" cy="8" r="3.5" fill="#FFD700"/>
+      </svg>
+      <span class="brand-wordmark"><span class="wm-white">Metodolog</span><span class="wm-gold">IA</span></span>
+    </div>
+    <span class="header-label">Nexus Assistant OS &mdash; Architecture Deep Dive</span>
+  </header>
+
+  <!-- ════ HERO ════ -->
+  <section class="hero" data-mtia="hero" id="main">
+    <h1>Gap Analysis Heat Map</h1>
+    <p class="subtitle">15 gaps cuantificados, 2 cr&iacute;ticos, cadena de dependencias visualizada</p>
+  </section>
+
+  <!-- ════ SECTION 1: HEAT MAP TABLE ════ -->
+  <section class="card" data-mtia="section-heatmap">
+    <h2>1 &mdash; Heat Map de Capacidades</h2>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Capability</th>
+            <th>AS-IS</th>
+            <th>TO-BE</th>
+            <th>Gap %</th>
+            <th>Sev</th>
+            <th>Bloquea a</th>
+            <th>Criterio de Cierre</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- CRIT -->
+          <tr class="row-crit">
+            <td><strong>G-05</strong></td>
+            <td>HIL Middleware</td>
+            <td>telegram-controls.ts (parcial)</td>
+            <td>pending_actions + Inline Buttons + TTL</td>
+            <td>
+              <div class="gap-bar">
+                <div class="gap-bar-track"><div class="gap-bar-fill fill-crit" style="width:15%"></div></div>
+                <span class="gap-bar-label">15%</span>
+              </div>
+            </td>
+            <td><span class="sev sev-crit">CRIT</span></td>
+            <td>L2+ ops, Google, B2B</td>
+            <td>0 acciones sin aprobaci&oacute;n</td>
+          </tr>
+          <tr class="row-crit">
+            <td><strong>G-06</strong></td>
+            <td>Project State Engine</td>
+            <td>No visible</td>
+            <td>projects collection + compressed_context</td>
+            <td>
+              <div class="gap-bar">
+                <div class="gap-bar-track"><div class="gap-bar-fill fill-crit" style="width:0%"></div></div>
+                <span class="gap-bar-label">0%</span>
+              </div>
+            </td>
+            <td><span class="sev sev-crit">CRIT</span></td>
+            <td>HIL, Artifacts, Memory, todo</td>
+            <td>Recuperar contexto 30d, &lt;3s</td>
+          </tr>
+          <!-- ALTA -->
+          <tr class="row-alta">
+            <td><strong>G-02</strong></td>
+            <td>Memory Semantic</td>
+            <td>memory.ts + thread-memory.ts</td>
+            <td>3-tier con TTL + embeddings</td>
+            <td>
+              <div class="gap-bar">
+                <div class="gap-bar-track"><div class="gap-bar-fill fill-alta" style="width:40%"></div></div>
+                <span class="gap-bar-label">40%</span>
+              </div>
+            </td>
+            <td><span class="sev sev-alta">ALTA</span></td>
+            <td>Research quality, B2B</td>
+            <td>TTL funcional, confidence scoring</td>
+          </tr>
+          <tr class="row-alta">
+            <td><strong>G-07</strong></td>
+            <td>Artifact Pipeline</td>
+            <td>proposals/ + controlled-deliverables.ts</td>
+            <td>Versioning + URLs firmadas + templates</td>
+            <td>
+              <div class="gap-bar">
+                <div class="gap-bar-track"><div class="gap-bar-fill fill-alta" style="width:45%"></div></div>
+                <span class="gap-bar-label">45%</span>
+              </div>
+            </td>
+            <td><span class="sev sev-alta">ALTA</span></td>
+            <td>Monetizacion B2B</td>
+            <td>URL firmada 7d, versionado</td>
+          </tr>
+          <!-- MEDIA -->
+          <tr class="row-media">
+            <td><strong>G-01</strong></td>
+            <td>Intent Router</td>
+            <td>ecosystem/router.ts (Groq)</td>
+            <td>JSON schema + fallback cascade</td>
+            <td>
+              <div class="gap-bar">
+                <div class="gap-bar-track"><div class="gap-bar-fill fill-media" style="width:60%"></div></div>
+                <span class="gap-bar-label">60%</span>
+              </div>
+            </td>
+            <td><span class="sev sev-media">MEDIA</span></td>
+            <td>Precisi&oacute;n delegaci&oacute;n</td>
+            <td>95% precisi&oacute;n test set</td>
+          </tr>
+          <tr class="row-media">
+            <td><strong>G-08</strong></td>
+            <td>Google Workspace</td>
+            <td>Excluido</td>
+            <td>Tasks + Calendar + Gmail</td>
+            <td>
+              <div class="gap-bar">
+                <div class="gap-bar-track"><div class="gap-bar-fill fill-media" style="width:0%"></div></div>
+                <span class="gap-bar-label">0%</span>
+              </div>
+            </td>
+            <td><span class="sev sev-media">MEDIA</span></td>
+            <td>Productividad</td>
+            <td>H2</td>
+          </tr>
+          <tr class="row-media">
+            <td><strong>G-11</strong></td>
+            <td>Observability</td>
+            <td>logger.ts + tokens.ts</td>
+            <td>Per-agent tracking + dashboards</td>
+            <td>
+              <div class="gap-bar">
+                <div class="gap-bar-track"><div class="gap-bar-fill fill-media" style="width:25%"></div></div>
+                <span class="gap-bar-label">25%</span>
+              </div>
+            </td>
+            <td><span class="sev sev-media">MEDIA</span></td>
+            <td>FinOps</td>
+            <td>Dashboard funcional</td>
+          </tr>
+          <tr class="row-media">
+            <td><strong>G-12</strong></td>
+            <td>Operational KB</td>
+            <td>knowledge.ts + KB split</td>
+            <td>RAG-ready + confidence</td>
+            <td>
+              <div class="gap-bar">
+                <div class="gap-bar-track"><div class="gap-bar-fill fill-media" style="width:50%"></div></div>
+                <span class="gap-bar-label">50%</span>
+              </div>
+            </td>
+            <td><span class="sev sev-media">MEDIA</span></td>
+            <td>Research</td>
+            <td>Relevancia &gt;80%</td>
+          </tr>
+          <tr class="row-media">
+            <td><strong>G-15</strong></td>
+            <td>Voice Processing</td>
+            <td>audio.ts + Whisper</td>
+            <td>Optimizado + chunking</td>
+            <td>
+              <div class="gap-bar">
+                <div class="gap-bar-track"><div class="gap-bar-fill fill-media" style="width:50%"></div></div>
+                <span class="gap-bar-label">50%</span>
+              </div>
+            </td>
+            <td><span class="sev sev-media">MEDIA</span></td>
+            <td>UX captura</td>
+            <td>Audio &gt;60s funcional</td>
+          </tr>
+          <!-- BAJA -->
+          <tr class="row-baja">
+            <td><strong>G-03</strong></td>
+            <td>Agent Delegation</td>
+            <td>3 modos funcionales</td>
+            <td>Spec completa</td>
+            <td>
+              <div class="gap-bar">
+                <div class="gap-bar-track"><div class="gap-bar-fill fill-baja" style="width:75%"></div></div>
+                <span class="gap-bar-label">75%</span>
+              </div>
+            </td>
+            <td><span class="sev sev-baja">BAJA</span></td>
+            <td>&mdash;</td>
+            <td>Ya funcional</td>
+          </tr>
+          <tr class="row-baja">
+            <td><strong>G-04</strong></td>
+            <td>Security CP1-CP3</td>
+            <td>Implementado</td>
+            <td>CP3 fix</td>
+            <td>
+              <div class="gap-bar">
+                <div class="gap-bar-track"><div class="gap-bar-fill fill-baja" style="width:80%"></div></div>
+                <span class="gap-bar-label">80%</span>
+              </div>
+            </td>
+            <td><span class="sev sev-baja">BAJA</span></td>
+            <td>Brand</td>
+            <td>Fix enforcement</td>
+          </tr>
+          <tr class="row-baja">
+            <td><strong>G-09</strong></td>
+            <td>n8n ESB</td>
+            <td>No integrado</td>
+            <td>Spike evaluaci&oacute;n</td>
+            <td>
+              <div class="gap-bar">
+                <div class="gap-bar-track"><div class="gap-bar-fill fill-baja" style="width:0%"></div></div>
+                <span class="gap-bar-label">0%</span>
+              </div>
+            </td>
+            <td><span class="sev sev-baja">BAJA</span></td>
+            <td>Google (si adopta)</td>
+            <td>H2 spike</td>
+          </tr>
+          <tr class="row-baja">
+            <td><strong>G-10</strong></td>
+            <td>Multi-Tenant</td>
+            <td>Excluido</td>
+            <td>tenant/{id}/</td>
+            <td>
+              <div class="gap-bar">
+                <div class="gap-bar-track"><div class="gap-bar-fill fill-baja" style="width:0%"></div></div>
+                <span class="gap-bar-label">0%</span>
+              </div>
+            </td>
+            <td><span class="sev sev-baja">BAJA</span></td>
+            <td>B2B</td>
+            <td>H3</td>
+          </tr>
+          <tr class="row-baja">
+            <td><strong>G-13</strong></td>
+            <td>Brand Voice</td>
+            <td>Implementado</td>
+            <td>Minto MECE</td>
+            <td>
+              <div class="gap-bar">
+                <div class="gap-bar-track"><div class="gap-bar-fill fill-baja" style="width:70%"></div></div>
+                <span class="gap-bar-label">70%</span>
+              </div>
+            </td>
+            <td><span class="sev sev-baja">BAJA</span></td>
+            <td>&mdash;</td>
+            <td>Ya funcional</td>
+          </tr>
+          <tr class="row-baja">
+            <td><strong>G-14</strong></td>
+            <td>Circuit Breaker</td>
+            <td>Implementado</td>
+            <td>Per-provider</td>
+            <td>
+              <div class="gap-bar">
+                <div class="gap-bar-track"><div class="gap-bar-fill fill-baja" style="width:80%"></div></div>
+                <span class="gap-bar-label">80%</span>
+              </div>
+            </td>
+            <td><span class="sev sev-baja">BAJA</span></td>
+            <td>&mdash;</td>
+            <td>Ya funcional</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ════ SECTION 2: RESUMEN POR SEVERIDAD ════ -->
+  <section class="card" data-mtia="section-summary">
+    <h2>2 &mdash; Resumen por Severidad</h2>
+    <div class="summary-grid">
+      <div class="summary-item">
+        <span class="summary-count cnt-crit">2</span>
+        <div>
+          <div class="summary-label"><span class="sev sev-crit">CR&Iacute;TICA</span></div>
+          <div class="summary-ids">G-05, G-06</div>
+        </div>
+      </div>
+      <div class="summary-item">
+        <span class="summary-count cnt-alta">2</span>
+        <div>
+          <div class="summary-label"><span class="sev sev-alta">ALTA</span></div>
+          <div class="summary-ids">G-02, G-07</div>
+        </div>
+      </div>
+      <div class="summary-item">
+        <span class="summary-count cnt-media">5</span>
+        <div>
+          <div class="summary-label"><span class="sev sev-media">MEDIA</span></div>
+          <div class="summary-ids">G-01, G-08, G-11, G-12, G-15</div>
+        </div>
+      </div>
+      <div class="summary-item">
+        <span class="summary-count cnt-baja">6</span>
+        <div>
+          <div class="summary-label"><span class="sev sev-baja">BAJA</span></div>
+          <div class="summary-ids">G-03, G-04, G-09, G-10, G-13, G-14</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ SECTION 3: CADENA DE DEPENDENCIAS ════ -->
+  <section class="card" data-mtia="section-dependencies">
+    <h2>3 &mdash; Cadena de Dependencias</h2>
+
+    <!-- Chain 1: Critical path -->
+    <h3>Ruta Cr&iacute;tica &rarr; Monetizaci&oacute;n B2B</h3>
+    <div class="dep-chain">
+      <div>
+        <div class="dep-row">
+          <div class="dep-node node-crit"><span class="node-id">G-06</span> Project State</div>
+          <div class="dep-arrow thick">&#9552;&#9552;&gt;</div>
+          <div class="dep-node node-crit"><span class="node-id">G-05</span> HIL Middleware</div>
+          <div class="dep-arrow thick">&#9552;&#9552;&gt;</div>
+          <div class="dep-node node-alta"><span class="node-id">G-07</span> Artifact Pipeline</div>
+          <div class="dep-arrow thick">&#9552;&#9552;&gt;</div>
+          <div class="dep-node node-goal">Monetizaci&oacute;n B2B</div>
+        </div>
+        <div class="dep-label">Cadena bloqueante &mdash; sin G-06 nada avanza</div>
+      </div>
+
+      <!-- Chain 2: Research path -->
+      <h3>Ruta Research</h3>
+      <div>
+        <div class="dep-row">
+          <div class="dep-node node-alta"><span class="node-id">G-02</span> Memory Semantic</div>
+          <div class="dep-arrow">&#8594;&#8594;</div>
+          <div class="dep-node node-media"><span class="node-id">G-12</span> Operational KB</div>
+          <div class="dep-arrow">&#8594;&#8594;</div>
+          <div class="dep-node node-goal">Research Quality</div>
+        </div>
+        <div class="dep-label">Mejora progresiva de calidad de respuestas</div>
+      </div>
+
+      <!-- Chain 3: Google Workspace -->
+      <h3>Ruta Google Workspace</h3>
+      <div>
+        <div class="dep-row">
+          <div class="dep-node node-media"><span class="node-id">G-08</span> Google Workspace</div>
+          <div class="dep-arrow">requires</div>
+          <div class="dep-node node-crit"><span class="node-id">G-05</span> HIL</div>
+          <div class="dep-plus">+</div>
+          <div class="dep-node node-baja"><span class="node-id">G-09</span> n8n spike</div>
+        </div>
+        <div class="dep-label">Google depende de aprobaci&oacute;n HIL y evaluaci&oacute;n de middleware ESB</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ SECTION 4: TRADE-OFFS ════ -->
+  <section class="card" data-mtia="section-tradeoffs">
+    <h2>4 &mdash; Trade-offs Arquitect&oacute;nicos</h2>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Trade-off</th>
+            <th>Opci&oacute;n A</th>
+            <th>Opci&oacute;n B</th>
+            <th>Elegida</th>
+            <th>Justificaci&oacute;n</th>
+            <th>Reversal Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Memory</strong></td>
+            <td>Vector DB ahora</td>
+            <td>Text search Firestore</td>
+            <td class="chosen">B</td>
+            <td>Complejidad prematura</td>
+            <td><span class="sev sev-media">Medio</span></td>
+          </tr>
+          <tr>
+            <td><strong>HIL granularity</strong></td>
+            <td>Per-action</td>
+            <td>Per-session</td>
+            <td class="chosen">A</td>
+            <td>Seguridad &gt; UX</td>
+            <td><span class="sev sev-baja">Bajo</span></td>
+          </tr>
+          <tr>
+            <td><strong>Artifact storage</strong></td>
+            <td>Embedded</td>
+            <td>Colecci&oacute;n separada</td>
+            <td class="chosen">Separada</td>
+            <td>Versionado independiente</td>
+            <td><span class="sev sev-crit">Alto</span></td>
+          </tr>
+          <tr>
+            <td><strong>CRON compression</strong></td>
+            <td>Destructiva</td>
+            <td>Con snapshots</td>
+            <td class="chosen">Destructiva + log</td>
+            <td>Ahorro storage</td>
+            <td><span class="sev sev-crit">Alto</span></td>
+          </tr>
+          <tr>
+            <td><strong>n8n timing</strong></td>
+            <td>Ahora</td>
+            <td>H2</td>
+            <td class="chosen">H2</td>
+            <td>Sin carga de trabajo</td>
+            <td><span class="sev sev-baja">Bajo</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ════ FOOTER ════ -->
+  <footer data-mtia="footer">
+    <div class="brand-wordmark"><span class="wm-white">Metodolog</span><span class="wm-gold">IA</span></div>
+    <p>&copy; 2026 MetodologIA. Copyleft &mdash; Para uso y aprovechamiento de profesionales en la era de la IA.</p>
+  </footer>
+
+</div>
+</body>
+</html>

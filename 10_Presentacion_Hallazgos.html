@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es" data-mtia="presentacion-hallazgos">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hallazgos del Discovery — Nexus Assistant OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&family=Poppins:wght@700&display=swap" rel="stylesheet">
+  <style>
+    /* === MetodologIA Aesthetic Standard === */
+    :root {
+      --body-bg: #1E3258;
+      --card-bg: rgba(255,255,255,0.06);
+      --card-border: rgba(255,255,255,0.10);
+      --gold: #FFD700;
+      --blue: #137DC5;
+      --navy-deep: #122562;
+      --dark-bg: #1F2833;
+      --lavender: #BBA0CC;
+      --gray: #808080;
+      --text: #E8E8E8;
+      --text-muted: rgba(232,232,232,0.6);
+      --font-display: 'Poppins', sans-serif;
+      --font-body: 'Montserrat', sans-serif;
+      --radius: 16px;
+      --slide-max: 960px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--body-bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-weight: 400;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a { color: var(--gold); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* === Skip link === */
+    .skip-link {
+      position: absolute; top: -100%; left: 16px;
+      background: var(--gold); color: var(--navy-deep);
+      padding: 8px 16px; border-radius: 4px; z-index: 1000;
+      font-family: var(--font-display); font-weight: 700;
+    }
+    .skip-link:focus { top: 16px; }
+
+    /* === Header === */
+    header[data-mtia="header"] {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 32px; max-width: 1200px; margin: 0 auto;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-text { font-family: var(--font-display); font-weight: 700; font-size: 1.35rem; }
+    .brand-text .ia { color: var(--gold); }
+
+    /* === Nav dots === */
+    nav[data-mtia="nav-dots"] {
+      display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+      padding: 0 32px 12px; max-width: 1200px; margin: 0 auto;
+    }
+    .dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: rgba(255,255,255,0.15); transition: all 0.2s;
+      display: inline-block;
+    }
+    .dot:hover { background: var(--gold); transform: scale(1.3); }
+    .dot.active { background: var(--gold); }
+
+    /* === Slides === */
+    main { max-width: var(--slide-max); margin: 0 auto; padding: 0 24px 64px; }
+
+    .slide {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 48px 40px;
+      margin-bottom: 32px;
+      min-height: 420px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+
+    .slide-title {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 2rem; line-height: 1.2; margin-bottom: 16px;
+      color: var(--gold);
+    }
+
+    .slide-subtitle {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 1.15rem; color: var(--blue); margin-bottom: 24px;
+    }
+
+    .slide h2 {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 1.6rem; color: var(--gold); margin-bottom: 8px;
+    }
+
+    .slide h3 {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 1.1rem; color: var(--blue); margin-bottom: 20px;
+    }
+
+    .slide p { margin-bottom: 14px; font-size: 1.05rem; }
+
+    .conclusion {
+      font-size: 1.25rem; font-weight: 500;
+      color: #fff; margin-bottom: 20px;
+      border-left: 4px solid var(--gold); padding-left: 16px;
+    }
+
+    .evidence {
+      display: inline-block; font-size: 0.8rem; font-weight: 500;
+      background: rgba(19,125,197,0.2); color: var(--blue);
+      padding: 3px 10px; border-radius: 20px; margin-top: 8px;
+    }
+
+    .metric {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 2.4rem; color: var(--gold); display: block;
+      margin-bottom: 4px;
+    }
+
+    .metric-label {
+      font-size: 0.9rem; color: var(--text-muted); display: block;
+      margin-bottom: 16px;
+    }
+
+    .metrics-row {
+      display: flex; gap: 32px; flex-wrap: wrap; margin-bottom: 20px;
+    }
+
+    .tag-critical {
+      display: inline-block; background: rgba(255,80,80,0.2);
+      color: #ff6b6b; font-size: 0.8rem; font-weight: 500;
+      padding: 3px 10px; border-radius: 20px;
+    }
+
+    .tag-positive {
+      display: inline-block; background: rgba(80,200,120,0.15);
+      color: #50c878; font-size: 0.8rem; font-weight: 500;
+      padding: 3px 10px; border-radius: 20px;
+    }
+
+    ul.steps { list-style: none; counter-reset: step; }
+    ul.steps li {
+      counter-increment: step; padding: 8px 0 8px 36px;
+      position: relative; font-size: 1.05rem;
+    }
+    ul.steps li::before {
+      content: counter(step); position: absolute; left: 0; top: 8px;
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--gold); color: var(--navy-deep);
+      font-family: var(--font-display); font-weight: 700; font-size: 0.8rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .viability-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px;
+      margin-bottom: 16px;
+    }
+    .viability-item { display: flex; justify-content: space-between; align-items: center; }
+    .viability-item span:first-child { color: var(--text-muted); }
+    .viability-item .score { font-family: var(--font-display); font-weight: 700; }
+    .score-high { color: #50c878; }
+    .score-mid { color: var(--gold); }
+    .score-low { color: #ff6b6b; }
+
+    /* === Footer === */
+    footer[data-mtia="footer"] {
+      text-align: center; padding: 32px 24px 48px;
+      max-width: var(--slide-max); margin: 0 auto;
+      border-top: 1px solid var(--card-border);
+    }
+    .footer-brand { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; }
+    .footer-copy { font-size: 0.82rem; color: var(--text-muted); line-height: 1.7; }
+
+    /* === Print === */
+    @media print {
+      body { background: #fff; color: #1a1a1a; }
+      .slide {
+        background: #f8f8f8; backdrop-filter: none;
+        border: 1px solid #ddd; page-break-inside: avoid;
+        break-inside: avoid;
+      }
+      .slide-title, .slide h2 { color: var(--navy-deep); }
+      .conclusion { color: #1a1a1a; border-left-color: var(--navy-deep); }
+      nav[data-mtia="nav-dots"] { display: none; }
+      .skip-link { display: none; }
+      .evidence { background: #eef4fb; }
+    }
+
+    /* === Responsive === */
+    @media (max-width: 640px) {
+      .slide { padding: 32px 20px; min-height: auto; }
+      .slide-title { font-size: 1.5rem; }
+      .slide h2 { font-size: 1.3rem; }
+      .metric { font-size: 1.8rem; }
+      .metrics-row { gap: 16px; }
+      .viability-grid { grid-template-columns: 1fr; }
+      header[data-mtia="header"] { padding: 16px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Ir al contenido</a>
+
+<!-- ===== Header ===== -->
+<header data-mtia="header">
+  <div class="brand">
+    <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="36" height="36" rx="8" fill="#122562"/>
+      <rect x="7" y="10" width="4" height="16" rx="2" fill="white"/>
+      <rect x="16" y="10" width="4" height="16" rx="2" fill="white"/>
+      <rect x="25" y="10" width="4" height="16" rx="2" fill="white"/>
+      <circle cx="29" cy="8" r="3.5" fill="#FFD700"/>
+    </svg>
+    <span class="brand-text">Metodolog<span class="ia">IA</span></span>
+  </div>
+  <span style="font-size:0.82rem; color:var(--text-muted);">Artifact 10 / 10</span>
+</header>
+
+<!-- ===== Nav dots ===== -->
+<nav data-mtia="nav-dots" aria-label="Navegacion de slides">
+  <a href="#slide-1" class="dot active" title="Titulo"></a>
+  <a href="#slide-2" class="dot" title="Hallazgo 1"></a>
+  <a href="#slide-3" class="dot" title="Hallazgo 2"></a>
+  <a href="#slide-4" class="dot" title="Hallazgo 3"></a>
+  <a href="#slide-5" class="dot" title="Hallazgo 4"></a>
+  <a href="#slide-6" class="dot" title="Hallazgo 5"></a>
+  <a href="#slide-7" class="dot" title="Hallazgo 6"></a>
+  <a href="#slide-8" class="dot" title="Hallazgo 7"></a>
+  <a href="#slide-9" class="dot" title="Hallazgo 8"></a>
+  <a href="#slide-10" class="dot" title="Hallazgo 9"></a>
+  <a href="#slide-11" class="dot" title="Hallazgo 10"></a>
+  <a href="#slide-12" class="dot" title="Proximos Pasos"></a>
+</nav>
+
+<!-- ===== Main ===== -->
+<main id="main" data-mtia="slides">
+
+  <!-- Slide 1: Titulo -->
+  <section class="slide" id="slide-1" data-mtia="slide-titulo">
+    <p class="slide-title" style="font-size:2.4rem;">Hallazgos del Discovery</p>
+    <p class="slide-subtitle" style="font-size:1.5rem;">Nexus Assistant OS</p>
+    <div class="metrics-row" style="margin-top:24px;">
+      <div>
+        <span class="metric" style="font-size:1.6rem;">2026-04-03</span>
+        <span class="metric-label">Fecha de corte</span>
+      </div>
+      <div>
+        <span class="metric" style="font-size:1.6rem;">8 fases</span>
+        <span class="metric-label">Pipeline Full</span>
+      </div>
+      <div>
+        <span class="metric" style="font-size:1.6rem;">4 gates</span>
+        <span class="metric-label">Quality checkpoints</span>
+      </div>
+    </div>
+    <p style="margin-top:8px;">Escenario aprobado: <strong style="color:var(--gold);">Evolucion Incremental</strong> (4.2 / 5.0)</p>
+  </section>
+
+  <!-- Slide 2: Hallazgo 1 -->
+  <section class="slide" id="slide-2" data-mtia="slide-hallazgo-1">
+    <h2>Hallazgo 1</h2>
+    <h3>El sistema tiene base solida</h3>
+    <p class="conclusion">NO se requiere rewrite. La arquitectura existente es funcional y extensible.</p>
+    <div class="metrics-row">
+      <div><span class="metric">87/100</span><span class="metric-label">Spec score</span></div>
+      <div><span class="metric">6</span><span class="metric-label">Agentes</span></div>
+      <div><span class="metric">24</span><span class="metric-label">Skills</span></div>
+      <div><span class="metric">96</span><span class="metric-label">Workflows</span></div>
+    </div>
+    <p>Constitution de 8 principios implementada. 7 patrones arquitectonicos probados.</p>
+    <span class="evidence">[CODIGO] 50 archivos TS organizados en 4 planos funcionales</span>
+  </section>
+
+  <!-- Slide 3: Hallazgo 2 -->
+  <section class="slide" id="slide-3" data-mtia="slide-hallazgo-2">
+    <h2>Hallazgo 2</h2>
+    <h3>2 gaps criticos bloquean la evolucion</h3>
+    <p class="conclusion">Sin Project State Engine y HIL Middleware, Nexus es "ChatGPT en Telegram", no un Work OS.</p>
+    <div class="metrics-row">
+      <div><span class="metric">0%</span><span class="metric-label">Project State Engine</span></div>
+      <div><span class="metric">15%</span><span class="metric-label">HIL Middleware</span></div>
+    </div>
+    <p>Ambos son <strong>ADICIONES</strong>, no cambios destructivos. La base existente no se altera.</p>
+    <span class="evidence">[DOC] D3, D4, Constitution</span>
+  </section>
+
+  <!-- Slide 4: Hallazgo 3 -->
+  <section class="slide" id="slide-4" data-mtia="slide-hallazgo-3">
+    <h2>Hallazgo 3</h2>
+    <h3>7 documentos nunca fueron reconciliados</h3>
+    <p class="conclusion">7 conflictos resueltos: topologia, patron, persistencia, LifeSync, n8n, HIL, permisos.</p>
+    <p>Stack de verdad: <strong style="color:var(--gold);">D3 + D7 + Repo + Constitution</strong>.</p>
+    <p>D6 es <span class="tag-critical">80% aspiracional</span> — no usar como fuente de verdad arquitectonica.</p>
+    <span class="evidence">[DOC] 7 documentos analizados</span>
+  </section>
+
+  <!-- Slide 5: Hallazgo 4 -->
+  <section class="slide" id="slide-5" data-mtia="slide-hallazgo-4">
+    <h2>Hallazgo 4</h2>
+    <h3>State Machine &gt; Swarm &gt; Agent Loop</h3>
+    <p class="conclusion">Decision arquitectonica mas importante. Cada mensaje transiciona estado en Firestore.</p>
+    <p>No hay loops autonomos. Predecible, auditable, costos controlados.</p>
+    <p><span class="tag-positive">Correcto para B2B</span></p>
+    <span class="evidence">[DOC] D3 seccion 9, Constitution</span>
+  </section>
+
+  <!-- Slide 6: Hallazgo 5 -->
+  <section class="slide" id="slide-6" data-mtia="slide-hallazgo-5">
+    <h2>Hallazgo 5</h2>
+    <h3>El roadmap es de extension, no de construccion</h3>
+    <p class="conclusion">El 80% de la infraestructura ya existe. Solo se extiende.</p>
+    <div class="metrics-row">
+      <div><span class="metric">3</span><span class="metric-label">Horizontes</span></div>
+      <div><span class="metric">16</span><span class="metric-label">Semanas</span></div>
+      <div><span class="metric">~6</span><span class="metric-label">FTE-meses</span></div>
+    </div>
+    <p>H1 (4 semanas) cierra gaps criticos. H2 y H3 son extension y escala.</p>
+    <span class="evidence">[DOC] Roadmap A7</span>
+  </section>
+
+  <!-- Slide 7: Hallazgo 6 -->
+  <section class="slide" id="slide-7" data-mtia="slide-hallazgo-6">
+    <h2>Hallazgo 6</h2>
+    <h3>Viabilidad confirmada (6/7 positiva)</h3>
+    <p class="conclusion">Think Tank valida la viabilidad multidimensional. Solo escalabilidad tiene condicion restrictiva.</p>
+    <div class="viability-grid">
+      <div class="viability-item"><span>Tecnica</span><span class="score score-high">9/10</span></div>
+      <div class="viability-item"><span>Economica</span><span class="score score-high">9/10</span></div>
+      <div class="viability-item"><span>Temporal</span><span class="score score-high">8/10</span></div>
+      <div class="viability-item"><span>Seguridad</span><span class="score score-high">8/10</span></div>
+      <div class="viability-item"><span>Mercado</span><span class="score score-mid">7/10</span></div>
+      <div class="viability-item"><span>Operativa</span><span class="score score-mid">7/10</span></div>
+      <div class="viability-item"><span>Escalabilidad</span><span class="score score-low">6/10</span></div>
+    </div>
+    <p style="font-size:0.9rem; color:var(--text-muted);">Condiciones: priorizar sobre LifeSync (operativa) | no H3 antes de H1 Gate (escalabilidad)</p>
+    <span class="evidence">[DOC] Think Tank 05b</span>
+  </section>
+
+  <!-- Slide 8: Hallazgo 7 -->
+  <section class="slide" id="slide-8" data-mtia="slide-hallazgo-7">
+    <h2>Hallazgo 7</h2>
+    <h3>Killer use case: Voz &rarr; Propuesta HTML</h3>
+    <p class="conclusion">Flujo probado parcialmente. Revenue path: B2B por volumen de propuestas.</p>
+    <p>Necesita tres componentes para completar el flujo:</p>
+    <ul class="steps" style="margin-top:12px;">
+      <li>Project State (contexto persistente)</li>
+      <li>Artifact Versioning (URLs estables)</li>
+      <li>HIL (aprobacion de publicacion)</li>
+    </ul>
+    <span class="evidence" style="margin-top:16px;">[CODIGO] src/proposals/, controlled-deliverables.ts</span>
+  </section>
+
+  <!-- Slide 9: Hallazgo 8 -->
+  <section class="slide" id="slide-9" data-mtia="slide-hallazgo-8">
+    <h2>Hallazgo 8</h2>
+    <h3>LifeSync es producto independiente</h3>
+    <p class="conclusion">Stacks incompatibles. Paradigmas opuestos. Conexion via MCP posible en H3+.</p>
+    <div class="metrics-row" style="margin-top:8px;">
+      <div style="flex:1; padding:12px; background:rgba(255,255,255,0.04); border-radius:8px; text-align:center;">
+        <span style="font-family:var(--font-display); font-weight:700; color:var(--blue);">Nexus</span><br>
+        <span style="font-size:0.9rem; color:var(--text-muted);">TS / Firebase / webhook-driven</span>
+      </div>
+      <div style="flex:1; padding:12px; background:rgba(255,255,255,0.04); border-radius:8px; text-align:center;">
+        <span style="font-family:var(--font-display); font-weight:700; color:var(--lavender);">LifeSync</span><br>
+        <span style="font-size:0.9rem; color:var(--text-muted);">Flutter / Supabase / offline-first</span>
+      </div>
+    </div>
+    <p style="margin-top:16px;"><span class="tag-critical">Riesgo: fragmentacion de esfuerzo</span></p>
+    <span class="evidence">[DOC] PRD LifeSync</span>
+  </section>
+
+  <!-- Slide 10: Hallazgo 9 -->
+  <section class="slide" id="slide-10" data-mtia="slide-hallazgo-9">
+    <h2>Hallazgo 9</h2>
+    <h3>Security tiene 1 issue HIGH pendiente</h3>
+    <p class="conclusion">CP3 mischaracterizes su rol: detecta pero no enforce. Fix necesario antes de produccion B2B.</p>
+    <div class="metrics-row">
+      <div><span class="metric" style="color:#50c878;">CP1</span><span class="metric-label">Solido</span></div>
+      <div><span class="metric" style="color:#50c878;">CP2</span><span class="metric-label">Solido</span></div>
+      <div><span class="metric" style="color:#ff6b6b;">CP3</span><span class="metric-label">Issue HIGH</span></div>
+    </div>
+    <span class="evidence">[DOC] analysis.md</span>
+  </section>
+
+  <!-- Slide 11: Hallazgo 10 -->
+  <section class="slide" id="slide-11" data-mtia="slide-hallazgo-10">
+    <h2>Hallazgo 10</h2>
+    <h3>Mirror instances validan multi-tenant parcial</h3>
+    <p class="conclusion">Pristino/Deonto ya operan con aislamiento de estado. Esto facilita H3 multi-tenant.</p>
+    <p>Pero <span class="tag-critical">no hay test explicito de cross-instance leak</span>.</p>
+    <span class="evidence">[DOC] PREMISE.md</span>
+  </section>
+
+  <!-- Slide 12: Proximos Pasos -->
+  <section class="slide" id="slide-12" data-mtia="slide-proximos-pasos">
+    <h2>Proximos Pasos</h2>
+    <h3>Horizonte 1 — Primeras 4 semanas</h3>
+    <ul class="steps">
+      <li><strong>S1 esta semana:</strong> Project State Engine</li>
+      <li><strong>S2 semana 2:</strong> HIL Middleware</li>
+      <li><strong>Fix CP3</strong> issue HIGH (security enforcement)</li>
+      <li><strong>Gate H1</strong> en semana 4 — validacion de completitud</li>
+    </ul>
+  </section>
+
+</main>
+
+<!-- ===== Footer ===== -->
+<footer data-mtia="footer">
+  <div class="footer-brand">
+    <svg width="24" height="24" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="36" height="36" rx="8" fill="#122562"/>
+      <rect x="7" y="10" width="4" height="16" rx="2" fill="white"/>
+      <rect x="16" y="10" width="4" height="16" rx="2" fill="white"/>
+      <rect x="25" y="10" width="4" height="16" rx="2" fill="white"/>
+      <circle cx="29" cy="8" r="3.5" fill="#FFD700"/>
+    </svg>
+    <span style="font-family:var(--font-display); font-weight:700; font-size:1rem;">Metodolog<span style="color:var(--gold);">IA</span></span>
+  </div>
+  <p class="footer-copy">
+    &copy; 2026 MetodologIA. Copyleft &mdash; Para uso y aprovechamiento de profesionales en la era de la IA.<br>
+    Construido por profesionales, potenciado por la red agentica de MetodologIA.
+  </p>
+</footer>
+
+</body>
+</html>

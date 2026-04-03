@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A7 — Roadmap Critico — Nexus Assistant OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ── Reset ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ── Tokens ── */
+  :root {
+    --bg: #1E3258;
+    --bg-deep: #152545;
+    --card: rgba(255,255,255,0.06);
+    --card-hover: rgba(255,255,255,0.10);
+    --gold: #FFD700;
+    --blue: #137DC5;
+    --purple: #BBA0CC;
+    --navy-dark: #122562;
+    --text: #E8E8E8;
+    --text-muted: #A8B8CC;
+    --gray: #808080;
+    --danger: #E74C3C;
+    --font-display: 'Poppins', sans-serif;
+    --font-body: 'Montserrat', sans-serif;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-weight: 400;
+    line-height: 1.65;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Skip link ── */
+  .skip-link {
+    position: absolute; left: -9999px; top: auto;
+    background: var(--gold); color: var(--bg); padding: 8px 16px;
+    font-family: var(--font-display); font-weight: 700; z-index: 100;
+    border-radius: var(--radius-sm);
+  }
+  .skip-link:focus { left: 16px; top: 16px; }
+
+  /* ── Layout ── */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+  /* ── Header ── */
+  header {
+    background: linear-gradient(135deg, var(--bg-deep) 0%, var(--bg) 100%);
+    border-bottom: 2px solid rgba(255,215,0,0.25);
+    padding: 24px 0;
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(12px);
+  }
+  .header-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .brand-logo {
+    width: 36px; height: 36px; flex-shrink: 0;
+  }
+  .brand-wordmark { font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; letter-spacing: -0.02em; }
+  .brand-wordmark .wm-ia { color: var(--gold); }
+  .brand-wordmark .wm-prefix { color: #fff; }
+  .header-tag {
+    font-family: var(--font-display); font-size: 0.75rem; font-weight: 600;
+    background: rgba(255,215,0,0.12); color: var(--gold);
+    padding: 4px 12px; border-radius: 99px; letter-spacing: 0.04em;
+  }
+
+  /* ── Hero ── */
+  .hero { text-align: center; padding: 56px 0 36px; }
+  .hero h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem,4vw,2.4rem); color: #fff; margin-bottom: 8px; }
+  .hero h1 span { color: var(--gold); }
+  .hero p { font-size: 1.05rem; color: var(--text-muted); max-width: 600px; margin: 0 auto; }
+
+  /* ── Section ── */
+  section { margin-bottom: 48px; }
+  .section-heading {
+    font-family: var(--font-display); font-weight: 700; font-size: 1.35rem;
+    margin-bottom: 24px; padding-bottom: 8px;
+    border-bottom: 2px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-heading .num {
+    background: var(--gold); color: var(--bg); width: 28px; height: 28px;
+    border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
+  }
+
+  /* ── Timeline visual ── */
+  .timeline-strip {
+    display: flex; gap: 0; border-radius: var(--radius);
+    overflow: hidden; margin-bottom: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+  }
+  .tl-block {
+    padding: 20px 16px; text-align: center;
+    font-family: var(--font-display); font-weight: 700;
+    display: flex; flex-direction: column; justify-content: center; gap: 4px;
+    position: relative;
+  }
+  .tl-block .tl-weeks { font-size: 0.7rem; font-weight: 400; opacity: 0.85; font-family: var(--font-body); }
+  .tl-block .tl-label { font-size: 0.95rem; letter-spacing: 0.02em; }
+  .tl-block .tl-sprints { font-size: 0.65rem; font-weight: 400; opacity: 0.7; font-family: var(--font-body); }
+  .tl-h1 { flex: 4; background: linear-gradient(135deg, #b8960a 0%, #d4af37 50%, #FFD700 100%); color: var(--bg); }
+  .tl-h2 { flex: 6; background: linear-gradient(135deg, #0e5a8f 0%, #137DC5 100%); color: #fff; }
+  .tl-h3 { flex: 6; background: linear-gradient(135deg, #7a5a9e 0%, #BBA0CC 100%); color: var(--bg); }
+
+  /* gate marker on timeline */
+  .tl-block::after {
+    content: 'GATE'; position: absolute; right: -1px; top: 50%; transform: translateY(-50%);
+    background: var(--bg); color: var(--gold); font-size: 0.55rem; font-weight: 700;
+    padding: 2px 6px; border-radius: 4px; z-index: 2;
+    border: 1px solid var(--gold); letter-spacing: 0.06em;
+  }
+
+  /* ── Badge ── */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: var(--font-display); font-weight: 700; font-size: 0.65rem;
+    padding: 3px 10px; border-radius: 99px; letter-spacing: 0.04em;
+    text-transform: uppercase; white-space: nowrap;
+  }
+  .badge-h1 { background: rgba(255,215,0,0.18); color: var(--gold); }
+  .badge-h2 { background: rgba(19,125,197,0.20); color: var(--blue); }
+  .badge-h3 { background: rgba(187,160,204,0.20); color: var(--purple); }
+  .badge-crit { background: rgba(231,76,60,0.18); color: var(--danger); }
+  .badge-alta { background: rgba(255,215,0,0.15); color: var(--gold); }
+  .badge-media { background: rgba(19,125,197,0.15); color: var(--blue); }
+
+  /* ── Sprint Cards Grid ── */
+  .sprint-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .sprint-card {
+    background: var(--card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius);
+    padding: 24px;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .sprint-card:hover {
+    background: var(--card-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+  .sprint-card .card-top {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px; flex-wrap: wrap; gap: 6px;
+  }
+  .sprint-card .sprint-id {
+    font-family: var(--font-display); font-weight: 700; font-size: 0.85rem;
+    color: var(--gold);
+  }
+  .sprint-card h3 {
+    font-family: var(--font-display); font-weight: 700; font-size: 1.05rem;
+    margin-bottom: 12px; color: #fff;
+  }
+  .sprint-card .criterion {
+    background: rgba(255,255,255,0.04);
+    border-left: 3px solid var(--gold);
+    padding: 10px 14px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-size: 0.82rem; color: var(--text-muted); margin-bottom: 10px;
+    line-height: 1.55;
+  }
+  .sprint-card .edge-cases {
+    font-size: 0.78rem; color: var(--text-muted); margin-top: 8px;
+  }
+  .sprint-card .edge-cases strong { color: var(--text); font-weight: 600; }
+
+  /* ── Gate Box ── */
+  .gate-box {
+    background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,215,0,0.03));
+    border: 1px solid rgba(255,215,0,0.25);
+    border-radius: var(--radius);
+    padding: 20px 24px; margin-top: 24px;
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .gate-box.gate-h2 {
+    background: linear-gradient(135deg, rgba(19,125,197,0.08), rgba(19,125,197,0.03));
+    border-color: rgba(19,125,197,0.25);
+  }
+  .gate-box.gate-h3 {
+    background: linear-gradient(135deg, rgba(187,160,204,0.08), rgba(187,160,204,0.03));
+    border-color: rgba(187,160,204,0.25);
+  }
+  .gate-icon {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; flex-shrink: 0; font-weight: 700;
+    font-family: var(--font-display);
+  }
+  .gate-box .gate-icon { background: rgba(255,215,0,0.15); color: var(--gold); }
+  .gate-box.gate-h2 .gate-icon { background: rgba(19,125,197,0.15); color: var(--blue); }
+  .gate-box.gate-h3 .gate-icon { background: rgba(187,160,204,0.15); color: var(--purple); }
+  .gate-box .gate-content { flex: 1; }
+  .gate-box .gate-title {
+    font-family: var(--font-display); font-weight: 700; font-size: 0.95rem;
+    margin-bottom: 6px;
+  }
+  .gate-box ul { list-style: none; padding: 0; }
+  .gate-box ul li {
+    font-size: 0.82rem; color: var(--text-muted); padding: 3px 0;
+    padding-left: 18px; position: relative;
+  }
+  .gate-box ul li::before {
+    content: ''; position: absolute; left: 0; top: 10px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold);
+  }
+  .gate-box.gate-h2 ul li::before { background: var(--blue); }
+  .gate-box.gate-h3 ul li::before { background: var(--purple); }
+
+  /* ── Dependency Diagram ── */
+  .dep-diagram {
+    background: var(--card);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius);
+    padding: 32px 24px;
+    overflow-x: auto;
+  }
+  .dep-row {
+    display: flex; align-items: center; gap: 0;
+    margin-bottom: 20px; flex-wrap: nowrap; min-width: 700px;
+  }
+  .dep-row:last-child { margin-bottom: 0; }
+  .dep-label {
+    font-family: var(--font-display); font-weight: 700; font-size: 0.8rem;
+    padding: 6px 14px; border-radius: var(--radius-sm);
+    min-width: 50px; text-align: center; flex-shrink: 0;
+    margin-right: 12px;
+  }
+  .dep-label-h1 { background: rgba(255,215,0,0.18); color: var(--gold); }
+  .dep-label-h2 { background: rgba(19,125,197,0.20); color: var(--blue); }
+  .dep-label-h3 { background: rgba(187,160,204,0.20); color: var(--purple); }
+
+  .dep-node {
+    font-family: var(--font-display); font-weight: 600; font-size: 0.75rem;
+    padding: 8px 14px; border-radius: var(--radius-sm);
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    white-space: nowrap; text-align: center; flex-shrink: 0;
+  }
+  .dep-arrow {
+    display: flex; align-items: center; padding: 0 4px; flex-shrink: 0;
+    color: var(--text-muted); font-size: 1rem;
+  }
+  .dep-arrow-strong { color: var(--gold); font-weight: 700; }
+  .dep-arrow-h2 { color: var(--blue); }
+  .dep-arrow-h3 { color: var(--purple); }
+
+  .dep-gate {
+    font-family: var(--font-display); font-weight: 700; font-size: 0.65rem;
+    padding: 6px 12px; border-radius: var(--radius-sm);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    flex-shrink: 0; margin-left: 8px;
+  }
+  .dep-gate-h1 { background: var(--gold); color: var(--bg); }
+  .dep-gate-h2 { background: var(--blue); color: #fff; }
+  .dep-gate-h3 { background: var(--purple); color: var(--bg); }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center; padding: 32px 0; margin-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  footer .brand-footer { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; }
+  footer p { font-size: 0.78rem; color: var(--gray); }
+
+  /* ── Print ── */
+  @media print {
+    body { background: #fff; color: #1a1a1a; }
+    header { position: static; background: none; border-bottom: 2px solid #1E3258; }
+    .brand-wordmark .wm-prefix { color: #1E3258; }
+    .brand-wordmark .wm-ia { color: #b8960a; }
+    .sprint-card, .dep-diagram, .gate-box { break-inside: avoid; border: 1px solid #ccc; background: #f9f9f9; }
+    .sprint-card:hover { transform: none; box-shadow: none; }
+    .tl-h1, .tl-h2, .tl-h3 { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    footer { border-top: 1px solid #ccc; }
+    footer p { color: #666; }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .timeline-strip { flex-direction: column; }
+    .tl-block::after { right: auto; left: 50%; top: auto; bottom: -1px; transform: translateX(-50%); }
+    .sprint-grid { grid-template-columns: 1fr; }
+    .dep-diagram { padding: 20px 12px; }
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Ir al contenido</a>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header>
+  <div class="container header-inner">
+    <div class="brand">
+      <svg class="brand-logo" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="36" height="36" rx="8" fill="#122562"/>
+        <rect x="7" y="12" width="4" height="14" rx="2" fill="#fff"/>
+        <rect x="16" y="8" width="4" height="18" rx="2" fill="#fff"/>
+        <rect x="25" y="14" width="4" height="12" rx="2" fill="#fff"/>
+        <circle cx="28" cy="10" r="3" fill="#FFD700"/>
+      </svg>
+      <span class="brand-wordmark"><span class="wm-prefix">Metodolog</span><span class="wm-ia">IA</span></span>
+    </div>
+    <span class="header-tag">A7 &middot; Roadmap 3 Horizontes</span>
+  </div>
+</header>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<main id="main" class="container" style="padding-top:16px; padding-bottom:32px;">
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Roadmap Critico &mdash; <span>Nexus Assistant OS</span></h1>
+    <p>3 horizontes, 14 sprints, 3 gates</p>
+  </section>
+
+  <!-- ═══ SECTION 1 — Timeline ═══ -->
+  <section>
+    <h2 class="section-heading"><span class="num">1</span> Vista Timeline</h2>
+    <div class="timeline-strip" role="img" aria-label="Timeline de 3 horizontes: H1 semanas 1-4, H2 semanas 5-10, H3 semanas 11-16">
+      <div class="tl-block tl-h1">
+        <span class="tl-weeks">W1 &ndash; W4</span>
+        <span class="tl-label">H1 &middot; SOLIDIFICAR CORE</span>
+        <span class="tl-sprints">4 sprints</span>
+      </div>
+      <div class="tl-block tl-h2">
+        <span class="tl-weeks">W5 &ndash; W10</span>
+        <span class="tl-label">H2 &middot; EXPANDIR CAPACIDADES</span>
+        <span class="tl-sprints">5 sprints</span>
+      </div>
+      <div class="tl-block tl-h3">
+        <span class="tl-weeks">W11 &ndash; W16</span>
+        <span class="tl-label">H3 &middot; ESCALAR</span>
+        <span class="tl-sprints">4 sprints</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SECTION 2 — H1 Detail ═══ -->
+  <section>
+    <h2 class="section-heading"><span class="num">2</span> H1 &mdash; Solidificar Core <span class="badge badge-h1">H1 &middot; W1-4</span></h2>
+
+    <div class="sprint-grid">
+      <!-- S1 -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S1 &middot; W1-2</span>
+          <span class="badge badge-crit">G-06 CRIT</span>
+        </div>
+        <h3>Project State Engine</h3>
+        <div class="criterion">
+          <strong>Gherkin:</strong> Dado proyecto inactivo 30d, cuando operador envia &ldquo;retoma proyecto X&rdquo;, entonces recupera compressed_context &lt;500 tokens, inyecta en prompt, responde &lt;3s.
+        </div>
+        <div class="edge-cases">
+          <strong>Casos borde:</strong> nombre ambiguo (pedir clarificacion) &bull; context corrupto (degradar gracefully)
+        </div>
+      </article>
+
+      <!-- S2 -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S2 &middot; W2-3</span>
+          <span class="badge badge-crit">G-05 CRIT</span>
+        </div>
+        <h3>HIL Middleware</h3>
+        <div class="criterion">
+          <strong>Gherkin:</strong> Agente propone accion &rarr; crea pending_action &rarr; botones Inline &rarr; aprobacion &rarr; ejecuta. 0 false positives.
+        </div>
+        <div class="edge-cases">
+          <strong>Casos borde:</strong> approval post-TTL (re-proponer) &bull; doble click (idempotencia)
+        </div>
+      </article>
+
+      <!-- S3 -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S3 &middot; W3-4</span>
+          <span class="badge badge-alta">G-07 ALTA</span>
+        </div>
+        <h3>Artifact Versioning</h3>
+        <div class="criterion">
+          <strong>Gherkin:</strong> Genera HTML, sube Storage, URL firmada 7d, versiona, asocia a proyecto.
+        </div>
+        <div class="edge-cases">
+          <strong>Casos borde:</strong> generacion parcial (no guardar) &bull; storage quota (notificar)
+        </div>
+      </article>
+
+      <!-- S4 -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S4 &middot; W4</span>
+          <span class="badge badge-alta">G-02 + ADR-006</span>
+        </div>
+        <h3>Memory Enhancement + Token Budget</h3>
+        <div class="criterion">
+          <strong>Gherkin:</strong> TTL funcional, CRON comprime a &le;500 tokens, compression_log, budget enforced.
+        </div>
+        <div class="edge-cases">
+          <strong>Casos borde:</strong> CRON falla (rollback transaction) &bull; budget excedido 200% (truncar agresivo)
+        </div>
+      </article>
+    </div>
+
+    <!-- Gate H1 -->
+    <div class="gate-box">
+      <div class="gate-icon">G1</div>
+      <div class="gate-content">
+        <div class="gate-title">Gate H1 &mdash; Criterios de Paso</div>
+        <ul>
+          <li>10 HTML consecutivos generados via voz</li>
+          <li>Contexto recuperado tras 5+ dias de inactividad</li>
+          <li>3 acciones L2 aprobadas via HIL</li>
+          <li>0 acciones ejecutadas sin aprobacion</li>
+          <li>Budget enforced &gt;90% del tiempo</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SECTION 3 — H2 Detail ═══ -->
+  <section>
+    <h2 class="section-heading"><span class="num">3</span> H2 &mdash; Expandir Capacidades <span class="badge badge-h2">H2 &middot; W5-10</span></h2>
+
+    <div class="sprint-grid">
+      <!-- S5-6 -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S5-6 &middot; W5-7</span>
+          <span class="badge badge-media">G-08</span>
+        </div>
+        <h3>Google Tasks + Calendar</h3>
+        <div class="criterion">
+          Integracion bidireccional con Google Tasks y Calendar. CRUD completo con aprobacion L2 para escrituras.
+        </div>
+      </article>
+
+      <!-- S7-8 -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S7-8 &middot; W7-9</span>
+          <span class="badge badge-media">G-12</span>
+        </div>
+        <h3>Deep Research Pipeline</h3>
+        <div class="criterion">
+          Pipeline de investigacion profunda con fuentes multiples, sintesis y citacion. Sin loops infinitos.
+        </div>
+      </article>
+
+      <!-- S8 n8n -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S8 &middot; W8</span>
+          <span class="badge badge-media">G-09</span>
+        </div>
+        <h3>n8n Spike</h3>
+        <div class="criterion">
+          Spike de evaluacion: viabilidad de n8n como orquestador de workflows. Decision documentada Go/No-Go.
+        </div>
+      </article>
+
+      <!-- S9-10 -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S9-10 &middot; W9-10</span>
+          <span class="badge badge-media">G-11</span>
+        </div>
+        <h3>Observability Dashboard</h3>
+        <div class="criterion">
+          Dashboard operacional: metricas de uso, latencia, errores, costos token. Alertas configurables.
+        </div>
+      </article>
+    </div>
+
+    <!-- Gate H2 -->
+    <div class="gate-box gate-h2">
+      <div class="gate-icon">G2</div>
+      <div class="gate-content">
+        <div class="gate-title">Gate H2 &mdash; Criterios de Paso</div>
+        <ul>
+          <li>GTasks + Calendar funcional con aprobacion L2</li>
+          <li>Research pipeline sin loops infinitos</li>
+          <li>Dashboard operacional desplegado</li>
+          <li>Decision n8n documentada (ADR)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SECTION 4 — H3 Detail ═══ -->
+  <section>
+    <h2 class="section-heading"><span class="num">4</span> H3 &mdash; Escalar <span class="badge badge-h3">H3 &middot; W11-16</span></h2>
+
+    <div class="sprint-grid">
+      <!-- S10-11 -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S10-11 &middot; W11-13</span>
+          <span class="badge badge-alta">G-10</span>
+        </div>
+        <h3>Multi-Tenant Isolation</h3>
+        <div class="criterion">
+          Aislamiento completo entre tenants: datos, configuraciones, memory stores. Row-level security.
+        </div>
+      </article>
+
+      <!-- S12 -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S12 &middot; W13</span>
+          <span class="badge badge-alta">G-02</span>
+        </div>
+        <h3>Vector DB Integration</h3>
+        <div class="criterion">
+          Memoria semantica via embeddings. Busqueda por similaridad para contexto enriquecido. Integracion con Memory Engine.
+        </div>
+      </article>
+
+      <!-- S13-14 -->
+      <article class="sprint-card">
+        <div class="card-top">
+          <span class="sprint-id">S13-14 &middot; W14-16</span>
+          <span class="badge badge-media">G-08</span>
+        </div>
+        <h3>B2B Packaging + Gmail</h3>
+        <div class="criterion">
+          Empaquetamiento B2B: onboarding, billing, limites por plan. Integracion Gmail para operadores.
+        </div>
+      </article>
+    </div>
+
+    <!-- Gate H3 -->
+    <div class="gate-box gate-h3">
+      <div class="gate-icon">G3</div>
+      <div class="gate-content">
+        <div class="gate-title">Gate H3 &mdash; Criterios de Paso</div>
+        <ul>
+          <li>Operador B2B genera propuestas sin ver datos del fundador</li>
+          <li>Billing activo y funcional</li>
+          <li>Vector DB integrado con memory engine</li>
+          <li>Gmail operativo con aprobacion L2</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SECTION 5 — Dependency Diagram ═══ -->
+  <section>
+    <h2 class="section-heading"><span class="num">5</span> Diagrama de Dependencias</h2>
+
+    <div class="dep-diagram" role="img" aria-label="Diagrama de dependencias entre sprints por horizonte">
+      <!-- H1 row -->
+      <div class="dep-row">
+        <span class="dep-label dep-label-h1">H1</span>
+        <div class="dep-node">S1<br><small>State Engine</small></div>
+        <div class="dep-arrow dep-arrow-strong">══&gt;</div>
+        <div class="dep-node">S2<br><small>HIL Middleware</small></div>
+        <div class="dep-arrow dep-arrow-strong">══&gt;</div>
+        <div class="dep-node">S3<br><small>Artifact Version</small></div>
+        <div class="dep-arrow dep-arrow-strong">══&gt;</div>
+        <div class="dep-node">S4<br><small>Memory + Budget</small></div>
+        <span class="dep-gate dep-gate-h1">GATE H1</span>
+      </div>
+
+      <!-- H2 row -->
+      <div class="dep-row">
+        <span class="dep-label dep-label-h2">H2</span>
+        <div class="dep-node">S5-6<br><small>GTasks + Cal</small></div>
+        <div class="dep-arrow dep-arrow-h2">──&gt;</div>
+        <div class="dep-node">S8<br><small>n8n Spike</small></div>
+        <div style="width:24px"></div>
+        <div class="dep-node">S7-8<br><small>Deep Research</small></div>
+        <div style="width:24px"></div>
+        <div class="dep-node">S9-10<br><small>Observability</small></div>
+        <span class="dep-gate dep-gate-h2">GATE H2</span>
+      </div>
+
+      <!-- H3 row -->
+      <div class="dep-row">
+        <span class="dep-label dep-label-h3">H3</span>
+        <div class="dep-node">S10-11<br><small>Multi-Tenant</small></div>
+        <div class="dep-arrow dep-arrow-h3">══&gt;</div>
+        <div class="dep-node">S13-14<br><small>B2B + Gmail</small></div>
+        <div style="width:24px"></div>
+        <div class="dep-node">S12<br><small>Vector DB</small></div>
+        <span class="dep-gate dep-gate-h3">GATE H3</span>
+      </div>
+    </div>
+
+    <p style="font-size:0.75rem; color:var(--text-muted); margin-top:12px; text-align:center;">
+      <strong style="color:var(--gold);">══&gt;</strong> dependencia fuerte &nbsp;&nbsp;
+      <strong style="color:var(--blue);">──&gt;</strong> dependencia ligera &nbsp;&nbsp;
+      Bloques sin flecha son paralelizables.
+    </p>
+  </section>
+
+</main>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <div class="container">
+    <div class="brand-footer">
+      <svg width="24" height="24" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="36" height="36" rx="8" fill="#122562"/>
+        <rect x="7" y="12" width="4" height="14" rx="2" fill="#fff"/>
+        <rect x="16" y="8" width="4" height="18" rx="2" fill="#fff"/>
+        <rect x="25" y="14" width="4" height="12" rx="2" fill="#fff"/>
+        <circle cx="28" cy="10" r="3" fill="#FFD700"/>
+      </svg>
+      <span style="font-family:var(--font-display);font-weight:800;font-size:0.95rem;"><span style="color:#fff;">Metodolog</span><span style="color:var(--gold);">IA</span></span>
+    </div>
+    <p>&copy; 2026 MetodologIA. Copyleft &mdash; Para uso y aprovechamiento de profesionales en la era de la IA.</p>
+  </div>
+</footer>
+
+</body>
+</html>

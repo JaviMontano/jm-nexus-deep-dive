@@ -2,7 +2,7 @@
 
 **Feature**: 001-project-state-engine
 **Date**: 2026-04-03 (run 4 — post plan.md fill + TS-035 fix)
-**Artifacts**: spec.md, plan.md, tasks.md, data-model.md, contracts/ (3), research.md, tests/features/ (5 files, 34 scenarios), checklists/ (58 items)
+**Artifacts**: spec.md, plan.md, tasks.md, data-model.md, contracts/ (3), research.md, tests/features/ (5 files, 35 scenarios), checklists/ (58 items)
 **Constitution**: v1.1.0 (P-I–P-VII + RP-1–RP-8 + DoD/DoR + Quality Gates + Security Checkpoints + Best Practices + Risk Guard Rails)
 
 ## Findings
@@ -64,7 +64,7 @@
 | 6. Token budget impact | YES — zero LLM cost documented (NFR-002) |
 | 7. Risk registry check | YES — R-13, R-10 assessed |
 | 8. Feasibility constraints | YES — C1, C2 verified |
-| 9. Feature files exist | YES — 5 files, 34 scenarios, hash-locked |
+| 9. Feature files exist | YES — 5 files, 35 scenarios, hash-locked |
 | 10. Tasks generated | YES — 37 tasks, TDD ordered |
 
 ### Security Checkpoints
@@ -122,7 +122,7 @@
 | Total success criteria (SC) | 7 |
 | Total user stories | 4 |
 | Total tasks | 37 |
-| Total BDD scenarios | 34 (across 35 unique TS IDs) |
+| Total BDD scenarios | 35 |
 | Checklist items | 58/58 (100%) |
 | FR→Task coverage | 100% (12/12) |
 | SC→Task coverage | 100% (7/7) |

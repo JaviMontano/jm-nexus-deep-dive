@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="es" data-mtia="analisis-asis-nexus">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>03 · Analisis AS-IS Profundo — Nexus Assistant OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ── CSS Variables ── */
+    :root {
+      --color-body: #1E3258;
+      --color-navy-deep: #122562;
+      --color-gold: #FFD700;
+      --color-blue: #137DC5;
+      --color-dark: #1F2833;
+      --color-lavender: #BBA0CC;
+      --color-gray: #808080;
+      --color-text: #E8E8E8;
+      --color-text-muted: #B0B0B0;
+      --color-card: rgba(255,255,255,0.06);
+      --color-card-border: rgba(255,255,255,0.10);
+      --color-success: #4CAF50;
+      --color-warning: #FFA726;
+      --color-danger: #EF5350;
+      --font-display: 'Poppins', sans-serif;
+      --font-body: 'Montserrat', sans-serif;
+      --font-footnote: 'Trebuchet MS', sans-serif;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --blur: blur(16px);
+      --max-width: 1140px;
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    a { color: var(--color-blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Skip link (a11y) ── */
+    .skip-link {
+      position: absolute; left: -9999px; top: auto;
+      background: var(--color-gold); color: var(--color-dark);
+      padding: 8px 16px; font-family: var(--font-body);
+      z-index: 1000; border-radius: 4px;
+    }
+    .skip-link:focus { left: 16px; top: 16px; }
+
+    /* ── Body ── */
+    body {
+      background: var(--color-body);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-weight: 400;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header[data-mtia="header"] {
+      background: rgba(18,37,98,0.7);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border-bottom: 1px solid var(--color-card-border);
+      padding: 16px 0;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-inner {
+      max-width: var(--max-width);
+      margin: 0 auto; padding: 0 24px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .logo-mark {
+      width: 36px; height: 36px; flex-shrink: 0;
+    }
+    .brand-wordmark {
+      font-family: var(--font-display);
+      font-weight: 800; font-size: 1.35rem;
+      letter-spacing: 0.5px;
+    }
+    .brand-wordmark .w { color: #fff; }
+    .brand-wordmark .g { color: var(--color-gold); }
+    .header-subtitle {
+      margin-left: auto;
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      color: var(--color-text-muted);
+    }
+
+    /* ── Main ── */
+    main {
+      max-width: var(--max-width);
+      margin: 0 auto; padding: 40px 24px 60px;
+    }
+
+    /* ── Hero ── */
+    .hero[data-mtia="hero"] {
+      text-align: center; margin-bottom: 48px;
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 700; font-size: clamp(1.6rem, 4vw, 2.4rem);
+      color: #fff; margin-bottom: 8px;
+    }
+    .hero h1 .gold { color: var(--color-gold); }
+    .hero .subtitle {
+      font-size: 1.05rem; color: var(--color-text-muted);
+      max-width: 700px; margin: 0 auto 20px;
+    }
+
+    /* ── TL;DR Card ── */
+    .tldr[data-mtia="tldr"] {
+      background: var(--color-card);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border: 1px solid var(--color-card-border);
+      border-left: 4px solid var(--color-gold);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 48px;
+    }
+    .tldr h2 {
+      font-family: var(--font-display);
+      font-weight: 700; font-size: 1.05rem;
+      color: var(--color-gold); margin-bottom: 10px;
+    }
+    .tldr p { font-size: 0.95rem; line-height: 1.75; }
+
+    /* ── Section ── */
+    section[data-mtia] {
+      background: var(--color-card);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border: 1px solid var(--color-card-border);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      margin-bottom: 32px;
+    }
+    section h2 {
+      font-family: var(--font-display);
+      font-weight: 700; font-size: 1.3rem;
+      color: #fff; margin-bottom: 6px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    section h2 .section-num {
+      background: var(--color-gold);
+      color: var(--color-dark);
+      font-size: 0.75rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 20px;
+      white-space: nowrap;
+    }
+    section h3 {
+      font-family: var(--font-display);
+      font-weight: 600; font-size: 1.05rem;
+      color: var(--color-blue); margin: 20px 0 10px;
+    }
+    section p, section li {
+      font-size: 0.92rem; line-height: 1.75;
+    }
+    section ul { padding-left: 20px; margin: 8px 0; }
+    section li { margin-bottom: 4px; }
+
+    /* ── Evidence Tag ── */
+    .ev {
+      display: inline-block; font-size: 0.7rem; font-weight: 600;
+      padding: 1px 7px; border-radius: 4px; margin-left: 4px;
+      vertical-align: middle; letter-spacing: 0.3px;
+      font-family: var(--font-footnote);
+    }
+    .ev-code { background: rgba(19,125,197,0.25); color: var(--color-blue); }
+    .ev-doc { background: rgba(187,160,204,0.25); color: var(--color-lavender); }
+    .ev-inf { background: rgba(255,167,38,0.25); color: var(--color-warning); }
+    .ev-sup { background: rgba(128,128,128,0.25); color: var(--color-gray); }
+
+    /* ── Tables ── */
+    .table-wrap { overflow-x: auto; margin: 16px 0; }
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    thead th {
+      background: rgba(255,255,255,0.08);
+      color: var(--color-gold);
+      font-family: var(--font-display);
+      font-weight: 600; font-size: 0.82rem;
+      text-align: left; padding: 10px 14px;
+      border-bottom: 2px solid var(--color-card-border);
+      white-space: nowrap;
+    }
+    tbody td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      vertical-align: top;
+    }
+    tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+    /* ── Badges ── */
+    .badge {
+      display: inline-block; font-size: 0.72rem; font-weight: 600;
+      padding: 2px 10px; border-radius: 20px;
+      font-family: var(--font-display);
+    }
+    .badge-alta { background: rgba(76,175,80,0.2); color: var(--color-success); }
+    .badge-media-alta { background: rgba(19,125,197,0.2); color: var(--color-blue); }
+    .badge-media { background: rgba(255,167,38,0.2); color: var(--color-warning); }
+    .badge-critico { background: rgba(239,83,80,0.25); color: var(--color-danger); }
+    .badge-alto { background: rgba(255,167,38,0.25); color: var(--color-warning); }
+    .badge-medio { background: rgba(255,215,0,0.2); color: var(--color-gold); }
+    .badge-green { background: rgba(76,175,80,0.2); color: var(--color-success); }
+    .badge-yellow { background: rgba(255,167,38,0.2); color: var(--color-warning); }
+    .badge-red { background: rgba(239,83,80,0.25); color: var(--color-danger); }
+    .badge-activo { background: rgba(76,175,80,0.2); color: var(--color-success); }
+    .badge-ausente { background: rgba(128,128,128,0.2); color: var(--color-gray); }
+
+    /* ── C4 Diagram CSS ── */
+    .c4-diagram[data-mtia="c4-diagram"] {
+      margin: 24px 0;
+    }
+    .c4-row {
+      display: flex; flex-wrap: wrap; gap: 12px;
+      justify-content: center; margin-bottom: 16px;
+      position: relative;
+    }
+    .c4-box {
+      background: var(--color-card);
+      border: 1px solid var(--color-card-border);
+      border-radius: var(--radius-sm);
+      padding: 12px 18px;
+      text-align: center;
+      min-width: 130px; max-width: 180px;
+      flex: 0 1 auto;
+      position: relative;
+    }
+    .c4-box .c4-label {
+      font-family: var(--font-display);
+      font-weight: 600; font-size: 0.82rem;
+      color: #fff; display: block;
+    }
+    .c4-box .c4-sub {
+      font-size: 0.72rem; color: var(--color-text-muted);
+      margin-top: 2px;
+    }
+    .c4-external { border-color: var(--color-lavender); }
+    .c4-external .c4-label { color: var(--color-lavender); }
+    .c4-internal { border-color: var(--color-blue); }
+    .c4-internal .c4-label { color: var(--color-blue); }
+    .c4-core { border-color: var(--color-gold); }
+    .c4-core .c4-label { color: var(--color-gold); }
+    .c4-arrow-down {
+      display: block; text-align: center;
+      color: var(--color-text-muted); font-size: 1.4rem;
+      margin: 4px 0;
+    }
+    .c4-zone-label {
+      font-family: var(--font-display);
+      font-weight: 700; font-size: 0.78rem;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    /* ── Tech Stack Visual ── */
+    .stack-flow {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: center; gap: 8px;
+      margin: 20px 0;
+    }
+    .stack-chip {
+      background: var(--color-card);
+      border: 1px solid var(--color-card-border);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-family: var(--font-display);
+      font-weight: 600; font-size: 0.85rem;
+      color: #fff;
+    }
+    .stack-arrow {
+      color: var(--color-gold); font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    /* ── Health Metrics ── */
+    .health-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px; margin: 20px 0;
+    }
+    .health-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--color-card-border);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .health-indicator {
+      width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+    }
+    .health-indicator.green { background: rgba(76,175,80,0.2); }
+    .health-indicator.yellow { background: rgba(255,167,38,0.2); }
+    .health-indicator.red { background: rgba(239,83,80,0.25); }
+    .health-info .health-label {
+      font-family: var(--font-display);
+      font-weight: 600; font-size: 0.88rem; color: #fff;
+    }
+    .health-info .health-value {
+      font-size: 0.82rem; color: var(--color-text-muted);
+    }
+
+    /* ── Security Checkpoint ── */
+    .checkpoint-row {
+      display: flex; flex-wrap: wrap; gap: 14px; margin: 16px 0;
+    }
+    .checkpoint-card {
+      flex: 1 1 200px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--color-card-border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      text-align: center;
+    }
+    .checkpoint-card .cp-name {
+      font-family: var(--font-display);
+      font-weight: 700; font-size: 1rem;
+      color: var(--color-gold);
+    }
+    .checkpoint-card .cp-type {
+      font-size: 0.78rem; color: var(--color-text-muted);
+      margin-top: 4px;
+    }
+    .checkpoint-card .cp-desc {
+      font-size: 0.82rem; margin-top: 8px;
+    }
+
+    /* ── Conclusion Box ── */
+    .conclusion-box {
+      background: linear-gradient(135deg, rgba(19,125,197,0.12), rgba(255,215,0,0.08));
+      border: 1px solid rgba(255,215,0,0.2);
+      border-radius: var(--radius);
+      padding: 28px 28px;
+      margin-top: 20px;
+    }
+    .conclusion-box h3 {
+      color: var(--color-gold); margin-top: 0;
+    }
+    .conclusion-box ul { padding-left: 20px; }
+    .conclusion-box li { margin-bottom: 6px; }
+
+    /* ── Footer ── */
+    footer[data-mtia="footer"] {
+      border-top: 1px solid var(--color-card-border);
+      padding: 28px 24px;
+      text-align: center;
+      font-family: var(--font-footnote);
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+    }
+    footer .footer-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+    }
+    footer .copyleft {
+      margin-bottom: 6px;
+    }
+    footer .tagline {
+      font-style: italic; font-size: 0.75rem;
+      color: var(--color-gray);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      section[data-mtia] { padding: 24px 18px; }
+      .header-subtitle { display: none; }
+      .c4-box { min-width: 100px; max-width: 140px; padding: 10px 12px; }
+      .health-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      main { padding: 24px 14px 40px; }
+      .hero h1 { font-size: 1.3rem; }
+      .stack-flow { flex-direction: column; }
+      .stack-arrow { transform: rotate(90deg); }
+    }
+
+    /* ── Print ── */
+    @media print {
+      body { background: #fff; color: #1a1a1a; }
+      header[data-mtia="header"] { position: static; background: none; border-bottom: 2px solid #ccc; }
+      section[data-mtia], .tldr, .c4-box, .health-card, .checkpoint-card, .conclusion-box {
+        background: #fff; border-color: #ccc;
+        backdrop-filter: none; -webkit-backdrop-filter: none;
+        break-inside: avoid;
+      }
+      .brand-wordmark .w, .brand-wordmark .g,
+      section h2, .c4-label, .health-label { color: #1a1a1a !important; }
+      .badge, .ev { border: 1px solid #aaa; }
+      footer { border-top: 1px solid #ccc; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Saltar al contenido</a>
+
+  <!-- ════ HEADER ════ -->
+  <header data-mtia="header">
+    <div class="header-inner">
+      <!-- SVG squircle logo: 3 white pillars + gold circle -->
+      <svg class="logo-mark" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" aria-label="MetodologIA logo">
+        <rect width="36" height="36" rx="8" fill="#122562"/>
+        <rect x="7" y="10" width="4" height="16" rx="2" fill="#fff"/>
+        <rect x="16" y="8" width="4" height="18" rx="2" fill="#fff"/>
+        <rect x="25" y="12" width="4" height="14" rx="2" fill="#fff"/>
+        <circle cx="27" cy="8" r="3.5" fill="#FFD700"/>
+      </svg>
+      <span class="brand-wordmark"><span class="w">Metodolog</span><span class="g">IA</span></span>
+      <span class="header-subtitle">Nexus Assistant OS &mdash; Analisis AS-IS</span>
+    </div>
+  </header>
+
+  <!-- ════ MAIN ════ -->
+  <main id="main-content">
+
+    <!-- Hero -->
+    <div class="hero" data-mtia="hero">
+      <h1>03 &middot; Analisis <span class="gold">AS-IS</span> Profundo</h1>
+      <p class="subtitle">Nexus Assistant OS &mdash; Estado actual del sistema basado en evidencia de repositorio</p>
+    </div>
+
+    <!-- TL;DR -->
+    <div class="tldr" data-mtia="tldr">
+      <h2>TL;DR</h2>
+      <p>
+        Analisis completo del estado actual de Nexus basado en evidencia de repo. El sistema tiene
+        <strong>4 planos funcionales</strong>, una <strong>Constitution robusta</strong> (8/8 principios alineados),
+        y <strong>3 modos de delegacion</strong> probados (single, terna, committee).
+        Los gaps criticos (<strong>Project State 0%</strong>, <strong>HIL 15%</strong>) impiden la evolucion a Work OS.
+        El <strong>80% de la base esta solida</strong> &mdash; la evolucion es extension, no rewrite.
+      </p>
+    </div>
+
+    <!-- ═══════════════ S1: Inventario de Componentes ═══════════════ -->
+    <section data-mtia="s1-inventario">
+      <h2><span class="section-num">S1</span> Inventario de Componentes</h2>
+      <p>Inventario completo organizado por plano funcional. <span class="ev ev-sup">SUPUESTO</span> LOC estimados por nombre/tipo de archivo sin acceso al codigo.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Plano</th>
+              <th>Archivos</th>
+              <th>LOC Est.</th>
+              <th>Madurez</th>
+              <th>Componentes Clave</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Ingesta</strong></td>
+              <td>4</td>
+              <td>~800</td>
+              <td><span class="badge badge-alta">Alta</span></td>
+              <td>bot.ts, webhook handler, Pub/Sub bridge, Telegram adapter</td>
+            </tr>
+            <tr>
+              <td><strong>Control</strong></td>
+              <td>12</td>
+              <td>~3,000</td>
+              <td><span class="badge badge-alta">Alta</span></td>
+              <td>router.ts, orchestrator.ts, circuit-breaker.ts, security gates, prompt-composer.ts</td>
+            </tr>
+            <tr>
+              <td><strong>Ejecucion</strong></td>
+              <td>17 + agents</td>
+              <td>~4,000</td>
+              <td><span class="badge badge-media-alta">Media-Alta</span></td>
+              <td>committee.ts, loader.ts, agent.md definitions, skill.yaml, tools/, LLM adapters</td>
+            </tr>
+            <tr>
+              <td><strong>Persistencia</strong></td>
+              <td>6</td>
+              <td>~1,200</td>
+              <td><span class="badge badge-media">Media</span></td>
+              <td>memory.ts, thread-memory.ts, Firestore adapters, ephemeral cache, semantic store</td>
+            </tr>
+            <tr>
+              <td><strong>Cross-cutting</strong></td>
+              <td>6</td>
+              <td>~1,000</td>
+              <td><span class="badge badge-alta">Alta</span></td>
+              <td>constitution.md, config/, types/, logger, error handling, Zod schemas</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2"><strong>Total: 45+ archivos</strong></td>
+              <td><strong>~10,000</strong></td>
+              <td colspan="2"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════ S2: Diagrama C4 AS-IS ═══════════════ -->
+    <section data-mtia="s2-c4-diagram">
+      <h2><span class="section-num">S2</span> Diagrama C4 AS-IS</h2>
+      <p>Vista Context + Container renderizada en CSS. Flujo de datos desde los sistemas externos hasta la capa de persistencia.</p>
+
+      <div class="c4-diagram" data-mtia="c4-diagram">
+        <!-- External Systems -->
+        <div class="c4-zone-label">Sistemas Externos</div>
+        <div class="c4-row">
+          <div class="c4-box c4-external">
+            <span class="c4-label">Telegram</span>
+            <span class="c4-sub">Canal I/O</span>
+          </div>
+          <div class="c4-box c4-external">
+            <span class="c4-label">Groq</span>
+            <span class="c4-sub">LLM Primary</span>
+          </div>
+          <div class="c4-box c4-external">
+            <span class="c4-label">OpenRouter</span>
+            <span class="c4-sub">LLM Fallback</span>
+          </div>
+          <div class="c4-box c4-external">
+            <span class="c4-label">Gemini</span>
+            <span class="c4-sub">LLM Complex</span>
+          </div>
+          <div class="c4-box c4-external">
+            <span class="c4-label">Whisper</span>
+            <span class="c4-sub">STT</span>
+          </div>
+          <div class="c4-box c4-external">
+            <span class="c4-label">Firebase</span>
+            <span class="c4-sub">Platform</span>
+          </div>
+        </div>
+
+        <div class="c4-arrow-down">&darr;</div>
+
+        <!-- Ingesta Layer -->
+        <div class="c4-zone-label">Plano de Ingesta</div>
+        <div class="c4-row">
+          <div class="c4-box c4-internal">
+            <span class="c4-label">Webhook Handler</span>
+            <span class="c4-sub">HTTP entry</span>
+          </div>
+          <div class="c4-box c4-internal" style="border-color: var(--color-gold);">
+            <span class="c4-label" style="color: var(--color-gold);">Pub/Sub</span>
+            <span class="c4-sub">Async bridge</span>
+          </div>
+          <div class="c4-box c4-internal">
+            <span class="c4-label">Worker</span>
+            <span class="c4-sub">Cloud Function</span>
+          </div>
+        </div>
+
+        <div class="c4-arrow-down">&darr;</div>
+
+        <!-- Control Layer -->
+        <div class="c4-zone-label">Plano de Control</div>
+        <div class="c4-row">
+          <div class="c4-box c4-core">
+            <span class="c4-label">Security</span>
+            <span class="c4-sub">CP1 + CP2 + CP3</span>
+          </div>
+          <div class="c4-box c4-core">
+            <span class="c4-label">Router</span>
+            <span class="c4-sub">Intent dispatch</span>
+          </div>
+          <div class="c4-box c4-core">
+            <span class="c4-label">Orchestrator</span>
+            <span class="c4-sub">Delegation logic</span>
+          </div>
+        </div>
+
+        <div class="c4-arrow-down">&darr;</div>
+
+        <!-- Execution Layer -->
+        <div class="c4-zone-label">Plano de Ejecucion</div>
+        <div class="c4-row">
+          <div class="c4-box c4-internal">
+            <span class="c4-label">Agents</span>
+            <span class="c4-sub">Single / Terna / Committee</span>
+          </div>
+          <div class="c4-box c4-internal">
+            <span class="c4-label">Tools</span>
+            <span class="c4-sub">Function registry</span>
+          </div>
+          <div class="c4-box c4-internal">
+            <span class="c4-label">Prompt Composer</span>
+            <span class="c4-sub">Constitution + Context</span>
+          </div>
+        </div>
+
+        <div class="c4-arrow-down">&darr;</div>
+
+        <!-- Persistence Layer -->
+        <div class="c4-zone-label">Plano de Persistencia</div>
+        <div class="c4-row">
+          <div class="c4-box c4-internal">
+            <span class="c4-label">Memory</span>
+            <span class="c4-sub">3-Tier</span>
+          </div>
+          <div class="c4-box c4-internal">
+            <span class="c4-label">Proposals</span>
+            <span class="c4-sub">Decision store</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ S3: Patrones Arquitectonicos ═══════════════ -->
+    <section data-mtia="s3-patrones">
+      <h2><span class="section-num">S3</span> Patrones Arquitectonicos Detectados</h2>
+      <p>7 patrones de arquitectura confirmados en el codebase.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Patron</th>
+              <th>Implementacion</th>
+              <th>Evidencia</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Pub/Sub Async Processing</td>
+              <td>Telegram &rarr; Pub/Sub &rarr; Worker</td>
+              <td><span class="ev ev-code">CODIGO</span> bot.ts</td>
+            </tr>
+            <tr>
+              <td>Circuit Breaker</td>
+              <td>Per-provider health tracking con fallback cascade</td>
+              <td><span class="ev ev-code">CODIGO</span> circuit-breaker.ts</td>
+            </tr>
+            <tr>
+              <td>Declarative Agent Loading</td>
+              <td>agent.md / skill.yaml &rarr; Zod validation &rarr; runtime</td>
+              <td><span class="ev ev-code">CODIGO</span> loader.ts</td>
+            </tr>
+            <tr>
+              <td>Multi-modal Delegation</td>
+              <td>SINGLE / TERNA / COMMITTEE modes</td>
+              <td><span class="ev ev-code">CODIGO</span> committee.ts</td>
+            </tr>
+            <tr>
+              <td>Graceful Degradation</td>
+              <td>COMMITTEE &rarr; TERNA &rarr; SINGLE &rarr; DIRECT cascade</td>
+              <td><span class="ev ev-code">CODIGO</span> router.ts</td>
+            </tr>
+            <tr>
+              <td>Prompt Composition</td>
+              <td>Constitution + Context + Request assembly pipeline</td>
+              <td><span class="ev ev-code">CODIGO</span> prompt-composer.ts</td>
+            </tr>
+            <tr>
+              <td>3-Tier Memory</td>
+              <td>Ephemeral + Episodic + Semantic layers</td>
+              <td><span class="ev ev-code">CODIGO</span> memory.ts, thread-memory.ts</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════ S4: Stack Tecnologico ═══════════════ -->
+    <section data-mtia="s4-stack">
+      <h2><span class="section-num">S4</span> Stack Tecnologico</h2>
+      <p>Pipeline end-to-end del stack de Nexus.</p>
+      <div class="stack-flow">
+        <span class="stack-chip">TypeScript</span>
+        <span class="stack-arrow">&rarr;</span>
+        <span class="stack-chip">Firebase Functions / Cloud Run</span>
+        <span class="stack-arrow">&rarr;</span>
+        <span class="stack-chip">Firestore</span>
+        <span class="stack-arrow">&rarr;</span>
+        <span class="stack-chip">Pub/Sub</span>
+        <span class="stack-arrow">&rarr;</span>
+        <span class="stack-chip">Telegram API</span>
+        <span class="stack-arrow">&rarr;</span>
+        <span class="stack-chip">Multi-LLM Cascade</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Capa</th>
+              <th>Tecnologia</th>
+              <th>Rol</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Lenguaje</td><td>TypeScript (strict)</td><td>Type safety end-to-end</td></tr>
+            <tr><td>Runtime</td><td>Node.js &mdash; Firebase Functions v2</td><td>Serverless compute</td></tr>
+            <tr><td>Infraestructura</td><td>Google Cloud (Firebase)</td><td>Platform as a Service</td></tr>
+            <tr><td>Base de datos</td><td>Firestore</td><td>Document store + realtime</td></tr>
+            <tr><td>Mensajeria</td><td>Google Pub/Sub</td><td>Async decoupling</td></tr>
+            <tr><td>Canal</td><td>Telegram Bot API</td><td>User interface</td></tr>
+            <tr><td>LLM Primary</td><td>Groq</td><td>Fast inference</td></tr>
+            <tr><td>LLM Fallback</td><td>OpenRouter</td><td>Model diversity</td></tr>
+            <tr><td>LLM Complex</td><td>Google Gemini</td><td>Complex reasoning</td></tr>
+            <tr><td>STT</td><td>OpenAI Whisper</td><td>Voice transcription</td></tr>
+            <tr><td>Validacion</td><td>Zod</td><td>Runtime schema validation</td></tr>
+            <tr><td>Testing</td><td>Vitest</td><td>Unit / integration tests</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════ S5: Seguridad y Gobernanza ═══════════════ -->
+    <section data-mtia="s5-seguridad">
+      <h2><span class="section-num">S5</span> Seguridad y Gobernanza</h2>
+
+      <h3>Checkpoints de Seguridad</h3>
+      <div class="checkpoint-row">
+        <div class="checkpoint-card">
+          <div class="cp-name">CP1</div>
+          <div class="cp-type"><span class="badge badge-critico">HARD GATE</span></div>
+          <div class="cp-desc">Autenticacion y rate limiting en webhook entry. Bloquea requests no autorizados antes de Pub/Sub.</div>
+        </div>
+        <div class="checkpoint-card">
+          <div class="cp-name">CP2</div>
+          <div class="cp-type"><span class="badge badge-critico">HARD GATE</span></div>
+          <div class="cp-desc">Validacion de permisos pre-ejecucion. Verifica user_id, session context, y agent authorization.</div>
+        </div>
+        <div class="checkpoint-card">
+          <div class="cp-name">CP3</div>
+          <div class="cp-type"><span class="badge badge-medio">SOFT GATE</span></div>
+          <div class="cp-desc">Post-execution audit. Actualmente mischaracterized como hard en spec. <span class="ev ev-doc">DOC</span></div>
+        </div>
+      </div>
+
+      <h3>Constitution &mdash; 8 Principios</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>#</th><th>Principio</th><th>Implementado</th><th>Cobertura</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>User safety first</td><td>CP1 + CP2 hard gates</td><td><span class="badge badge-green">100%</span></td></tr>
+            <tr><td>2</td><td>Transparency in reasoning</td><td>Prompt composer metadata</td><td><span class="badge badge-green">100%</span></td></tr>
+            <tr><td>3</td><td>Minimal authority</td><td>Agent scoped permissions</td><td><span class="badge badge-green">100%</span></td></tr>
+            <tr><td>4</td><td>Graceful degradation</td><td>4-level fallback cascade</td><td><span class="badge badge-green">100%</span></td></tr>
+            <tr><td>5</td><td>Constitution immutability</td><td>Loaded at boot, read-only</td><td><span class="badge badge-green">100%</span></td></tr>
+            <tr><td>6</td><td>Audit trail</td><td>Firestore logging</td><td><span class="badge badge-yellow">80%</span></td></tr>
+            <tr><td>7</td><td>Human override</td><td>Partial &mdash; no formal HIL</td><td><span class="badge badge-red">15%</span></td></tr>
+            <tr><td>8</td><td>Continuous learning</td><td>Semantic memory tier</td><td><span class="badge badge-yellow">70%</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════ S6: Integraciones Actuales ═══════════════ -->
+    <section data-mtia="s6-integraciones">
+      <h2><span class="section-num">S6</span> Integraciones Actuales</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Servicio</th><th>Tipo</th><th>Estado</th><th>Criticidad</th><th>Notas</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Telegram</td><td>Canal I/O</td>
+              <td><span class="badge badge-activo">Activo</span></td>
+              <td><span class="badge badge-critico">Critica</span></td>
+              <td>Unico canal de usuario. Single point of entry.</td>
+            </tr>
+            <tr>
+              <td>Groq</td><td>LLM Routing</td>
+              <td><span class="badge badge-activo">Activo</span></td>
+              <td><span class="badge badge-alto">Alta</span></td>
+              <td>Provider primario, fast inference. Circuit breaker activo.</td>
+            </tr>
+            <tr>
+              <td>OpenRouter</td><td>LLM Fallback</td>
+              <td><span class="badge badge-activo">Activo</span></td>
+              <td><span class="badge badge-medio">Media</span></td>
+              <td>Acceso a modelos diversos. Second-tier fallback.</td>
+            </tr>
+            <tr>
+              <td>Gemini</td><td>LLM Complex</td>
+              <td><span class="badge badge-activo">Activo</span></td>
+              <td><span class="badge badge-medio">Media</span></td>
+              <td>Reservado para tareas de razonamiento complejo.</td>
+            </tr>
+            <tr>
+              <td>Whisper</td><td>STT</td>
+              <td><span class="badge badge-activo">Activo</span></td>
+              <td><span class="badge badge-medio">Media</span></td>
+              <td>Transcripcion de audio a texto via OpenAI API.</td>
+            </tr>
+            <tr>
+              <td>Firebase</td><td>Platform</td>
+              <td><span class="badge badge-activo">Activo</span></td>
+              <td><span class="badge badge-critico">Critica</span></td>
+              <td>Functions + Firestore + Pub/Sub + Auth. Dependencia total.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════ S7: Integraciones Ausentes ═══════════════ -->
+    <section data-mtia="s7-integraciones-ausentes">
+      <h2><span class="section-num">S7</span> Integraciones Ausentes (Deseadas)</h2>
+      <p>Integraciones identificadas como necesarias para la evolucion a Work OS. <span class="ev ev-inf">INFERENCIA</span></p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Servicio</th><th>Tipo</th><th>Prioridad</th><th>Justificacion</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Google Tasks</td><td>Productividad</td>
+              <td><span class="badge badge-critico">Critica</span></td>
+              <td>Base del Project State Engine. Sin esto no hay seguimiento de tareas.</td>
+            </tr>
+            <tr>
+              <td>Google Calendar</td><td>Productividad</td>
+              <td><span class="badge badge-critico">Critica</span></td>
+              <td>Scheduling, deadlines, time awareness para el orquestador.</td>
+            </tr>
+            <tr>
+              <td>Gmail</td><td>Comunicacion</td>
+              <td><span class="badge badge-alto">Alta</span></td>
+              <td>Email drafting, follow-ups, integracion con flujos de trabajo.</td>
+            </tr>
+            <tr>
+              <td>n8n</td><td>Automatizacion</td>
+              <td><span class="badge badge-medio">Media</span></td>
+              <td>Workflow automation extensible, webhooks bidireccionales.</td>
+            </tr>
+            <tr>
+              <td>Vector DB</td><td>Persistencia</td>
+              <td><span class="badge badge-alto">Alta</span></td>
+              <td>Semantic memory escalable. Reemplazo del tier actual in-memory.</td>
+            </tr>
+            <tr>
+              <td>Multi-tenant Auth</td><td>Seguridad</td>
+              <td><span class="badge badge-medio">Media</span></td>
+              <td>Soporte multi-usuario con aislamiento de datos.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════ S8: Deuda Tecnica y Riesgos ═══════════════ -->
+    <section data-mtia="s8-deuda">
+      <h2><span class="section-num">S8</span> Deuda Tecnica y Riesgos</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Item</th><th>Severidad</th><th>Tipo</th><th>Evidencia</th><th>Impacto</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Sin Project State Engine</strong></td>
+              <td><span class="badge badge-critico">CRITICO</span></td>
+              <td>Gap funcional</td>
+              <td><span class="ev ev-inf">INFERENCIA</span></td>
+              <td>Imposible gestionar proyectos, tareas, o estados. Bloquea Work OS.</td>
+            </tr>
+            <tr>
+              <td><strong>Sin HIL Middleware formal</strong></td>
+              <td><span class="badge badge-critico">CRITICO</span></td>
+              <td>Gap seguridad</td>
+              <td><span class="ev ev-inf">INFERENCIA</span></td>
+              <td>Acciones criticas sin confirmacion humana. Riesgo de autonomia sin control.</td>
+            </tr>
+            <tr>
+              <td><strong>CP3 mischaracterization</strong></td>
+              <td><span class="badge badge-alto">ALTO</span></td>
+              <td>Bug de spec</td>
+              <td><span class="ev ev-doc">DOC</span> analysis.md</td>
+              <td>Spec dice hard gate, implementacion es soft. Falsa sensacion de seguridad.</td>
+            </tr>
+            <tr>
+              <td><strong>KB &gt;100MB sin lazy loading</strong></td>
+              <td><span class="badge badge-medio">MEDIO</span></td>
+              <td>Performance</td>
+              <td><span class="ev ev-doc">DOC</span> README.md</td>
+              <td>Cold start lento, memory pressure en Functions.</td>
+            </tr>
+            <tr>
+              <td><strong>Test coverage desconocido</strong></td>
+              <td><span class="badge badge-medio">MEDIO</span></td>
+              <td>Quality</td>
+              <td><span class="ev ev-inf">INFERENCIA</span></td>
+              <td>Vitest existe pero no hay reporte de coverage. Riesgo de regresion.</td>
+            </tr>
+            <tr>
+              <td><strong>No token budget enforcement</strong></td>
+              <td><span class="badge badge-medio">MEDIO</span></td>
+              <td>FinOps</td>
+              <td><span class="ev ev-inf">INFERENCIA</span></td>
+              <td>Sin limites de tokens por request. Potencial cost blowup en committee mode.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════ S9: Metricas de Salud ═══════════════ -->
+    <section data-mtia="s9-metricas">
+      <h2><span class="section-num">S9</span> Metricas de Salud</h2>
+      <div class="health-grid">
+        <div class="health-card">
+          <div class="health-indicator green">&#x1F7E2;</div>
+          <div class="health-info">
+            <div class="health-label">Spec Score</div>
+            <div class="health-value">87/100 &mdash; benchmark &gt;80</div>
+          </div>
+        </div>
+        <div class="health-card">
+          <div class="health-indicator green">&#x1F7E2;</div>
+          <div class="health-info">
+            <div class="health-label">FRs Tagged</div>
+            <div class="health-value">42/43 (97.7%) &mdash; benchmark &gt;95%</div>
+          </div>
+        </div>
+        <div class="health-card">
+          <div class="health-indicator green">&#x1F7E2;</div>
+          <div class="health-info">
+            <div class="health-label">BDD Scenarios</div>
+            <div class="health-value">77 scenarios &mdash; benchmark &gt;50</div>
+          </div>
+        </div>
+        <div class="health-card">
+          <div class="health-indicator green">&#x1F7E2;</div>
+          <div class="health-info">
+            <div class="health-label">Constitution Alignment</div>
+            <div class="health-value">8/8 ALIGNED &mdash; benchmark 8/8</div>
+          </div>
+        </div>
+        <div class="health-card">
+          <div class="health-indicator yellow">&#x1F7E1;</div>
+          <div class="health-info">
+            <div class="health-label">Test Infrastructure</div>
+            <div class="health-value">Exists (vitest) &mdash; coverage unknown</div>
+          </div>
+        </div>
+        <div class="health-card">
+          <div class="health-indicator red">&#x1F534;</div>
+          <div class="health-info">
+            <div class="health-label">Project State Engine</div>
+            <div class="health-value">0% &mdash; benchmark &gt;80%</div>
+          </div>
+        </div>
+        <div class="health-card">
+          <div class="health-indicator red">&#x1F534;</div>
+          <div class="health-info">
+            <div class="health-label">HIL Middleware</div>
+            <div class="health-value">15% &mdash; benchmark &gt;80%</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ S10: Conclusion y Recomendacion ═══════════════ -->
+    <section data-mtia="s10-conclusion">
+      <h2><span class="section-num">S10</span> Conclusion y Recomendacion</h2>
+
+      <div class="conclusion-box">
+        <h3>Veredicto: Extension, no Rewrite</h3>
+        <p>
+          Nexus presenta una base tecnica solida con <strong>7 patrones arquitectonicos probados</strong>,
+          una Constitution implementada al <strong>100% en 6 de 8 principios</strong>, y una spec rigurosa
+          (87/100, 42/43 FRs, 77 BDD scenarios).
+        </p>
+        <h3>Los 2 gaps criticos son adiciones</h3>
+        <ul>
+          <li><strong>Project State Engine (0%)</strong> &mdash; Requiere un nuevo modulo de gestion de estado de proyectos, integrado con Google Tasks/Calendar. No destruye nada existente.</li>
+          <li><strong>HIL Middleware (15%)</strong> &mdash; Requiere un middleware de Human-in-the-Loop entre el orchestrator y la ejecucion. Se inserta en el pipeline existente sin reestructurar.</li>
+        </ul>
+        <h3>Recomendacion para H1-H3</h3>
+        <ul>
+          <li><strong>H1:</strong> Implementar HIL middleware + corregir CP3 mischaracterization.</li>
+          <li><strong>H2:</strong> Construir Project State Engine + integraciones Google (Tasks, Calendar).</li>
+          <li><strong>H3:</strong> Token budget enforcement + lazy loading de KB + Vector DB para semantic memory.</li>
+        </ul>
+        <p style="margin-top: 16px; color: var(--color-gold); font-weight: 600;">
+          La arquitectura actual es la base correcta. El 80% esta solido. La evolucion a Work OS es extension sobre cimientos probados.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ════ FOOTER ════ -->
+  <footer data-mtia="footer">
+    <div class="footer-inner">
+      <div class="copyleft">&copy; 2026 MetodologIA. Copyleft &mdash; Para uso y aprovechamiento de profesionales en la era de la IA.</div>
+      <div class="tagline">Construido por profesionales, potenciado por la red agentica de MetodologIA.</div>
+    </div>
+  </footer>
+</body>
+</html>

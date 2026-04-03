@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es" data-mtia="report-revision-negocio">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>13 — Revision de Negocio | Nexus Assistant OS</title>
+  <style>
+    /* ── MetodologIA Aesthetic Standard ── */
+    :root {
+      --bg-body: #1E3258;
+      --bg-card: rgba(255,255,255,0.06);
+      --card-blur: blur(16px);
+      --gold: #FFD700;
+      --blue: #137DC5;
+      --navy-deep: #122562;
+      --dark-bg: #1F2833;
+      --lavender: #BBA0CC;
+      --gray: #808080;
+      --text: #E8E8E8;
+      --text-muted: #B0B0B0;
+      --red-alert: #e74c3c;
+      --red-bg: rgba(231,76,60,0.15);
+      --font-display: 'Poppins', sans-serif;
+      --font-body: 'Montserrat', sans-serif;
+      --font-footnote: 'Trebuchet MS', sans-serif;
+      --radius: 14px;
+      --max-w: 1080px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Montserrat:wght@400;500;600&display=swap');
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-body);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-weight: 400;
+      line-height: 1.7;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--gold); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+    .skip-link {
+      position: absolute; top: -100%; left: 1rem;
+      background: var(--gold); color: var(--navy-deep);
+      padding: .5rem 1rem; border-radius: 4px;
+      font-weight: 700; z-index: 1000;
+    }
+    .skip-link:focus { top: 1rem; }
+
+    /* ── Confidential Banner ── */
+    .confidential-banner {
+      background: var(--red-bg);
+      border: 2px solid var(--red-alert);
+      border-radius: var(--radius);
+      padding: 1rem 1.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      animation: pulse-border 2s ease-in-out infinite;
+    }
+    .confidential-banner .icon { font-size: 1.4rem; margin-right: .5rem; }
+    .confidential-banner .label {
+      font-family: var(--font-display); font-weight: 700; font-size: 1.1rem;
+      color: var(--red-alert); text-transform: uppercase; letter-spacing: .12em;
+    }
+    .confidential-banner .sub {
+      display: block; font-size: .82rem; color: var(--text-muted); margin-top: .3rem;
+    }
+    @keyframes pulse-border {
+      0%, 100% { border-color: var(--red-alert); }
+      50% { border-color: rgba(231,76,60,0.4); }
+    }
+
+    /* ── Header ── */
+    header[data-mtia="header"] {
+      background: linear-gradient(135deg, var(--navy-deep) 0%, var(--bg-body) 100%);
+      border-bottom: 2px solid var(--gold);
+      padding: 1.5rem 2rem;
+    }
+    .header-inner {
+      max-width: var(--max-w); margin: 0 auto;
+      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+    }
+    .logo-brand { display: flex; align-items: center; gap: .75rem; }
+    .brand-wordmark {
+      font-family: var(--font-display); font-weight: 800; font-size: 1.35rem;
+    }
+    .brand-wordmark .white { color: #fff; }
+    .brand-wordmark .gold { color: var(--gold); }
+    .header-meta { margin-left: auto; text-align: right; font-size: .82rem; color: var(--text-muted); }
+
+    /* ── Main ── */
+    main { max-width: var(--max-w); margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+    /* ── TLDR ── */
+    .tldr-banner {
+      background: var(--bg-card); backdrop-filter: var(--card-blur); -webkit-backdrop-filter: var(--card-blur);
+      border-left: 4px solid var(--gold); border-radius: var(--radius);
+      padding: 1.5rem 2rem; margin-bottom: 2.5rem;
+    }
+    .tldr-banner h2 {
+      font-family: var(--font-display); font-weight: 700; font-size: 1.05rem;
+      color: var(--gold); margin-bottom: .5rem;
+    }
+    .tldr-banner p { font-size: .95rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── Section cards ── */
+    .section-card {
+      background: var(--bg-card); backdrop-filter: var(--card-blur); -webkit-backdrop-filter: var(--card-blur);
+      border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .section-card h2 {
+      font-family: var(--font-display); font-weight: 700; font-size: 1.3rem;
+      color: #fff; margin-bottom: 1rem; border-bottom: 2px solid var(--gold);
+      padding-bottom: .5rem;
+    }
+    .section-card h3 {
+      font-family: var(--font-display); font-weight: 700; font-size: 1.05rem;
+      color: var(--gold); margin: 1.2rem 0 .6rem;
+    }
+    .section-card p, .section-card li { font-size: .92rem; }
+    .section-card ul, .section-card ol { padding-left: 1.4rem; margin-bottom: .8rem; }
+    .section-card li { margin-bottom: .4rem; }
+
+    /* ── Tables ── */
+    .table-wrap { overflow-x: auto; margin: 1rem 0; }
+    table {
+      width: 100%; border-collapse: collapse; font-size: .85rem;
+    }
+    thead th {
+      background: var(--navy-deep); color: var(--gold);
+      font-family: var(--font-display); font-weight: 700;
+      padding: .65rem .8rem; text-align: left; white-space: nowrap;
+    }
+    tbody td {
+      padding: .6rem .8rem; border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+    /* ── Model cards ── */
+    .model-card {
+      background: rgba(255,255,255,0.04); border-radius: 10px;
+      padding: 1.2rem 1.5rem; margin-bottom: 1.2rem;
+      border-left: 3px solid var(--blue);
+    }
+    .model-card h4 {
+      font-family: var(--font-display); font-weight: 700; font-size: .98rem;
+      color: var(--blue); margin-bottom: .5rem;
+    }
+    .model-card .tag {
+      display: inline-block; font-size: .75rem; font-weight: 600;
+      padding: .1rem .5rem; border-radius: 4px; margin-right: .4rem;
+    }
+    .tag-pro { background: #2ecc71; color: #000; }
+    .tag-con { background: var(--red-alert); color: #fff; }
+
+    /* ── Risk items ── */
+    .risk-item {
+      background: rgba(231,76,60,0.08); border-radius: 10px;
+      padding: 1rem 1.2rem; margin-bottom: .8rem;
+      border-left: 3px solid var(--red-alert);
+    }
+    .risk-item strong { color: var(--red-alert); }
+
+    /* ── Recommendation box ── */
+    .recommendation-box {
+      background: rgba(255,215,0,0.08); border: 2px solid var(--gold);
+      border-radius: var(--radius); padding: 1.5rem 2rem; margin-top: 1rem;
+    }
+    .recommendation-box h3 { color: var(--gold); margin-top: 0; }
+
+    /* ── Horizon timeline ── */
+    .horizon-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.2rem; margin: 1rem 0;
+    }
+    .horizon-card {
+      background: rgba(255,255,255,0.04); border-radius: 10px;
+      padding: 1.2rem; border-top: 3px solid var(--gold);
+    }
+    .horizon-card h4 {
+      font-family: var(--font-display); font-weight: 700; font-size: 1rem;
+      color: var(--gold); margin-bottom: .5rem;
+    }
+    .horizon-card .fte { font-size: .85rem; color: var(--blue); font-weight: 600; }
+
+    /* ── Footer ── */
+    footer[data-mtia="footer"] {
+      background: var(--navy-deep); border-top: 2px solid var(--gold);
+      padding: 2rem 1.5rem; text-align: center;
+    }
+    .footer-brand {
+      font-family: var(--font-display); font-weight: 800; font-size: 1.1rem;
+      margin-bottom: .3rem;
+    }
+    .footer-brand .white { color: #fff; }
+    .footer-brand .gold  { color: var(--gold); }
+    .footer-copy {
+      font-family: var(--font-footnote); font-size: .78rem; color: var(--text-muted);
+      margin-bottom: .3rem;
+    }
+    .footer-tagline {
+      font-family: var(--font-footnote); font-size: .72rem; color: var(--gray);
+      font-style: italic;
+    }
+
+    /* ── Print ── */
+    @media print {
+      body { background: #fff; color: #1a1a1a; }
+      header, footer { border-color: #1a1a1a; }
+      .section-card { border: 1px solid #ccc; break-inside: avoid; }
+      .confidential-banner { border-color: #c00; background: #fee; }
+      .confidential-banner .label { color: #c00; }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      header[data-mtia="header"] { padding: 1rem; }
+      .header-inner { flex-direction: column; align-items: flex-start; }
+      .header-meta { margin-left: 0; text-align: left; margin-top: .5rem; }
+      main { padding: 1.5rem 1rem 3rem; }
+      .section-card { padding: 1.2rem; }
+      .horizon-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Saltar al contenido</a>
+
+<!-- ══════════════════════════════════════════ HEADER ══════════════════════════════════════════ -->
+<header data-mtia="header">
+  <div class="header-inner">
+    <div class="logo-brand">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="36" height="36" rx="8" fill="#122562"/>
+        <rect x="8" y="10" width="4" height="16" rx="2" fill="#fff"/>
+        <rect x="16" y="10" width="4" height="16" rx="2" fill="#fff"/>
+        <rect x="24" y="10" width="4" height="16" rx="2" fill="#fff"/>
+        <circle cx="28" cy="8" r="3" fill="#FFD700"/>
+      </svg>
+      <span class="brand-wordmark"><span class="white">Metodolog</span><span class="gold">IA</span></span>
+    </div>
+    <div class="header-meta">
+      <div>Nexus Assistant OS &mdash; Discovery Deep Dive</div>
+      <div>Documento 13 de 15 &bull; 2026-04-02</div>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════ MAIN ══════════════════════════════════════════ -->
+<main id="main-content" data-mtia="main-content">
+
+  <h1 style="font-family:var(--font-display);font-weight:700;font-size:1.8rem;margin-bottom:.3rem;">13 &mdash; Revision de Negocio</h1>
+  <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:1.5rem;">Nexus Assistant OS &bull; Discovery Deep Dive</p>
+
+  <!-- ── CONFIDENTIAL BANNER ── -->
+  <div class="confidential-banner" data-mtia="confidential-banner" role="alert">
+    <span class="label">INTERNAL &mdash; CONFIDENTIAL</span>
+    <span class="sub">Este documento es de uso interno exclusivo. No compartir con el cliente.</span>
+  </div>
+
+  <!-- TL;DR -->
+  <div class="tldr-banner" data-mtia="tldr">
+    <h2>TL;DR</h2>
+    <p>Analisis de modelos de colaboracion, estructura de equipo, y viabilidad comercial para la evolucion de Nexus. Se evaluan 4 modelos de colaboracion. Recomendacion: self-development en H1, evaluar freelance augmentation en H2, agency partnership solo si B2B validado en H3. ICP: agencias y consultoras. Pricing por volumen de propuestas.</p>
+  </div>
+
+  <!-- ═══════ SECTION 1: Modelos de Colaboracion ═══════ -->
+  <section class="section-card" data-mtia="section-modelos-colaboracion">
+    <h2>1. Modelos de Colaboracion Evaluados</h2>
+    <p style="margin-bottom:1rem;">Cuatro modelos analizados para escalar el desarrollo de Nexus.</p>
+
+    <!-- Model A -->
+    <div class="model-card">
+      <h4>(a) Self-Development</h4>
+      <p style="color:var(--text-muted);font-size:.85rem;margin-bottom:.5rem;">Estado actual: fundador como unico desarrollador.</p>
+      <p><span class="tag tag-pro">PRO</span> Control total sobre arquitectura y prioridades.</p>
+      <p><span class="tag tag-pro">PRO</span> Costo operativo minimo (solo APIs y hosting).</p>
+      <p><span class="tag tag-pro">PRO</span> Velocidad de decision instantanea, sin coordinacion.</p>
+      <p><span class="tag tag-con">CON</span> Bus factor = 1. Todo el conocimiento en una persona.</p>
+      <p><span class="tag tag-con">CON</span> Velocidad de desarrollo limitada por disponibilidad personal.</p>
+      <p><span class="tag tag-con">CON</span> Riesgo de burnout en sprints intensos.</p>
+    </div>
+
+    <!-- Model B -->
+    <div class="model-card">
+      <h4>(b) Freelance Augmentation</h4>
+      <p style="color:var(--text-muted);font-size:.85rem;margin-bottom:.5rem;">Horizonte: H2+ (1-2 desarrolladores freelance).</p>
+      <p><span class="tag tag-pro">PRO</span> Escalabilidad flexible, contratacion por proyecto.</p>
+      <p><span class="tag tag-pro">PRO</span> Acceso a skills especificos (frontend, DevOps).</p>
+      <p><span class="tag tag-pro">PRO</span> Costo proporcional al volumen de trabajo.</p>
+      <p><span class="tag tag-con">CON</span> Overhead de onboarding y documentacion.</p>
+      <p><span class="tag tag-con">CON</span> Riesgo de inconsistencia arquitectural.</p>
+      <p><span class="tag tag-con">CON</span> Dependencia de disponibilidad externa.</p>
+    </div>
+
+    <!-- Model C -->
+    <div class="model-card">
+      <h4>(c) Agency Partnership</h4>
+      <p style="color:var(--text-muted);font-size:.85rem;margin-bottom:.5rem;">Horizonte: H3 (modelo B2B con agencias).</p>
+      <p><span class="tag tag-pro">PRO</span> Acceso a pipeline comercial existente del partner.</p>
+      <p><span class="tag tag-pro">PRO</span> Revenue share reduce riesgo financiero.</p>
+      <p><span class="tag tag-pro">PRO</span> Validacion de mercado con clientes reales.</p>
+      <p><span class="tag tag-con">CON</span> Perdida parcial de control sobre roadmap.</p>
+      <p><span class="tag tag-con">CON</span> Complejidad contractual y legal.</p>
+      <p><span class="tag tag-con">CON</span> Requiere producto lo suficientemente maduro para B2B.</p>
+    </div>
+
+    <!-- Model D -->
+    <div class="model-card">
+      <h4>(d) Open Source Community</h4>
+      <p style="color:var(--text-muted);font-size:.85rem;margin-bottom:.5rem;">Modelo alternativo: core open source + premium features.</p>
+      <p><span class="tag tag-pro">PRO</span> Atrae contribuciones y feedback de la comunidad.</p>
+      <p><span class="tag tag-pro">PRO</span> Brand awareness organica.</p>
+      <p><span class="tag tag-pro">PRO</span> Alineado con filosofia MetodologIA Copyleft.</p>
+      <p><span class="tag tag-con">CON</span> Dificil monetizar sin masa critica de usuarios.</p>
+      <p><span class="tag tag-con">CON</span> Overhead de community management.</p>
+      <p><span class="tag tag-con">CON</span> Riesgo de fork competitivo.</p>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION 2: Estructura de Equipo ═══════ -->
+  <section class="section-card" data-mtia="section-estructura-equipo">
+    <h2>2. Estructura de Equipo Optima por Horizonte</h2>
+
+    <div class="horizon-grid">
+      <div class="horizon-card">
+        <h4>H1 &mdash; Fundacion (0-6 meses)</h4>
+        <p class="fte">1 FTE (Fundador)</p>
+        <ul>
+          <li>Fundador como full-stack + product owner.</li>
+          <li>Foco en estabilizar core: router, agents, KB.</li>
+          <li>Claude Code como "pair programmer" permanente.</li>
+          <li>No contratar: maximizar velocity con AI tooling.</li>
+        </ul>
+      </div>
+
+      <div class="horizon-card">
+        <h4>H2 &mdash; Expansion (6-12 meses)</h4>
+        <p class="fte">1.5 FTE (+ Freelance Backend)</p>
+        <ul>
+          <li>Freelance backend para vector DB + RAG pipeline.</li>
+          <li>Fundador focaliza en product y frontend.</li>
+          <li>Contrato por entregable, no por horas.</li>
+          <li>Documentacion como prerequisito de contratacion.</li>
+        </ul>
+      </div>
+
+      <div class="horizon-card">
+        <h4>H3 &mdash; Escalamiento (12-18 meses)</h4>
+        <p class="fte">2 FTE (+ Freelance Frontend)</p>
+        <ul>
+          <li>Freelance frontend para B2B admin panel.</li>
+          <li>Solo si modelo B2B validado con 3+ clientes.</li>
+          <li>Fundador como architect + product lead.</li>
+          <li>Evaluar agency partnership para distribucion.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Horizonte</th><th>FTEs</th><th>Costo Est. (FTE-meses)</th><th>Habilidades Clave</th><th>Riesgo Principal</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>H1</td><td>1</td><td>6 FTE-meses</td><td>Full-stack, Python, LLM APIs</td><td>Burnout, scope creep</td></tr>
+          <tr><td>H2</td><td>1.5</td><td>9 FTE-meses</td><td>+ Vector DB, embeddings</td><td>Onboarding overhead</td></tr>
+          <tr><td>H3</td><td>2</td><td>12 FTE-meses</td><td>+ React/Vue, B2B UX</td><td>Premature scaling</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:.8rem;color:var(--text-muted);margin-top:.5rem;">Nota: Las estimaciones en FTE-meses son indicativas. No representan precios. Varian segun ubicacion, seniority y modelo de contratacion.</p>
+  </section>
+
+  <!-- ═══════ SECTION 3: Viabilidad Comercial ═══════ -->
+  <section class="section-card" data-mtia="section-viabilidad-comercial">
+    <h2>3. Viabilidad Comercial</h2>
+
+    <h3>Ideal Customer Profile (ICP)</h3>
+    <ul>
+      <li><strong>Primario:</strong> Agencias de consultoria (5-30 personas) que generan propuestas comerciales frecuentemente.</li>
+      <li><strong>Secundario:</strong> Freelancers senior y micro-consultoras que manejan multiples proyectos simultaneos.</li>
+      <li><strong>Terciario:</strong> Equipos de PreSales en empresas de tecnologia con ciclos de propuesta intensivos.</li>
+    </ul>
+
+    <h3>Modelo de Pricing</h3>
+    <p>Pricing basado en <strong>volumen de propuestas generadas</strong>, no por mensajes o usuarios. Esto alinea valor con uso real.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Tier</th><th>Propuestas/mes</th><th>Modelo</th><th>Incluye</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Free</td><td>3</td><td>Gratuito</td><td>Generacion basica, 1 template</td></tr>
+          <tr><td>Pro</td><td>20</td><td>Suscripcion</td><td>Templates ilimitados, versionado, analytics basicos</td></tr>
+          <tr><td>Team</td><td>100</td><td>Suscripcion</td><td>Multi-usuario, API access, custom templates, priority support</td></tr>
+          <tr><td>Enterprise</td><td>Ilimitado</td><td>Contrato anual</td><td>On-prem option, SLA, dedicated support, custom integrations</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Estrategia de Demo</h3>
+    <p>Bot publico en Telegram: <strong>@MetodologIAPropuestasBot</strong> con 3 usos gratuitos. Sin registro. El usuario experimenta el valor antes de cualquier compromiso. Funnel: Demo &rarr; Free tier &rarr; Pro conversion.</p>
+
+    <h3>Metricas de Validacion</h3>
+    <ul>
+      <li><strong>North Star:</strong> Propuestas generadas por usuario activo/mes.</li>
+      <li><strong>Activation:</strong> Usuario completa 1 propuesta en primera sesion.</li>
+      <li><strong>Retention:</strong> Uso recurrente en semana 2+.</li>
+      <li><strong>Revenue:</strong> Conversion free &rarr; Pro &gt; 5% en primeros 90 dias.</li>
+    </ul>
+  </section>
+
+  <!-- ═══════ SECTION 4: Riesgos de Negocio ═══════ -->
+  <section class="section-card" data-mtia="section-riesgos">
+    <h2>4. Riesgos de Negocio</h2>
+
+    <div class="risk-item">
+      <strong>R1 &mdash; Single Developer Dependency</strong>
+      <p>Todo el conocimiento tecnico y de producto reside en una persona. Un periodo de indisponibilidad detiene completamente el desarrollo y soporte.</p>
+      <p style="color:var(--blue);font-size:.85rem;">Mitigacion: Documentacion exhaustiva, AI-assisted code review, arquitectura modular que permita onboarding rapido.</p>
+    </div>
+
+    <div class="risk-item">
+      <strong>R2 &mdash; LifeSync Distraction</strong>
+      <p>Nexus compite por atencion con otros proyectos del fundador (MetodologIA, Sofka, JM Labs). Riesgo de que el desarrollo pierda momentum por cambio de foco.</p>
+      <p style="color:var(--blue);font-size:.85rem;">Mitigacion: Time-boxing semanal dedicado a Nexus, OKRs trimestrales con metricas publicadas, accountability partner.</p>
+    </div>
+
+    <div class="risk-item">
+      <strong>R3 &mdash; Market Timing</strong>
+      <p>El mercado de asistentes AI para propuestas esta emergiendo rapidamente. Competidores con mas recursos pueden lanzar soluciones similares.</p>
+      <p style="color:var(--blue);font-size:.85rem;">Mitigacion: Diferenciacion por profundidad (voice-first, agentic), no por amplitud. First-mover advantage en nicho Latam.</p>
+    </div>
+
+    <div class="risk-item">
+      <strong>R4 &mdash; Pricing Discovery</strong>
+      <p>No hay validacion de mercado del modelo de pricing por volumen de propuestas. El willingness-to-pay es desconocido.</p>
+      <p style="color:var(--blue);font-size:.85rem;">Mitigacion: Empezar con free tier generoso, iterar pricing basado en usage data real, entrevistas con 10+ ICPs antes de monetizar.</p>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION 5: Recomendacion ═══════ -->
+  <section class="section-card" data-mtia="section-recomendacion">
+    <h2>5. Recomendacion</h2>
+
+    <div class="recommendation-box">
+      <h3>Ruta Recomendada</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Horizonte</th><th>Modelo</th><th>Accion Clave</th><th>Gate de Decision</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>H1 (0-6m)</td>
+              <td>Self-development</td>
+              <td>Estabilizar core, lanzar demo bot, validar ICP con 10 entrevistas.</td>
+              <td>3+ usuarios activos recurrentes en free tier.</td>
+            </tr>
+            <tr>
+              <td>H2 (6-12m)</td>
+              <td>Evaluar freelance</td>
+              <td>Si gate H1 cumplido: contratar freelance backend para RAG/vector DB.</td>
+              <td>Free&rarr;Pro conversion &gt;5%, NPS &gt;40.</td>
+            </tr>
+            <tr>
+              <td>H3 (12-18m)</td>
+              <td>Agency partnership</td>
+              <td>Solo si B2B validado con 3+ clientes paying. Frontend para admin panel.</td>
+              <td>MRR positivo, 3+ clientes B2B activos.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p style="margin-top:1rem;font-size:.92rem;"><strong>Principio rector:</strong> No escalar antes de validar. Cada horizonte tiene un gate de decision explicito. Si el gate no se cumple, se permanece en el modelo actual hasta cumplirlo o pivotar.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ══════════════════════════════════════════ FOOTER ══════════════════════════════════════════ -->
+<footer data-mtia="footer">
+  <div class="footer-brand"><span class="white">Metodolog</span><span class="gold">IA</span></div>
+  <div class="footer-copy">&copy; 2026 MetodologIA. Copyleft &mdash; Para uso y aprovechamiento de profesionales en la era de la IA.</div>
+  <div class="footer-tagline">Asistentes agenticos que amplifican la inteligencia humana.</div>
+</footer>
+
+</body>
+</html>

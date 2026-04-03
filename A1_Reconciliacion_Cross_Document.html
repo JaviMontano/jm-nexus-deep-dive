@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A1 — Reconciliacion Cross-Document | Nexus Assistant OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ========== RESET & BASE ========== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #1E3258;
+  --navy-deep: #122562;
+  --gold: #FFD700;
+  --blue: #137DC5;
+  --dark: #1F2833;
+  --lilac: #BBA0CC;
+  --gray: #808080;
+  --text: #E8E8E8;
+  --text-muted: #A8B2C1;
+  --card-bg: rgba(255,255,255,0.06);
+  --card-border: rgba(255,255,255,0.10);
+  --card-hover: rgba(255,255,255,0.09);
+  --font-display: 'Poppins', sans-serif;
+  --font-body: 'Montserrat', sans-serif;
+  --font-footnote: 'Trebuchet MS', sans-serif;
+  --radius: 14px;
+  --max-w: 1120px;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  color: var(--text);
+  background: var(--navy);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(19,125,197,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 90%, rgba(187,160,204,0.08) 0%, transparent 60%);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ========== SKIP LINK ========== */
+.skip-link {
+  position: absolute; top: -100px; left: 16px;
+  background: var(--gold); color: var(--navy-deep);
+  padding: 8px 16px; border-radius: 4px;
+  font-weight: 600; z-index: 9999;
+}
+.skip-link:focus { top: 16px; }
+
+/* ========== LAYOUT ========== */
+.wrapper { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+
+/* ========== HEADER ========== */
+header {
+  padding: 28px 0 20px;
+  border-bottom: 1px solid var(--card-border);
+}
+.header-inner {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.brand-logo {
+  width: 38px; height: 38px; flex-shrink: 0;
+}
+.brand-wordmark {
+  font-family: var(--font-display);
+  font-weight: 800; font-size: 1.55rem;
+  letter-spacing: -0.02em;
+}
+.brand-wordmark .white { color: #fff; }
+.brand-wordmark .gold  { color: var(--gold); }
+.doc-tag {
+  margin-left: auto;
+  font-family: var(--font-display);
+  font-size: 0.72rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  background: rgba(255,215,0,0.12); color: var(--gold);
+  padding: 4px 12px; border-radius: 6px;
+}
+
+/* ========== HERO ========== */
+.hero {
+  padding: 56px 0 40px;
+  text-align: center;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-weight: 700; font-size: clamp(1.6rem, 4vw, 2.4rem);
+  line-height: 1.2;
+  background: linear-gradient(135deg, #fff 40%, var(--gold) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero .subtitle {
+  margin-top: 12px;
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  font-weight: 300;
+}
+.hero .badge-row {
+  margin-top: 20px;
+  display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
+}
+.badge {
+  font-family: var(--font-display);
+  font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 5px 14px; border-radius: 20px;
+}
+.badge--gold { background: rgba(255,215,0,0.14); color: var(--gold); }
+.badge--blue { background: rgba(19,125,197,0.14); color: var(--blue); }
+.badge--lilac { background: rgba(187,160,204,0.14); color: var(--lilac); }
+
+/* ========== SECTION ========== */
+section {
+  margin-bottom: 48px;
+}
+.section-label {
+  font-family: var(--font-display);
+  font-weight: 700; font-size: 0.68rem;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--gold); margin-bottom: 6px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 700; font-size: 1.35rem;
+  color: #fff; margin-bottom: 18px;
+}
+
+/* ========== GLASS CARD ========== */
+.card {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 28px;
+  transition: background 0.25s;
+}
+.card:hover { background: var(--card-hover); }
+
+/* ========== TABLES ========== */
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.85rem;
+}
+thead th {
+  font-family: var(--font-display);
+  font-weight: 600; font-size: 0.72rem;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--gold);
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 2px solid rgba(255,215,0,0.18);
+  white-space: nowrap;
+}
+tbody td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  vertical-align: top;
+}
+tbody tr:hover { background: rgba(255,255,255,0.03); }
+.mono { font-family: 'Courier New', monospace; font-size: 0.82rem; color: var(--blue); }
+.tag {
+  display: inline-block;
+  font-size: 0.68rem; font-weight: 600;
+  padding: 2px 8px; border-radius: 4px;
+  white-space: nowrap;
+}
+.tag--high   { background: rgba(76,175,80,0.18); color: #81C784; }
+.tag--med    { background: rgba(255,193,7,0.18); color: #FFD54F; }
+.tag--low    { background: rgba(244,67,54,0.18); color: #E57373; }
+.tag--na     { background: rgba(128,128,128,0.18); color: var(--gray); }
+
+/* ========== MATURITY BAR ========== */
+.maturity-track {
+  position: relative;
+  height: 54px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 27px;
+  margin: 24px 0 12px;
+  overflow: visible;
+}
+.maturity-rail {
+  position: absolute;
+  top: 50%; left: 3%; right: 3%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--lilac) 0%, var(--blue) 50%, var(--gold) 100%);
+  border-radius: 2px;
+  transform: translateY(-50%);
+}
+.maturity-node {
+  position: absolute;
+  top: 50%; transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center;
+  gap: 2px; z-index: 2;
+}
+.maturity-dot {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  background: var(--navy);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-size: 0.58rem; font-weight: 700;
+  color: var(--gold);
+  transition: transform 0.2s;
+}
+.maturity-dot:hover { transform: scale(1.2); }
+.maturity-pct {
+  font-size: 0.62rem; color: var(--text-muted);
+  font-weight: 500; margin-top: 2px;
+}
+.maturity-legend {
+  display: flex; justify-content: space-between;
+  font-size: 0.68rem; color: var(--text-muted);
+  padding: 0 2%;
+}
+
+/* ========== TRUTH STACK ========== */
+.truth-stack {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+.truth-item {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 18px;
+  text-align: center;
+  transition: border-color 0.2s;
+}
+.truth-item:hover { border-color: var(--gold); }
+.truth-item .icon { font-size: 1.6rem; margin-bottom: 6px; }
+.truth-item .label {
+  font-family: var(--font-display);
+  font-weight: 700; font-size: 0.82rem;
+  color: #fff;
+}
+.truth-item .desc {
+  font-size: 0.74rem; color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ========== WARNING BOX ========== */
+.warning-box {
+  background: rgba(244,67,54,0.08);
+  border-left: 4px solid #E57373;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 22px 28px;
+}
+.warning-box .warning-title {
+  font-family: var(--font-display);
+  font-weight: 700; font-size: 0.95rem;
+  color: #E57373; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.warning-box p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; }
+
+/* ========== FOOTER ========== */
+footer {
+  margin-top: 40px;
+  padding: 28px 0;
+  border-top: 1px solid var(--card-border);
+  text-align: center;
+}
+.footer-brand {
+  font-family: var(--font-display);
+  font-weight: 800; font-size: 1.1rem;
+  margin-bottom: 6px;
+}
+.footer-copy {
+  font-family: var(--font-footnote);
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .wrapper { padding: 0 16px; }
+  .card { padding: 18px; }
+  table { font-size: 0.78rem; }
+  thead th, tbody td { padding: 8px 8px; }
+  .hero { padding: 36px 0 24px; }
+  .maturity-track { height: 70px; }
+  .maturity-node { gap: 0; }
+  .maturity-dot { width: 22px; height: 22px; font-size: 0.52rem; }
+}
+
+/* ========== PRINT ========== */
+@media print {
+  body { background: #fff !important; color: #1a1a1a !important; }
+  .card { background: #f5f5f5 !important; border: 1px solid #ddd !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+  .hero h1 { background: none !important; -webkit-text-fill-color: #1a1a1a !important; color: #1a1a1a !important; }
+  .section-label { color: #333 !important; }
+  .section-title { color: #1a1a1a !important; }
+  thead th { color: #333 !important; border-bottom-color: #333 !important; }
+  tbody td { color: #333 !important; border-bottom-color: #ddd !important; }
+  .brand-wordmark .white { color: #1a1a1a !important; }
+  .brand-wordmark .gold { color: #B8860B !important; }
+  .warning-box { background: #FFF3F3 !important; }
+  .warning-box .warning-title { color: #C62828 !important; }
+  .warning-box p { color: #333 !important; }
+  .truth-item { background: #f5f5f5 !important; border-color: #ddd !important; }
+  .truth-item .label { color: #1a1a1a !important; }
+  .truth-item .desc { color: #555 !important; }
+  .footer-copy { color: #555 !important; }
+  .maturity-rail { background: #999 !important; }
+  .maturity-dot { background: #fff !important; border-color: #333 !important; color: #333 !important; }
+  .maturity-pct { color: #555 !important; }
+  .maturity-legend { color: #555 !important; }
+  .skip-link { display: none !important; }
+  a { color: #0645AD !important; }
+  .tag--high { background: #E8F5E9 !important; color: #2E7D32 !important; }
+  .tag--med { background: #FFF8E1 !important; color: #F57F17 !important; }
+  .tag--low { background: #FFEBEE !important; color: #C62828 !important; }
+  .tag--na { background: #ECEFF1 !important; color: #546E6F !important; }
+  .doc-tag { background: #FFF8E1 !important; color: #F57F17 !important; }
+  .badge--gold { background: #FFF8E1 !important; color: #F57F17 !important; }
+  .badge--blue { background: #E3F2FD !important; color: #1565C0 !important; }
+  .badge--lilac { background: #F3E5F5 !important; color: #7B1FA2 !important; }
+}
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Saltar al contenido</a>
+
+<!-- ====== HEADER ====== -->
+<header data-mtia="header">
+  <div class="wrapper header-inner">
+    <!-- SVG Logo: 3 pillars + gold circle -->
+    <svg class="brand-logo" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="38" height="38" rx="8" fill="#122562"/>
+      <rect x="8" y="14" width="4" height="14" rx="1.5" fill="#fff"/>
+      <rect x="17" y="10" width="4" height="18" rx="1.5" fill="#fff"/>
+      <rect x="26" y="14" width="4" height="14" rx="1.5" fill="#fff"/>
+      <circle cx="30" cy="10" r="3.5" fill="#FFD700"/>
+    </svg>
+    <span class="brand-wordmark"><span class="white">Metodolog</span><span class="gold">IA</span></span>
+    <span class="doc-tag">A1 &mdash; Cross-Document</span>
+  </div>
+</header>
+
+<!-- ====== MAIN ====== -->
+<main id="main" class="wrapper">
+
+  <!-- HERO -->
+  <section class="hero" data-mtia="hero">
+    <h1>Reconciliacion Cross-Document</h1>
+    <p class="subtitle">Nexus Assistant OS &mdash; 7 conflictos resueltos entre 7 documentos de discovery</p>
+    <div class="badge-row">
+      <span class="badge badge--gold">7 Fuentes</span>
+      <span class="badge badge--blue">7 Conflictos</span>
+      <span class="badge badge--lilac">1 Stack Canonico</span>
+    </div>
+  </section>
+
+  <!-- S1: INVENTARIO DE FUENTES -->
+  <section data-mtia="section-inventario">
+    <p class="section-label">Seccion 1</p>
+    <h2 class="section-title">Inventario de Fuentes</h2>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Documento</th>
+              <th>Tipo</th>
+              <th>Madurez</th>
+              <th>Alineacion Repo</th>
+              <th>Valor Unico</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">D1</td>
+              <td>Discovery Alta Densidad V2.0</td>
+              <td>Discovery L3</td>
+              <td><span class="tag tag--med">Media</span></td>
+              <td>60%</td>
+              <td>Capability map P0-P3, policies L0-L3</td>
+            </tr>
+            <tr>
+              <td class="mono">D2</td>
+              <td>Discovery Producto y Arq. 2</td>
+              <td>Discovery L4</td>
+              <td><span class="tag tag--med">Media-Alta</span></td>
+              <td>65%</td>
+              <td>7-layer detail, JTBD, congelados</td>
+            </tr>
+            <tr>
+              <td class="mono">D3</td>
+              <td>Discovery V3 Telegram OS</td>
+              <td>Spec L5</td>
+              <td><span class="tag tag--high">Alta</span></td>
+              <td>80%</td>
+              <td>Gherkin, HIL, disaster recovery, unit economics</td>
+            </tr>
+            <tr>
+              <td class="mono">D4</td>
+              <td>Discovery Nexus/Pristino</td>
+              <td>Audit L4</td>
+              <td><span class="tag tag--high">Alta</span></td>
+              <td>90%</td>
+              <td>Unico grounded en repo real</td>
+            </tr>
+            <tr>
+              <td class="mono">D5</td>
+              <td>PRD LifeSync</td>
+              <td>PRD L4</td>
+              <td><span class="tag tag--na">N/A</span></td>
+              <td>0%</td>
+              <td>Producto independiente (Flutter/Supabase)</td>
+            </tr>
+            <tr>
+              <td class="mono">D6</td>
+              <td>PRD Pristino Valor</td>
+              <td>PRD/DRD L4</td>
+              <td><span class="tag tag--low">Baja</span></td>
+              <td>20%</td>
+              <td>Vision aspiracional Swarm/OpenClaw/n8n</td>
+            </tr>
+            <tr>
+              <td class="mono">D7</td>
+              <td>Plan Maestro Mejora</td>
+              <td>Roadmap L5</td>
+              <td><span class="tag tag--high">Alta</span></td>
+              <td>75%</td>
+              <td>Data model, sprints, KPIs</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2: MAPA DE MADUREZ -->
+  <section data-mtia="section-madurez">
+    <p class="section-label">Seccion 2</p>
+    <h2 class="section-title">Mapa de Madurez</h2>
+    <div class="card">
+      <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:8px;">Alineacion con repositorio &mdash; de aspiracional a grounded</p>
+      <div class="maturity-track">
+        <div class="maturity-rail"></div>
+        <!-- Nodes positioned by percentage. left = 3% + (value/100)*94% -->
+        <div class="maturity-node" style="left: calc(3% + 20% * 0.94);">
+          <span class="maturity-dot">D6</span>
+          <span class="maturity-pct">20%</span>
+        </div>
+        <div class="maturity-node" style="left: calc(3% + 60% * 0.94);">
+          <span class="maturity-dot">D1</span>
+          <span class="maturity-pct">60%</span>
+        </div>
+        <div class="maturity-node" style="left: calc(3% + 65% * 0.94);">
+          <span class="maturity-dot">D2</span>
+          <span class="maturity-pct">65%</span>
+        </div>
+        <div class="maturity-node" style="left: calc(3% + 75% * 0.94);">
+          <span class="maturity-dot">D7</span>
+          <span class="maturity-pct">75%</span>
+        </div>
+        <div class="maturity-node" style="left: calc(3% + 80% * 0.94);">
+          <span class="maturity-dot">D3</span>
+          <span class="maturity-pct">80%</span>
+        </div>
+        <div class="maturity-node" style="left: calc(3% + 90% * 0.94);">
+          <span class="maturity-dot">D4</span>
+          <span class="maturity-pct">90%</span>
+        </div>
+      </div>
+      <div class="maturity-legend" style="margin-top: 28px;">
+        <span>Aspiracional</span>
+        <span>Grounded &rarr; Repo (100%)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3: 7 CONFLICTOS RESUELTOS -->
+  <section data-mtia="section-conflictos">
+    <p class="section-label">Seccion 3</p>
+    <h2 class="section-title">7 Conflictos Resueltos</h2>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Conflicto</th>
+              <th>Decision</th>
+              <th>Fuente Canonica</th>
+              <th>Riesgo Residual</th>
+              <th>Criterio de Revision</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">C-01</td>
+              <td>Topologia: 5 vs 7 vs 4 capas</td>
+              <td><strong>4 planos</strong></td>
+              <td>D3</td>
+              <td>Subdivision en H3</td>
+              <td>Si multi-tenant requiere aislamiento</td>
+            </tr>
+            <tr>
+              <td class="mono">C-02</td>
+              <td>Patron: Router vs State Machine vs Swarm</td>
+              <td><strong>Orquestador Multi-Agente + State Machine</strong></td>
+              <td>D3 + Repo</td>
+              <td>Swarm queda H3</td>
+              <td>Si committee no escala</td>
+            </tr>
+            <tr>
+              <td class="mono">C-03</td>
+              <td>Persistencia: Firestore vs Redis</td>
+              <td><strong>Firestore unico</strong></td>
+              <td>Repo + D3</td>
+              <td>Redis en H3</td>
+              <td>Si latencia sesion &gt;200ms</td>
+            </tr>
+            <tr>
+              <td class="mono">C-04</td>
+              <td>LifeSync relacion</td>
+              <td><strong>Producto independiente</strong></td>
+              <td>Evidencia tecnica</td>
+              <td>Fragmentacion esfuerzo</td>
+              <td>Si MCP bridge necesario</td>
+            </tr>
+            <tr>
+              <td class="mono">C-05</td>
+              <td>n8n: Core vs H2</td>
+              <td><strong>Spike H2</strong></td>
+              <td>Repo (ausencia)</td>
+              <td>Integraciones manuales H1</td>
+              <td>Si H2 agrega 3+ APIs</td>
+            </tr>
+            <tr>
+              <td class="mono">C-06</td>
+              <td>HIL Middleware</td>
+              <td><strong>Prioridad H1</strong></td>
+              <td>D3 + Constitution</td>
+              <td>Gap critico</td>
+              <td>Gate H1</td>
+            </tr>
+            <tr>
+              <td class="mono">C-07</td>
+              <td>Modelo Permisos</td>
+              <td><strong>L0-L4 de D3</strong></td>
+              <td>D3</td>
+              <td>No implementado</td>
+              <td>S2 de H1</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4: STACK DE VERDAD -->
+  <section data-mtia="section-stack-verdad">
+    <p class="section-label">Seccion 4</p>
+    <h2 class="section-title">Stack de Verdad</h2>
+    <div class="card">
+      <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:20px;">
+        El stack canonico es:
+      </p>
+      <div class="truth-stack">
+        <div class="truth-item">
+          <div class="icon" style="color:var(--blue);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 012-2h6l2 2h6a2 2 0 012 2v2"/><path d="M3 7h18a2 2 0 012 2v9a2 2 0 01-2 2H3a2 2 0 01-2-2V9a2 2 0 012-2z"/></svg>
+          </div>
+          <div class="label">D3</div>
+          <div class="desc">Arquitectura</div>
+        </div>
+        <div class="truth-item">
+          <div class="icon" style="color:var(--gold);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 113 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          </div>
+          <div class="label">D7</div>
+          <div class="desc">Roadmap</div>
+        </div>
+        <div class="truth-item">
+          <div class="icon" style="color:var(--lilac);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <div class="label">Repo</div>
+          <div class="desc">Implementacion</div>
+        </div>
+        <div class="truth-item">
+          <div class="icon" style="color:#81C784;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="label">Constitution</div>
+          <div class="desc">Gobernanza</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5: ANTI-PATRON -->
+  <section data-mtia="section-antipatron">
+    <p class="section-label">Seccion 5</p>
+    <h2 class="section-title">Anti-Patron &mdash; Vision Drift</h2>
+    <div class="warning-box">
+      <div class="warning-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Vision Drift Detectado
+      </div>
+      <p>
+        <strong>D6 (PRD Pristino Valor)</strong> introduce conceptos &mdash; Swarm Orchestration, OpenClaw nativo, n8n como core &mdash; que no estan enraizados en el codigo existente del repositorio. Su alineacion es del <strong>20%</strong>, la mas baja del inventario.
+      </p>
+      <p style="margin-top:10px;">
+        <strong>Recomendacion:</strong> Tratar D6 como input aspiracional de horizonte H3+. No utilizar como fuente de decisiones de arquitectura para H1 ni H2. Las decisiones deben basarse en el stack canonico (D3 + D7 + Repo + Constitution).
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ====== FOOTER ====== -->
+<footer data-mtia="footer">
+  <div class="wrapper">
+    <div class="footer-brand">
+      <span style="color:#fff;">Metodolog</span><span style="color:var(--gold);">IA</span>
+    </div>
+    <p class="footer-copy">&copy; 2026 MetodologIA. Copyleft &mdash; Para uso y aprovechamiento de profesionales en la era de la IA.</p>
+  </div>
+</footer>
+
+</body>
+</html>

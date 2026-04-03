@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es" data-mtia="report-a4-arquitectura-tobe">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A4: Arquitectura TO-BE — Nexus Assistant OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & Base ─────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#1E3258;--card:rgba(255,255,255,0.06);--card-border:rgba(255,255,255,0.10);
+  --gold:#FFD700;--blue:#137DC5;--navy:#122562;--dark:#1F2833;--lilac:#BBA0CC;--gray:#808080;
+  --text:#E8E8E8;--text-muted:rgba(232,232,232,0.6);
+  --font-display:'Poppins',sans-serif;--font-body:'Montserrat',sans-serif;--font-footnote:'Trebuchet MS',sans-serif;
+  --radius:12px;--blur:16px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-weight:400;line-height:1.6;min-height:100vh}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;line-height:1.25}
+img{max-width:100%;height:auto}
+
+/* ── Skip Link ────────────────────────────────────── */
+.skip-link{position:absolute;top:-100%;left:1rem;background:var(--gold);color:var(--navy);padding:.5rem 1rem;border-radius:var(--radius);font-weight:600;z-index:1000}
+.skip-link:focus{top:1rem}
+
+/* ── Layout ───────────────────────────────────────── */
+.wrapper{max-width:1200px;margin:0 auto;padding:0 1.5rem}
+
+/* ── Header ───────────────────────────────────────── */
+header[data-mtia="header"]{
+  padding:1.5rem 0;border-bottom:1px solid var(--card-border);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;
+}
+.brand{display:flex;align-items:center;gap:.75rem}
+.brand-logo{width:36px;height:36px;flex-shrink:0}
+.brand-wordmark{font-family:var(--font-display);font-weight:800;font-size:1.5rem;letter-spacing:.5px}
+.brand-wordmark .ia{color:var(--gold)}
+.brand-date{font-family:var(--font-footnote);font-size:.8rem;color:var(--text-muted)}
+
+/* ── Hero ─────────────────────────────────────────── */
+.hero[data-mtia="hero"]{text-align:center;padding:3rem 0 2rem}
+.hero h1{font-size:clamp(1.6rem,4vw,2.4rem);margin-bottom:.5rem}
+.hero h1 .highlight{color:var(--gold)}
+.hero p{font-size:1.05rem;color:var(--text-muted);max-width:640px;margin:0 auto}
+
+/* ── Glass Card ───────────────────────────────────── */
+.glass{
+  background:var(--card);backdrop-filter:blur(var(--blur));-webkit-backdrop-filter:blur(var(--blur));
+  border:1px solid var(--card-border);border-radius:var(--radius);padding:1.5rem;
+}
+
+/* ── Section ──────────────────────────────────────── */
+section{margin-bottom:3rem}
+section>h2{font-size:1.4rem;margin-bottom:1.25rem;padding-bottom:.5rem;border-bottom:2px solid var(--gold);display:inline-block}
+section>h2 .num{color:var(--gold);margin-right:.4rem}
+
+/* ── Topology Diagram ─────────────────────────────── */
+.topology{display:flex;flex-direction:column;gap:1rem}
+
+.plane{position:relative;border-radius:var(--radius);padding:1.15rem 1.25rem;border-left:4px solid var(--blue)}
+.plane.ingesta{border-left-color:#4CAF50}
+.plane.control{border-left-color:var(--blue)}
+.plane.ejecucion{border-left-color:var(--gold)}
+.plane.persistencia{border-left-color:var(--lilac)}
+.plane.transversal{border-left-color:var(--gray);background:rgba(255,255,255,0.03)}
+
+.plane-label{
+  font-family:var(--font-display);font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;
+  margin-bottom:.65rem;display:flex;align-items:center;gap:.5rem;
+}
+.plane-label .tag{
+  display:inline-block;padding:.15rem .55rem;border-radius:4px;font-size:.65rem;font-weight:600;
+}
+.plane.ingesta .tag{background:#4CAF50;color:#fff}
+.plane.control .tag{background:var(--blue);color:#fff}
+.plane.ejecucion .tag{background:var(--gold);color:var(--navy)}
+.plane.persistencia .tag{background:var(--lilac);color:var(--navy)}
+.plane.transversal .tag{background:var(--gray);color:#fff}
+
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;font-size:.82rem;line-height:1.7}
+.flow .node{
+  background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);
+  padding:.25rem .6rem;border-radius:6px;white-space:nowrap;font-size:.78rem;
+}
+.flow .node.decision{border-color:var(--gold);color:var(--gold)}
+.flow .node.external{border-color:var(--blue);color:var(--blue)}
+.flow .arrow{color:var(--gold);font-weight:700;font-size:.9rem;flex-shrink:0}
+
+/* ── Principles Grid ──────────────────────────────── */
+.principles-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+.principle-card{transition:transform .2s,box-shadow .2s}
+.principle-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.principle-card .num{
+  font-family:var(--font-display);font-weight:800;font-size:1.8rem;color:var(--gold);
+  line-height:1;margin-bottom:.25rem;
+}
+.principle-card h3{font-size:1rem;margin-bottom:.4rem}
+.principle-card .rule{font-size:.85rem;color:var(--text);margin-bottom:.5rem}
+.principle-card .anti{
+  font-size:.78rem;color:var(--text-muted);padding-top:.5rem;border-top:1px solid var(--card-border);
+}
+.principle-card .anti strong{color:#ef5350}
+
+/* ── Tables ───────────────────────────────────────── */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{
+  font-family:var(--font-display);font-weight:700;text-align:left;padding:.65rem .75rem;
+  background:rgba(255,255,255,0.06);border-bottom:2px solid var(--gold);white-space:nowrap;
+}
+td{padding:.6rem .75rem;border-bottom:1px solid var(--card-border);vertical-align:top}
+tr:hover td{background:rgba(255,255,255,0.03)}
+.pct{font-weight:600}
+.pct.high{color:#4CAF50}
+.pct.mid{color:var(--gold)}
+.pct.low{color:#ef5350}
+
+/* ── Collapsible Edge Cases ───────────────────────── */
+.edge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:.75rem}
+details.edge-card{border-radius:var(--radius);overflow:hidden;transition:background .2s}
+details.edge-card[open]{background:rgba(255,255,255,0.04)}
+details.edge-card summary{
+  cursor:pointer;padding:.75rem 1rem;font-family:var(--font-display);font-weight:600;font-size:.88rem;
+  list-style:none;display:flex;align-items:center;gap:.5rem;
+}
+details.edge-card summary::before{content:'';display:inline-block;width:0;height:0;border-left:6px solid var(--gold);border-top:5px solid transparent;border-bottom:5px solid transparent;transition:transform .2s;flex-shrink:0}
+details.edge-card[open] summary::before{transform:rotate(90deg)}
+details.edge-card summary::-webkit-details-marker{display:none}
+details.edge-card .body{padding:0 1rem .85rem 1.75rem;font-size:.83rem;color:var(--text-muted);line-height:1.65}
+details.edge-card .body strong{color:var(--text)}
+
+/* ── Footer ───────────────────────────────────────── */
+footer[data-mtia="footer"]{
+  margin-top:4rem;padding:1.5rem 0;border-top:1px solid var(--card-border);
+  text-align:center;font-family:var(--font-footnote);font-size:.8rem;color:var(--text-muted);
+}
+
+/* ── Print ────────────────────────────────────────── */
+@media print{
+  body{background:#fff;color:#1a1a1a;font-size:11pt}
+  .glass{background:#f5f5f5;backdrop-filter:none;-webkit-backdrop-filter:none;border:1px solid #ddd}
+  header[data-mtia="header"]{border-bottom:2px solid #1E3258}
+  .brand-wordmark,.brand-wordmark .ia{color:#1E3258}
+  section>h2{border-bottom-color:#1E3258;color:#1E3258}
+  .plane{border-left-width:3px;page-break-inside:avoid}
+  .principle-card{page-break-inside:avoid;box-shadow:none!important}
+  details.edge-card{break-inside:avoid}
+  details.edge-card[open] .body,details.edge-card .body{display:block}
+  footer[data-mtia="footer"]{color:#666}
+  .flow .arrow{color:#1E3258}
+  .pct.high{color:#2e7d32}.pct.mid{color:#b8860b}.pct.low{color:#c62828}
+  th{background:#e8e8e8;border-bottom:2px solid #1E3258}
+  tr:hover td{background:transparent}
+}
+
+/* ── Responsive ───────────────────────────────────── */
+@media(max-width:768px){
+  .wrapper{padding:0 1rem}
+  .hero{padding:2rem 0 1.5rem}
+  .hero h1{font-size:1.4rem}
+  .principles-grid{grid-template-columns:1fr}
+  .edge-grid{grid-template-columns:1fr}
+  .flow{font-size:.75rem}
+  .flow .node{font-size:.72rem;padding:.2rem .45rem}
+  table{font-size:.78rem}
+  th,td{padding:.5rem}
+}
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Saltar al contenido</a>
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<div class="wrapper">
+<header data-mtia="header">
+  <div class="brand">
+    <svg class="brand-logo" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="36" height="36" rx="8" fill="#122562"/>
+      <rect x="7" y="10" width="4" height="16" rx="2" fill="#fff"/>
+      <rect x="16" y="6" width="4" height="20" rx="2" fill="#fff"/>
+      <rect x="25" y="12" width="4" height="14" rx="2" fill="#fff"/>
+      <circle cx="27" cy="8" r="3" fill="#FFD700"/>
+    </svg>
+    <span class="brand-wordmark">Metodolog<span class="ia">IA</span></span>
+  </div>
+  <span class="brand-date">2 de abril de 2026 &middot; Artefacto A4</span>
+</header>
+</div>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<div class="wrapper">
+<section class="hero" data-mtia="hero">
+  <h1>Arquitectura TO-BE &mdash; <span class="highlight">Nexus Assistant OS</span></h1>
+  <p>4 planos + 2 transversales, 8 principios arquitect&oacute;nicos</p>
+</section>
+</div>
+
+<main id="main" class="wrapper">
+
+<!-- ═══════════════ SECTION 1 — TOPOLOGIA ═══════════════ -->
+<section data-mtia="section-topologia">
+  <h2><span class="num">01</span> Topolog&iacute;a Visual</h2>
+
+  <div class="topology">
+
+    <!-- PLANO 1 INGESTA -->
+    <div class="plane ingesta glass" data-mtia="plano-ingesta">
+      <div class="plane-label"><span class="tag">P1</span> PLANO INGESTA &mdash; Edge</div>
+      <div class="flow">
+        <span class="node external">Telegram Webhook</span>
+        <span class="arrow">&rarr;</span>
+        <span class="node">Cloud Function</span>
+        <span class="node decision">ACK &lt;2 s</span>
+        <span class="arrow">&rarr;</span>
+        <span class="node">CP1 Sanitization</span>
+        <span class="arrow">&rarr;</span>
+        <span class="node decision">Audio?</span>
+        <span class="arrow">&rarr;</span>
+        <span class="node external">Whisper (chunk &gt;60 s)</span>
+        <span class="arrow">&rarr;</span>
+        <span class="node">Debounce 2 s</span>
+        <span class="arrow">&rarr;</span>
+        <span class="node external">Pub/Sub</span>
+      </div>
+    </div>
+
+    <!-- PLANO 2 CONTROL -->
+    <div class="plane control glass" data-mtia="plano-control">
+      <div class="plane-label"><span class="tag">P2</span> PLANO CONTROL</div>
+      <div class="flow">
+        <span class="node">Worker</span>
+        <span class="arrow">&rarr;</span>
+        <span class="node">CP2 Hardening</span>
+        <span class="arrow">&rarr;</span>
+        <span class="node decision">Semantic Router</span>
+        <span class="node" style="font-size:.7rem;color:var(--text-muted)">(Groq &rarr; OpenRouter &rarr; Gemini)</span>
+        <span class="arrow">&rarr;</span>
+        <span class="node">Context Retrieval</span>
+        <span class="arrow">&rarr;</span>
+        <span class="node">Prompt Composer</span>
+        <span class="arrow">&rarr;</span>
+        <span class="node decision">Delegation</span>
+        <span class="node" style="font-size:.7rem">Single 15 s &middot; Terna 30 s &middot; Committee 60 s</span>
+        <span class="arrow">&rarr;</span>
+        <span class="node">Degradation Cascade</span>
+      </div>
+    </div>
+
+    <!-- PLANO 3 EJECUCION -->
+    <div class="plane ejecucion glass" data-mtia="plano-ejecucion">
+      <div class="plane-label"><span class="tag">P3</span> PLANO EJECUCI&Oacute;N</div>
+      <div class="flow">
+        <span class="node">Agent Pool (6)</span>
+        <span class="arrow">&rarr;</span>
+        <span class="node">Tool Registry (10)</span>
+        <span class="arrow">&rarr;</span>
+        <span class="node decision">Permission Gate</span>
+        <span class="node" style="font-size:.7rem">L0 auto &middot; L1 auto &middot; L2 HIL &middot; L3 disabled &middot; L4 blocked</span>
+        <span class="arrow">&rarr;</span>
+        <span class="node decision">HIL Gate</span>
+        <span class="node" style="font-size:.7rem">pending_actions &middot; Inline Buttons &middot; TTL 24 h</span>
+      </div>
+    </div>
+
+    <!-- PLANO 4 PERSISTENCIA -->
+    <div class="plane persistencia glass" data-mtia="plano-persistencia">
+      <div class="plane-label"><span class="tag">P4</span> PLANO PERSISTENCIA</div>
+      <div class="flow">
+        <span class="node">Firestore (10 Collections)</span>
+        <span class="arrow">+</span>
+        <span class="node">Cloud Storage (URLs 7 d)</span>
+        <span class="arrow">&rarr;</span>
+        <span class="node">CP3 Output Scan (soft)</span>
+        <span class="arrow">&rarr;</span>
+        <span class="node external">Telegram Response</span>
+      </div>
+    </div>
+
+    <!-- TRANSVERSAL SEGURIDAD -->
+    <div class="plane transversal glass" data-mtia="transversal-seguridad">
+      <div class="plane-label"><span class="tag">T1</span> TRANSVERSAL &mdash; SEGURIDAD</div>
+      <div class="flow">
+        <span class="node decision">CP1 (hard)</span>
+        <span class="arrow">&middot;</span>
+        <span class="node decision">CP2 (hard)</span>
+        <span class="arrow">&middot;</span>
+        <span class="node">CP3 (soft)</span>
+      </div>
+    </div>
+
+    <!-- TRANSVERSAL OBSERVABILIDAD -->
+    <div class="plane transversal glass" data-mtia="transversal-observabilidad">
+      <div class="plane-label"><span class="tag">T2</span> TRANSVERSAL &mdash; OBSERVABILIDAD</div>
+      <div class="flow">
+        <span class="node">Token Tracking</span>
+        <span class="arrow">&middot;</span>
+        <span class="node">Structured Logging</span>
+        <span class="arrow">&middot;</span>
+        <span class="node">Circuit Breakers</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════ SECTION 2 — PRINCIPIOS ═══════════════ -->
+<section data-mtia="section-principios">
+  <h2><span class="num">02</span> 8 Principios Arquitect&oacute;nicos</h2>
+
+  <div class="principles-grid">
+
+    <div class="principle-card glass">
+      <div class="num">01</div>
+      <h3>Async-First</h3>
+      <p class="rule">Operaci&oacute;n &gt;5 s v&iacute;a Pub/Sub. ACK &lt;2 s obligatorio.</p>
+      <p class="anti"><strong>Previene:</strong> Webhook timeout s&iacute;ncrono</p>
+    </div>
+
+    <div class="principle-card glass">
+      <div class="num">02</div>
+      <h3>State Machine</h3>
+      <p class="rule">Cada mensaje transiciona estado. Sin loops.</p>
+      <p class="anti"><strong>Previene:</strong> Agent loop infinito</p>
+    </div>
+
+    <div class="principle-card glass">
+      <div class="num">03</div>
+      <h3>Context Compression</h3>
+      <p class="rule">Max 500 tokens + 15 turns. CRON nocturno de limpieza.</p>
+      <p class="anti"><strong>Previene:</strong> Context bloat ($$$)</p>
+    </div>
+
+    <div class="principle-card glass">
+      <div class="num">04</div>
+      <h3>Execution Isolation</h3>
+      <p class="rule">IAM m&iacute;nimo. Researcher: read-only.</p>
+      <p class="anti"><strong>Previene:</strong> Privilege escalation</p>
+    </div>
+
+    <div class="principle-card glass">
+      <div class="num">05</div>
+      <h3>Declarative Agents</h3>
+      <p class="rule">agent.md + skill.yaml. Sin c&oacute;digo hardcoded.</p>
+      <p class="anti"><strong>Previene:</strong> Hardcoded logic</p>
+    </div>
+
+    <div class="principle-card glass">
+      <div class="num">06</div>
+      <h3>Idempotent Handlers</h3>
+      <p class="rule">Deduplicar por update_id en cada handler.</p>
+      <p class="anti"><strong>Previene:</strong> Acciones duplicadas</p>
+    </div>
+
+    <div class="principle-card glass">
+      <div class="num">07</div>
+      <h3>Fail-Open / Fail-Closed</h3>
+      <p class="rule">Reads degradan (open). Writes bloquean (closed).</p>
+      <p class="anti"><strong>Previene:</strong> Estado corrupto</p>
+    </div>
+
+    <div class="principle-card glass">
+      <div class="num">08</div>
+      <h3>Token Budget</h3>
+      <p class="rule">Single = 4 K, Terna = 12 K, Committee = 20 K.</p>
+      <p class="anti"><strong>Previene:</strong> Costos impredecibles</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════ SECTION 3 — CONSTITUTION MAPPING ═══════════════ -->
+<section data-mtia="section-constitution">
+  <h2><span class="num">03</span> Constitution-to-Code Mapping</h2>
+
+  <div class="glass table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Principio Constitucional</th>
+          <th>Archivo(s) que Implementan</th>
+          <th>Completitud</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>P1</td>
+          <td>Async-First</td>
+          <td><code>functions/webhook.ts</code>, <code>pubsub/dispatcher.ts</code>, <code>infra/pubsub.tf</code></td>
+          <td class="pct high">95 %</td>
+        </tr>
+        <tr>
+          <td>P2</td>
+          <td>State Machine</td>
+          <td><code>core/state-machine.ts</code>, <code>models/conversation-state.ts</code></td>
+          <td class="pct high">90 %</td>
+        </tr>
+        <tr>
+          <td>P3</td>
+          <td>Context Compression</td>
+          <td><code>core/context-manager.ts</code>, <code>cron/context-cleaner.ts</code></td>
+          <td class="pct mid">70 %</td>
+        </tr>
+        <tr>
+          <td>P4</td>
+          <td>Execution Isolation</td>
+          <td><code>infra/iam-policies.tf</code>, <code>agents/*.agent.md</code></td>
+          <td class="pct high">85 %</td>
+        </tr>
+        <tr>
+          <td>P5</td>
+          <td>Declarative Agents</td>
+          <td><code>agents/*.agent.md</code>, <code>skills/*.skill.yaml</code>, <code>core/agent-loader.ts</code></td>
+          <td class="pct high">88 %</td>
+        </tr>
+        <tr>
+          <td>P6</td>
+          <td>Idempotent Handlers</td>
+          <td><code>functions/webhook.ts</code> (dedup guard), <code>firestore/rules.ts</code></td>
+          <td class="pct high">92 %</td>
+        </tr>
+        <tr>
+          <td>P7</td>
+          <td>Fail-Open / Fail-Closed</td>
+          <td><code>core/circuit-breaker.ts</code>, <code>core/degradation.ts</code></td>
+          <td class="pct mid">65 %</td>
+        </tr>
+        <tr>
+          <td>P8</td>
+          <td>Token Budget</td>
+          <td><code>core/token-budget.ts</code>, <code>config/budgets.yaml</code></td>
+          <td class="pct mid">75 %</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════ SECTION 4 — CASOS BORDE ═══════════════ -->
+<section data-mtia="section-casos-borde">
+  <h2><span class="num">04</span> 16 Casos Borde Documentados</h2>
+
+  <div class="edge-grid">
+
+    <details class="edge-card glass">
+      <summary>CB-01 &middot; Audio &gt;60 s sin segmentaci&oacute;n</summary>
+      <div class="body"><strong>Resoluci&oacute;n:</strong> Whisper chunk autom&aacute;tico en fragmentos de 60 s con overlap de 2 s. Reensamblaje por timestamp en el worker.</div>
+    </details>
+
+    <details class="edge-card glass">
+      <summary>CB-02 &middot; Webhook timeout (&gt;2 s)</summary>
+      <div class="body"><strong>Resoluci&oacute;n:</strong> ACK inmediato (200 OK vac&iacute;o). Procesamiento diferido v&iacute;a Pub/Sub. Retry autom&aacute;tico con backoff exponencial.</div>
+    </details>
+
+    <details class="edge-card glass">
+      <summary>CB-03 &middot; Mensajes duplicados (Telegram retry)</summary>
+      <div class="body"><strong>Resoluci&oacute;n:</strong> Deduplicaci&oacute;n por <code>update_id</code> en Firestore con TTL de 24 h. Handler idempotente.</div>
+    </details>
+
+    <details class="edge-card glass">
+      <summary>CB-04 &middot; Fallo del proveedor LLM primario</summary>
+      <div class="body"><strong>Resoluci&oacute;n:</strong> Cascada de degradaci&oacute;n: Groq &rarr; OpenRouter &rarr; Gemini. Circuit breaker con umbral de 3 fallos / 60 s.</div>
+    </details>
+
+    <details class="edge-card glass">
+      <summary>CB-05 &middot; Context window overflow</summary>
+      <div class="body"><strong>Resoluci&oacute;n:</strong> Compresi&oacute;n progresiva: resumen de turns &gt;15. CRON nocturno borra contexto inactivo &gt;72 h. Fallback: truncar a 500 tokens.</div>
+    </details>
+
+    <details class="edge-card glass">
+      <summary>CB-06 &middot; Agent loop infinito</summary>
+      <div class="body"><strong>Resoluci&oacute;n:</strong> Max 5 transiciones por mensaje. State machine rechaza loops detectados (mismo estado &ge;2 veces). Kill switch manual en Firestore.</div>
+    </details>
+
+    <details class="edge-card glass">
+      <summary>CB-07 &middot; Tool sin permiso (L3/L4)</summary>
+      <div class="body"><strong>Resoluci&oacute;n:</strong> Permission Gate retorna error estructurado. Agente recibe alternativa sugerida. Log de auditor&iacute;a registra intento.</div>
+    </details>
+
+    <details class="edge-card glass">
+      <summary>CB-08 &middot; HIL timeout (TTL 24 h)</summary>
+      <div class="body"><strong>Resoluci&oacute;n:</strong> Acci&oacute;n pendiente expira autom&aacute;ticamente. Notificaci&oacute;n al usuario. Estado revierte a pre-acci&oacute;n. Registro en <code>audit_log</code>.</div>
+    </details>
+
+    <details class="edge-card glass">
+      <summary>CB-09 &middot; Injection en input de usuario</summary>
+      <div class="body"><strong>Resoluci&oacute;n:</strong> CP1 Sanitization (hard): regex + deny-list + length cap (4 096 chars). Entradas sospechosas a cuarentena con flag <code>needs_review</code>.</div>
+    </details>
+
+    <details class="edge-card glass">
+      <summary>CB-10 &middot; Output con PII / datos sensibles</summary>
+      <div class="body"><strong>Resoluci&oacute;n:</strong> CP3 Output Scan (soft): regex para emails, tel&eacute;fonos, tarjetas. Redacci&oacute;n autom&aacute;tica con <code>[REDACTED]</code>. Log de incidencias.</div>
+    </details>
+
+    <details class="edge-card glass">
+      <summary>CB-11 &middot; Firestore write conflict</summary>
+      <div class="body"><strong>Resoluci&oacute;n:</strong> Transacciones at&oacute;micas con retry (max 3). Versionado optimista con campo <code>_version</code>. Fail-closed: no escribe si conflicto persiste.</div>
+    </details>
+
+    <details class="edge-card glass">
+      <summary>CB-12 &middot; Cloud Storage URL expirada</summary>
+      <div class="body"><strong>Resoluci&oacute;n:</strong> Signed URLs con TTL 7 d. Regeneraci&oacute;n bajo demanda si el usuario solicita recurso expirado. Cleanup CRON semanal.</div>
+    </details>
+
+    <details class="edge-card glass">
+      <summary>CB-13 &middot; R&aacute;faga de mensajes (flood)</summary>
+      <div class="body"><strong>Resoluci&oacute;n:</strong> Debounce 2 s agrupa mensajes consecutivos. Rate limiter: max 10 msg/min por usuario. Exceso encolado con prioridad baja.</div>
+    </details>
+
+    <details class="edge-card glass">
+      <summary>CB-14 &middot; Terna sin consenso</summary>
+      <div class="body"><strong>Resoluci&oacute;n:</strong> Si 3 agentes divergen, Coordinator selecciona por score de confianza. Si todos &lt;0.6, escalado a Committee (60 s budget).</div>
+    </details>
+
+    <details class="edge-card glass">
+      <summary>CB-15 &middot; Budget de tokens excedido mid-request</summary>
+      <div class="body"><strong>Resoluci&oacute;n:</strong> Token counter pre-flight. Si estimaci&oacute;n &gt;budget, downgrade autom&aacute;tico (Committee &rarr; Terna &rarr; Single). Notificaci&oacute;n al usuario.</div>
+    </details>
+
+    <details class="edge-card glass">
+      <summary>CB-16 &middot; Skill YAML inv&aacute;lido en runtime</summary>
+      <div class="body"><strong>Resoluci&oacute;n:</strong> Validaci&oacute;n JSON Schema al cargar. Skill inv&aacute;lido se desactiva (no crash). Alerta en canal de ops. Fallback a skill gen&eacute;rico.</div>
+    </details>
+
+  </div>
+</section>
+
+</main>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<div class="wrapper">
+<footer data-mtia="footer">
+  &copy; 2026 MetodologIA. Copyleft &mdash; Para uso y aprovechamiento de profesionales en la era de la IA.
+</footer>
+</div>
+
+</body>
+</html>

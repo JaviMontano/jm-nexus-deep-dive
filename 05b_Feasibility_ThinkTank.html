@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="es" data-mtia="feasibility-thinktank">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>05b — Feasibility Think Tank (7 Sages) | Nexus Assistant OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ── CSS Variables ─────────────────────────────────── */
+    :root {
+      --color-body: #1E3258;
+      --color-gold: #FFD700;
+      --color-blue: #137DC5;
+      --color-deep: #122562;
+      --color-dark: #1F2833;
+      --color-lilac: #BBA0CC;
+      --color-gray: #808080;
+      --color-text: #E8E8E8;
+      --color-card: rgba(255,255,255,0.06);
+      --color-card-border: rgba(255,255,255,0.10);
+      --color-green: #34D399;
+      --color-yellow: #FBBF24;
+      --color-red: #F87171;
+      --font-display: 'Poppins', sans-serif;
+      --font-body: 'Montserrat', sans-serif;
+      --font-footnote: 'Trebuchet MS', sans-serif;
+      --radius: 14px;
+      --blur: blur(16px);
+      --max-w: 1120px;
+    }
+
+    /* ── Reset & Base ──────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      font-weight: 400;
+      background: var(--color-body);
+      color: var(--color-text);
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+    a { color: var(--color-gold); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Skip link ─────────────────────────────────────── */
+    .skip-link {
+      position: absolute; left: -999px; top: auto;
+      background: var(--color-gold); color: var(--color-body);
+      padding: 8px 16px; z-index: 100; font-weight: 700;
+      border-radius: 0 0 8px 0;
+    }
+    .skip-link:focus { left: 0; }
+
+    /* ── Layout ────────────────────────────────────────── */
+    .container { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+    section { padding: 48px 0; }
+
+    /* ── Header ────────────────────────────────────────── */
+    header[data-mtia="header"] {
+      background: linear-gradient(135deg, var(--color-deep) 0%, var(--color-body) 60%, rgba(19,125,197,0.25) 100%);
+      border-bottom: 1px solid var(--color-card-border);
+      padding: 20px 0;
+    }
+    .header-inner {
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand svg { width: 36px; height: 36px; flex-shrink: 0; }
+    .brand-text { font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; }
+    .brand-text .white { color: #fff; }
+    .brand-text .gold { color: var(--color-gold); }
+    .doc-tag {
+      font-family: var(--font-display); font-size: 0.7rem; font-weight: 700;
+      background: rgba(255,215,0,0.12); color: var(--color-gold);
+      padding: 4px 12px; border-radius: 100px; letter-spacing: 0.04em;
+    }
+
+    /* ── Hero ──────────────────────────────────────────── */
+    .hero[data-mtia="hero"] {
+      padding: 64px 0 48px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(1.75rem, 4vw, 2.6rem);
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .hero h1 .gold { color: var(--color-gold); }
+    .hero .subtitle {
+      font-size: 1.05rem; color: var(--color-gray);
+      max-width: 680px; margin: 0 auto 32px;
+    }
+
+    /* ── Verdict Badge ─────────────────────────────────── */
+    .verdict-badge {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(52,211,153,0.12);
+      border: 2px solid var(--color-green);
+      border-radius: 100px; padding: 12px 32px;
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 1.15rem; color: var(--color-green);
+      letter-spacing: 0.04em;
+    }
+    .verdict-badge .score {
+      background: var(--color-green); color: var(--color-body);
+      padding: 2px 10px; border-radius: 100px; font-size: 0.85rem;
+    }
+
+    /* ── TL;DR Card ────────────────────────────────────── */
+    .tldr[data-mtia="tldr"] {
+      background: var(--color-card);
+      backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+      border: 1px solid var(--color-card-border);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      margin-bottom: 48px;
+      border-left: 4px solid var(--color-gold);
+    }
+    .tldr h2 {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 0.85rem; color: var(--color-gold);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+    .tldr p { font-size: 0.95rem; line-height: 1.7; }
+
+    /* ── Section Headings ──────────────────────────────── */
+    .section-heading {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(1.2rem, 2.5vw, 1.55rem);
+      color: #fff; margin-bottom: 8px;
+    }
+    .section-heading .num {
+      color: var(--color-gold); margin-right: 6px;
+    }
+    .section-desc {
+      color: var(--color-gray); font-size: 0.9rem; margin-bottom: 32px; max-width: 720px;
+    }
+
+    /* ── Sage Cards ─────────────────────────────────────── */
+    .sage-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .sage-card[data-mtia="sage-card"] {
+      background: var(--color-card);
+      backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+      border: 1px solid var(--color-card-border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .sage-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255,255,255,0.18);
+    }
+    .sage-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+    .sage-card.green::before { background: var(--color-green); }
+    .sage-card.yellow::before { background: var(--color-yellow); }
+    .sage-card.red::before { background: var(--color-red); }
+
+    .sage-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px; flex-wrap: wrap; gap: 8px;
+    }
+    .sage-number {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 0.7rem; color: var(--color-gold);
+      text-transform: uppercase; letter-spacing: 0.1em;
+    }
+    .sage-verdict {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 0.75rem; padding: 3px 12px;
+      border-radius: 100px; letter-spacing: 0.03em;
+    }
+    .sage-verdict.green { background: rgba(52,211,153,0.15); color: var(--color-green); }
+    .sage-verdict.yellow { background: rgba(251,191,36,0.15); color: var(--color-yellow); }
+    .sage-verdict.red { background: rgba(248,113,113,0.15); color: var(--color-red); }
+
+    .sage-title {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 1.15rem; color: #fff; margin-bottom: 14px;
+    }
+    .sage-body ul {
+      list-style: none; padding: 0;
+    }
+    .sage-body li {
+      font-size: 0.88rem; line-height: 1.65;
+      padding: 5px 0 5px 20px;
+      position: relative;
+    }
+    .sage-body li::before {
+      content: '\25B8'; position: absolute; left: 0; color: var(--color-blue);
+    }
+    .sage-body li.risk {
+      color: var(--color-yellow); font-size: 0.82rem;
+      font-style: italic;
+    }
+    .sage-body li.risk::before { content: '\26A0'; color: var(--color-yellow); }
+    .sage-body li.condition {
+      color: var(--color-yellow); font-weight: 500;
+    }
+    .sage-body li.condition::before { content: '\25C6'; color: var(--color-yellow); }
+
+    .sage-score {
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 18px; padding-top: 14px;
+      border-top: 1px solid var(--color-card-border);
+    }
+    .sage-score-label {
+      font-family: var(--font-display); font-weight: 600;
+      font-size: 0.75rem; color: var(--color-gray); text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .sage-score-bar {
+      flex: 1; height: 6px; background: rgba(255,255,255,0.08);
+      border-radius: 3px; overflow: hidden;
+    }
+    .sage-score-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+    .sage-score-fill.green { background: var(--color-green); }
+    .sage-score-fill.yellow { background: var(--color-yellow); }
+    .sage-score-val {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 1rem; color: #fff;
+    }
+
+    /* ── Summary Matrix ────────────────────────────────── */
+    .matrix-wrap[data-mtia="matrix"] {
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+      margin-bottom: 48px;
+    }
+    .matrix {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.88rem; min-width: 620px;
+    }
+    .matrix thead th {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--color-gold); padding: 14px 16px;
+      border-bottom: 2px solid var(--color-gold);
+      text-align: left;
+    }
+    .matrix tbody td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-card-border);
+      vertical-align: middle;
+    }
+    .matrix tbody tr:hover { background: rgba(255,255,255,0.03); }
+    .matrix .dim { font-weight: 600; color: #fff; }
+    .matrix .badge {
+      display: inline-block; padding: 2px 10px;
+      border-radius: 100px; font-family: var(--font-display);
+      font-weight: 700; font-size: 0.72rem; letter-spacing: 0.02em;
+    }
+    .matrix .badge.green { background: rgba(52,211,153,0.15); color: var(--color-green); }
+    .matrix .badge.yellow { background: rgba(251,191,36,0.15); color: var(--color-yellow); }
+    .matrix .cond { font-size: 0.82rem; color: var(--color-gray); font-style: italic; }
+
+    /* ── Verdict Hero ──────────────────────────────────── */
+    .verdict-section[data-mtia="verdict"] {
+      text-align: center; padding: 56px 0;
+    }
+    .verdict-card {
+      background: linear-gradient(135deg, rgba(52,211,153,0.08), rgba(19,125,197,0.08));
+      border: 2px solid rgba(52,211,153,0.3);
+      border-radius: var(--radius);
+      padding: 40px 32px;
+      max-width: 640px; margin: 0 auto 32px;
+    }
+    .verdict-card h2 {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 2rem; color: var(--color-green);
+      margin-bottom: 4px;
+    }
+    .verdict-card .verdict-sub {
+      font-size: 0.95rem; color: var(--color-gray);
+      margin-bottom: 20px;
+    }
+    .verdict-stats {
+      display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .verdict-stat {
+      text-align: center;
+    }
+    .verdict-stat .val {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 1.6rem; color: #fff;
+    }
+    .verdict-stat .lbl {
+      font-size: 0.72rem; color: var(--color-gray);
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .conditions-list {
+      text-align: left; max-width: 540px; margin: 0 auto;
+      list-style: none; padding: 0;
+    }
+    .conditions-list li {
+      font-size: 0.88rem; padding: 6px 0 6px 24px;
+      position: relative; color: var(--color-yellow);
+    }
+    .conditions-list li::before {
+      content: '\25C6'; position: absolute; left: 0; color: var(--color-yellow);
+    }
+
+    /* ── Gate Section ──────────────────────────────────── */
+    .gate-card[data-mtia="gate"] {
+      background: var(--color-card);
+      backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+      border: 1px solid var(--color-card-border);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      text-align: center;
+      max-width: 640px; margin: 0 auto;
+    }
+    .gate-card h3 {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 1.1rem; color: var(--color-gold);
+      margin-bottom: 8px;
+    }
+    .gate-card p {
+      font-size: 0.9rem; color: var(--color-gray);
+    }
+    .gate-stamp {
+      display: inline-block; margin-top: 16px;
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 0.8rem; color: var(--color-green);
+      border: 2px solid var(--color-green);
+      border-radius: 100px; padding: 6px 20px;
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+
+    /* ── Footer ────────────────────────────────────────── */
+    footer[data-mtia="footer"] {
+      border-top: 1px solid var(--color-card-border);
+      padding: 32px 0;
+      text-align: center;
+    }
+    .footer-brand {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-bottom: 8px;
+    }
+    .footer-brand svg { width: 24px; height: 24px; }
+    .footer-brand span {
+      font-family: var(--font-display); font-weight: 800; font-size: 0.95rem;
+    }
+    .footer-copy {
+      font-family: var(--font-footnote); font-size: 0.75rem;
+      color: var(--color-gray); margin-bottom: 4px;
+    }
+    .footer-tagline {
+      font-family: var(--font-footnote); font-size: 0.7rem;
+      color: var(--color-gray); font-style: italic;
+    }
+
+    /* ── Print ─────────────────────────────────────────── */
+    @media print {
+      body { background: #fff; color: #1a1a1a; }
+      .sage-card, .tldr, .verdict-card, .gate-card {
+        background: #f5f5f5 !important;
+        backdrop-filter: none !important;
+        border-color: #ccc !important;
+        break-inside: avoid;
+      }
+      .sage-card::before { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .sage-verdict, .matrix .badge, .verdict-badge, .gate-stamp {
+        print-color-adjust: exact; -webkit-print-color-adjust: exact;
+      }
+      header, footer { break-inside: avoid; }
+      .sage-card:hover { transform: none; }
+    }
+
+    /* ── Responsive ────────────────────────────────────── */
+    @media (max-width: 680px) {
+      .sage-grid { grid-template-columns: 1fr; }
+      .hero { padding: 40px 0 32px; }
+      .tldr { padding: 20px; }
+      .verdict-stats { gap: 20px; }
+      section { padding: 32px 0; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Ir al contenido</a>
+
+  <!-- ════ HEADER ════ -->
+  <header data-mtia="header">
+    <div class="container header-inner">
+      <div class="brand">
+        <!-- SVG Squircle Logo: 3 white pillars + gold circle -->
+        <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MetodologIA logo">
+          <rect width="36" height="36" rx="8" fill="#122562"/>
+          <rect x="7" y="10" width="4" height="16" rx="2" fill="#fff"/>
+          <rect x="16" y="8" width="4" height="18" rx="2" fill="#fff"/>
+          <rect x="25" y="12" width="4" height="14" rx="2" fill="#fff"/>
+          <circle cx="27" cy="8" r="3" fill="#FFD700"/>
+        </svg>
+        <span class="brand-text"><span class="white">Metodolog</span><span class="gold">IA</span></span>
+      </div>
+      <span class="doc-tag">05b &mdash; Feasibility Think Tank</span>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ════ HERO ════ -->
+    <section class="hero" data-mtia="hero">
+      <div class="container">
+        <h1>Feasibility <span class="gold">Think Tank</span></h1>
+        <p class="subtitle">7 Sages evaluan la viabilidad del Escenario A para Nexus Assistant OS</p>
+        <div class="verdict-badge">FEASIBLE <span class="score">7.7 / 10</span></div>
+      </div>
+    </section>
+
+    <!-- ════ TL;DR ════ -->
+    <div class="container">
+      <div class="tldr" data-mtia="tldr">
+        <h2>TL;DR</h2>
+        <p>7 dimensiones evaluadas por el Think Tank. <strong>Veredicto: FEASIBLE</strong> (6/7 dimensiones positivas, 0 negativas, 2 con condicion). El Escenario A (Evolucion Incremental) es tecnica, operativa y economicamente viable con <strong>1 condicion critica</strong>: el fundador debe priorizar Nexus sobre LifeSync en H1-H2.</p>
+      </div>
+    </div>
+
+    <!-- ════ S1: METODOLOGIA ════ -->
+    <section data-mtia="section-methodology">
+      <div class="container">
+        <h2 class="section-heading"><span class="num">01</span> Metodologia Think Tank</h2>
+        <p class="section-desc">7 Sages evaluan el Escenario A aprobado en Gate G1. Cada Sage representa una dimension de viabilidad independiente. Umbral de aprobacion: &ge;5/7 positivos = FEASIBLE.</p>
+      </div>
+    </section>
+
+    <!-- ════ S2: EVALUACION POR DIMENSION ════ -->
+    <section data-mtia="section-evaluation">
+      <div class="container">
+        <h2 class="section-heading"><span class="num">02</span> Evaluacion por Dimension</h2>
+        <p class="section-desc">Cada tarjeta representa un Sage del Think Tank con su analisis, riesgos identificados, condiciones y score.</p>
+
+        <div class="sage-grid">
+
+          <!-- ── Sage 1: Tecnica ── -->
+          <div class="sage-card green" data-mtia="sage-card" data-sage="1">
+            <div class="sage-header">
+              <span class="sage-number">Sage 1</span>
+              <span class="sage-verdict green">VIABLE</span>
+            </div>
+            <h3 class="sage-title">Viabilidad Tecnica</h3>
+            <div class="sage-body">
+              <ul>
+                <li>El stack actual (TS + Firebase + Telegram) soporta las extensiones propuestas</li>
+                <li>Los 2 gaps criticos son adiciones a Firestore (nuevas colecciones), no cambios de paradigma</li>
+                <li>Circuit breaker y degradation ya funcionan &mdash; resiliencia probada</li>
+                <li class="risk">[RIESGO] Firestore puede ser bottleneck en H3 multi-tenant. Monitorear.</li>
+              </ul>
+            </div>
+            <div class="sage-score">
+              <span class="sage-score-label">Score</span>
+              <div class="sage-score-bar"><div class="sage-score-fill green" style="width:90%"></div></div>
+              <span class="sage-score-val">9/10</span>
+            </div>
+          </div>
+
+          <!-- ── Sage 2: Operativa ── -->
+          <div class="sage-card yellow" data-mtia="sage-card" data-sage="2">
+            <div class="sage-header">
+              <span class="sage-number">Sage 2</span>
+              <span class="sage-verdict yellow">CON CONDICION</span>
+            </div>
+            <h3 class="sage-title">Viabilidad Operativa</h3>
+            <div class="sage-body">
+              <ul>
+                <li>Single developer (fundador) ejecuta todo</li>
+                <li class="condition">[CONDICION] Debe priorizar Nexus sobre LifeSync en H1-H2. Desarrollo paralelo no es viable.</li>
+                <li>Dogfooding extremo mitiga el riesgo de desalineacion producto-usuario</li>
+                <li>Chief Officers como testers reduce costo de QA</li>
+              </ul>
+            </div>
+            <div class="sage-score">
+              <span class="sage-score-label">Score</span>
+              <div class="sage-score-bar"><div class="sage-score-fill yellow" style="width:70%"></div></div>
+              <span class="sage-score-val">7/10</span>
+            </div>
+          </div>
+
+          <!-- ── Sage 3: Economica ── -->
+          <div class="sage-card green" data-mtia="sage-card" data-sage="3">
+            <div class="sage-header">
+              <span class="sage-number">Sage 3</span>
+              <span class="sage-verdict green">VIABLE</span>
+            </div>
+            <h3 class="sage-title">Viabilidad Economica</h3>
+            <div class="sage-body">
+              <ul>
+                <li>LLM costs optimizados: Groq routing ~$0.05/1M tokens, execution ~$3/1M</li>
+                <li>Firebase tier gratuito cubre H1 single-tenant</li>
+                <li>[ESTIMACION] Costo operativo H1: &lt;$50/mes (tokens + Firebase). No requiere inversion de infra.</li>
+                <li>B2B revenue path claro (propuestas HTML como servicio)</li>
+              </ul>
+            </div>
+            <div class="sage-score">
+              <span class="sage-score-label">Score</span>
+              <div class="sage-score-bar"><div class="sage-score-fill green" style="width:90%"></div></div>
+              <span class="sage-score-val">9/10</span>
+            </div>
+          </div>
+
+          <!-- ── Sage 4: Mercado ── -->
+          <div class="sage-card green" data-mtia="sage-card" data-sage="4">
+            <div class="sage-header">
+              <span class="sage-number">Sage 4</span>
+              <span class="sage-verdict green">VIABLE</span>
+            </div>
+            <h3 class="sage-title">Viabilidad de Mercado</h3>
+            <div class="sage-body">
+              <ul>
+                <li>ICP definido: agencias/consultoras que pasan &gt;10h/semana en propuestas</li>
+                <li>Demo killer: Audio &rarr; Propuesta HTML en minutos</li>
+                <li>No hay competidor directo en "Telegram Work OS con memoria de proyectos"</li>
+                <li class="risk">[RIESGO] Mercado nicho. Escalabilidad depende de empaquetamiento B2B.</li>
+              </ul>
+            </div>
+            <div class="sage-score">
+              <span class="sage-score-label">Score</span>
+              <div class="sage-score-bar"><div class="sage-score-fill green" style="width:70%"></div></div>
+              <span class="sage-score-val">7/10</span>
+            </div>
+          </div>
+
+          <!-- ── Sage 5: Seguridad ── -->
+          <div class="sage-card green" data-mtia="sage-card" data-sage="5">
+            <div class="sage-header">
+              <span class="sage-number">Sage 5</span>
+              <span class="sage-verdict green">VIABLE</span>
+            </div>
+            <h3 class="sage-title">Viabilidad de Seguridad</h3>
+            <div class="sage-body">
+              <ul>
+                <li>Constitution Defense in Depth implementada (CP1/CP2/CP3)</li>
+                <li>HIL Middleware (H1-S2) cierra el gap de gobernanza de acciones</li>
+                <li>Firebase Security Rules + Secret Manager</li>
+                <li class="risk">[RIESGO] CP3 soft pass puede dejar pasar brand violations. Fix en roadmap.</li>
+              </ul>
+            </div>
+            <div class="sage-score">
+              <span class="sage-score-label">Score</span>
+              <div class="sage-score-bar"><div class="sage-score-fill green" style="width:80%"></div></div>
+              <span class="sage-score-val">8/10</span>
+            </div>
+          </div>
+
+          <!-- ── Sage 6: Escalabilidad ── -->
+          <div class="sage-card yellow" data-mtia="sage-card" data-sage="6">
+            <div class="sage-header">
+              <span class="sage-number">Sage 6</span>
+              <span class="sage-verdict yellow">CON CONDICION</span>
+            </div>
+            <h3 class="sage-title">Viabilidad de Escalabilidad</h3>
+            <div class="sage-body">
+              <ul>
+                <li>Single-tenant en H1-H2 es correcto (no sobreingenierizar)</li>
+                <li>Multi-tenant en H3 requiere reestructuracion Firestore (tenant/{id}/)</li>
+                <li class="condition">[CONDICION] No iniciar H3 antes de Gate H1 completo</li>
+                <li>Mirror instances (Pristino/Deonto) validan aislamiento parcial</li>
+              </ul>
+            </div>
+            <div class="sage-score">
+              <span class="sage-score-label">Score</span>
+              <div class="sage-score-bar"><div class="sage-score-fill yellow" style="width:60%"></div></div>
+              <span class="sage-score-val">6/10</span>
+            </div>
+          </div>
+
+          <!-- ── Sage 7: Temporal ── -->
+          <div class="sage-card green" data-mtia="sage-card" data-sage="7">
+            <div class="sage-header">
+              <span class="sage-number">Sage 7</span>
+              <span class="sage-verdict green">VIABLE</span>
+            </div>
+            <h3 class="sage-title">Viabilidad Temporal</h3>
+            <div class="sage-body">
+              <ul>
+                <li>H1 en 4 semanas es realista para 1 developer con base existente</li>
+                <li>Project State (S1) es 90% Firestore CRUD &mdash; estimacion conservadora: 2 semanas</li>
+                <li>HIL (S2) es Firestore + Telegram Inline Buttons &mdash; patterns conocidos</li>
+                <li class="risk">[RIESGO] H2 y H3 dependen de Gate H1. Delay en H1 cascadea.</li>
+              </ul>
+            </div>
+            <div class="sage-score">
+              <span class="sage-score-label">Score</span>
+              <div class="sage-score-bar"><div class="sage-score-fill green" style="width:80%"></div></div>
+              <span class="sage-score-val">8/10</span>
+            </div>
+          </div>
+
+        </div><!-- .sage-grid -->
+      </div>
+    </section>
+
+    <!-- ════ S3: MATRIZ RESUMEN ════ -->
+    <section data-mtia="section-matrix">
+      <div class="container">
+        <h2 class="section-heading"><span class="num">03</span> Matriz Resumen</h2>
+        <p class="section-desc">Vision consolidada de las 7 dimensiones evaluadas por el Think Tank.</p>
+
+        <div class="matrix-wrap" data-mtia="matrix">
+          <table class="matrix">
+            <thead>
+              <tr>
+                <th>Dimension</th>
+                <th>Veredicto</th>
+                <th>Score</th>
+                <th>Condicion</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="dim">Tecnica</td>
+                <td><span class="badge green">VIABLE</span></td>
+                <td>9/10</td>
+                <td class="cond">&mdash;</td>
+              </tr>
+              <tr>
+                <td class="dim">Operativa</td>
+                <td><span class="badge yellow">CON CONDICION</span></td>
+                <td>7/10</td>
+                <td class="cond">Priorizar Nexus sobre LifeSync</td>
+              </tr>
+              <tr>
+                <td class="dim">Economica</td>
+                <td><span class="badge green">VIABLE</span></td>
+                <td>9/10</td>
+                <td class="cond">&mdash;</td>
+              </tr>
+              <tr>
+                <td class="dim">Mercado</td>
+                <td><span class="badge green">VIABLE</span></td>
+                <td>7/10</td>
+                <td class="cond">&mdash;</td>
+              </tr>
+              <tr>
+                <td class="dim">Seguridad</td>
+                <td><span class="badge green">VIABLE</span></td>
+                <td>8/10</td>
+                <td class="cond">&mdash;</td>
+              </tr>
+              <tr>
+                <td class="dim">Escalabilidad</td>
+                <td><span class="badge yellow">CON CONDICION</span></td>
+                <td>6/10</td>
+                <td class="cond">No H3 antes de Gate H1</td>
+              </tr>
+              <tr>
+                <td class="dim">Temporal</td>
+                <td><span class="badge green">VIABLE</span></td>
+                <td>8/10</td>
+                <td class="cond">&mdash;</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ S4: VEREDICTO ════ -->
+    <section class="verdict-section" data-mtia="verdict">
+      <div class="container">
+        <h2 class="section-heading"><span class="num">04</span> Veredicto</h2>
+
+        <div class="verdict-card">
+          <h2>FEASIBLE</h2>
+          <p class="verdict-sub">6/7 positivos &middot; 0 negativos &middot; 2 con condicion</p>
+          <div class="verdict-stats">
+            <div class="verdict-stat">
+              <div class="val">7.7</div>
+              <div class="lbl">Score Promedio</div>
+            </div>
+            <div class="verdict-stat">
+              <div class="val" style="color:var(--color-green)">5</div>
+              <div class="lbl">Viables</div>
+            </div>
+            <div class="verdict-stat">
+              <div class="val" style="color:var(--color-yellow)">2</div>
+              <div class="lbl">Con Condicion</div>
+            </div>
+            <div class="verdict-stat">
+              <div class="val" style="color:var(--color-red)">0</div>
+              <div class="lbl">No Viables</div>
+            </div>
+          </div>
+          <ul class="conditions-list">
+            <li><strong>C1:</strong> Priorizar Nexus sobre LifeSync en H1-H2</li>
+            <li><strong>C2:</strong> No iniciar H3 antes de completar Gate H1</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ S5: GATE G1.5 ════ -->
+    <section data-mtia="section-gate">
+      <div class="container">
+        <h2 class="section-heading"><span class="num">05</span> Gate G1.5 &mdash; Auto-Aprobado</h2>
+        <div class="gate-card" data-mtia="gate">
+          <h3>Gate G1.5 &mdash; Feasibility Clearance</h3>
+          <p>Veredicto FEASIBLE aprobado. Condiciones documentadas como supuestos activos en el roadmap del proyecto.</p>
+          <div class="gate-stamp">Auto-Aprobado &middot; 2026-04-02</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ════ FOOTER ════ -->
+  <footer data-mtia="footer">
+    <div class="container">
+      <div class="footer-brand">
+        <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+          <rect width="36" height="36" rx="8" fill="#122562"/>
+          <rect x="7" y="10" width="4" height="16" rx="2" fill="#fff"/>
+          <rect x="16" y="8" width="4" height="18" rx="2" fill="#fff"/>
+          <rect x="25" y="12" width="4" height="14" rx="2" fill="#fff"/>
+          <circle cx="27" cy="8" r="3" fill="#FFD700"/>
+        </svg>
+        <span><span style="color:#fff">Metodolog</span><span style="color:#FFD700">IA</span></span>
+      </div>
+      <p class="footer-copy">&copy; 2026 MetodologIA. Copyleft &mdash; Para uso y aprovechamiento de profesionales en la era de la IA.</p>
+      <p class="footer-tagline">Generado por agentes autonomos &middot; Nexus Architecture Deep Dive</p>
+    </div>
+  </footer>
+</body>
+</html>

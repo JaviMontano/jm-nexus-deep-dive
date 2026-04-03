@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es" data-mtia="report-hallazgos-funcionales">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>12 — Hallazgos Funcionales | Nexus Assistant OS</title>
+  <style>
+    /* ── MetodologIA Aesthetic Standard ── */
+    :root {
+      --bg-body: #1E3258;
+      --bg-card: rgba(255,255,255,0.06);
+      --card-blur: blur(16px);
+      --gold: #FFD700;
+      --blue: #137DC5;
+      --navy-deep: #122562;
+      --dark-bg: #1F2833;
+      --lavender: #BBA0CC;
+      --gray: #808080;
+      --text: #E8E8E8;
+      --text-muted: #B0B0B0;
+      --font-display: 'Poppins', sans-serif;
+      --font-body: 'Montserrat', sans-serif;
+      --font-footnote: 'Trebuchet MS', sans-serif;
+      --radius: 14px;
+      --max-w: 1080px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Montserrat:wght@400;500;600&display=swap');
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-body);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-weight: 400;
+      line-height: 1.7;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--gold); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+    /* ── Skip link ── */
+    .skip-link {
+      position: absolute; top: -100%; left: 1rem;
+      background: var(--gold); color: var(--navy-deep);
+      padding: .5rem 1rem; border-radius: 4px;
+      font-weight: 700; z-index: 1000;
+    }
+    .skip-link:focus { top: 1rem; }
+
+    /* ── Header ── */
+    header[data-mtia="header"] {
+      background: linear-gradient(135deg, var(--navy-deep) 0%, var(--bg-body) 100%);
+      border-bottom: 2px solid var(--gold);
+      padding: 1.5rem 2rem;
+    }
+    .header-inner {
+      max-width: var(--max-w); margin: 0 auto;
+      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+    }
+    .logo-brand { display: flex; align-items: center; gap: .75rem; }
+    .brand-wordmark {
+      font-family: var(--font-display); font-weight: 800; font-size: 1.35rem;
+    }
+    .brand-wordmark .white { color: #fff; }
+    .brand-wordmark .gold { color: var(--gold); }
+    .header-meta { margin-left: auto; text-align: right; font-size: .82rem; color: var(--text-muted); }
+
+    /* ── Main ── */
+    main { max-width: var(--max-w); margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+    /* ── TLDR Banner ── */
+    .tldr-banner {
+      background: var(--bg-card); backdrop-filter: var(--card-blur); -webkit-backdrop-filter: var(--card-blur);
+      border-left: 4px solid var(--gold); border-radius: var(--radius);
+      padding: 1.5rem 2rem; margin-bottom: 2.5rem;
+    }
+    .tldr-banner h2 {
+      font-family: var(--font-display); font-weight: 700; font-size: 1.05rem;
+      color: var(--gold); margin-bottom: .5rem;
+    }
+    .tldr-banner p { font-size: .95rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── Section cards ── */
+    .section-card {
+      background: var(--bg-card); backdrop-filter: var(--card-blur); -webkit-backdrop-filter: var(--card-blur);
+      border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .section-card h2 {
+      font-family: var(--font-display); font-weight: 700; font-size: 1.3rem;
+      color: #fff; margin-bottom: 1rem; border-bottom: 2px solid var(--gold);
+      padding-bottom: .5rem;
+    }
+    .section-card h3 {
+      font-family: var(--font-display); font-weight: 700; font-size: 1.05rem;
+      color: var(--gold); margin: 1.2rem 0 .6rem;
+    }
+    .section-card p, .section-card li { font-size: .92rem; }
+    .section-card ul, .section-card ol { padding-left: 1.4rem; margin-bottom: .8rem; }
+    .section-card li { margin-bottom: .4rem; }
+
+    /* ── Tables ── */
+    .table-wrap { overflow-x: auto; margin: 1rem 0; }
+    table {
+      width: 100%; border-collapse: collapse; font-size: .85rem;
+    }
+    thead th {
+      background: var(--navy-deep); color: var(--gold);
+      font-family: var(--font-display); font-weight: 700;
+      padding: .65rem .8rem; text-align: left; white-space: nowrap;
+    }
+    tbody td {
+      padding: .6rem .8rem; border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+    /* ── Color badges ── */
+    .badge { display: inline-block; padding: .15rem .55rem; border-radius: 6px; font-size: .78rem; font-weight: 600; }
+    .badge-high   { background: #2ecc71; color: #000; }
+    .badge-medium { background: var(--gold); color: #000; }
+    .badge-low    { background: #e74c3c; color: #fff; }
+    .badge-partial{ background: #f39c12; color: #000; }
+    .badge-none   { background: var(--gray); color: #fff; }
+
+    /* ── Journey card ── */
+    .journey-card {
+      background: rgba(255,255,255,0.04); border-radius: 10px;
+      padding: 1.2rem 1.5rem; margin-bottom: 1.2rem;
+      border-left: 3px solid var(--blue);
+    }
+    .journey-card h4 {
+      font-family: var(--font-display); font-weight: 700; font-size: .98rem;
+      color: var(--blue); margin-bottom: .5rem;
+    }
+    .journey-card .label {
+      font-weight: 600; color: var(--gold); font-size: .82rem;
+      text-transform: uppercase; letter-spacing: .04em;
+    }
+
+    /* ── CMM levels ── */
+    .cmm-bar {
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .cmm-fill {
+      height: 10px; border-radius: 5px; background: var(--blue); min-width: 4px;
+    }
+    .cmm-label { font-size: .78rem; color: var(--text-muted); min-width: 2.2rem; }
+
+    /* ── Footer ── */
+    footer[data-mtia="footer"] {
+      background: var(--navy-deep); border-top: 2px solid var(--gold);
+      padding: 2rem 1.5rem; text-align: center;
+    }
+    .footer-brand {
+      font-family: var(--font-display); font-weight: 800; font-size: 1.1rem;
+      margin-bottom: .3rem;
+    }
+    .footer-brand .white { color: #fff; }
+    .footer-brand .gold  { color: var(--gold); }
+    .footer-copy {
+      font-family: var(--font-footnote); font-size: .78rem; color: var(--text-muted);
+      margin-bottom: .3rem;
+    }
+    .footer-tagline {
+      font-family: var(--font-footnote); font-size: .72rem; color: var(--gray);
+      font-style: italic;
+    }
+
+    /* ── Feature highlight ── */
+    .feature-list { list-style: none; padding: 0; counter-reset: feat; }
+    .feature-list li {
+      counter-increment: feat; padding: .8rem 1rem .8rem 3rem;
+      position: relative; margin-bottom: .5rem;
+      background: rgba(255,255,255,0.03); border-radius: 8px;
+    }
+    .feature-list li::before {
+      content: counter(feat);
+      position: absolute; left: .8rem; top: .8rem;
+      background: var(--gold); color: var(--navy-deep);
+      width: 1.6rem; height: 1.6rem; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-weight: 700; font-size: .82rem;
+    }
+    .feature-list li strong { color: #fff; }
+
+    /* ── Print ── */
+    @media print {
+      body { background: #fff; color: #1a1a1a; }
+      header, footer { border-color: #1a1a1a; }
+      .section-card { border: 1px solid #ccc; break-inside: avoid; }
+      .badge-high { background: #d4edda; color: #155724; }
+      .badge-low  { background: #f8d7da; color: #721c24; }
+      .badge-medium { background: #fff3cd; color: #856404; }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      header[data-mtia="header"] { padding: 1rem; }
+      .header-inner { flex-direction: column; align-items: flex-start; }
+      .header-meta { margin-left: 0; text-align: left; margin-top: .5rem; }
+      main { padding: 1.5rem 1rem 3rem; }
+      .section-card { padding: 1.2rem; }
+      .journey-card { padding: .8rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Saltar al contenido</a>
+
+<!-- ══════════════════════════════════════════ HEADER ══════════════════════════════════════════ -->
+<header data-mtia="header">
+  <div class="header-inner">
+    <div class="logo-brand">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="36" height="36" rx="8" fill="#122562"/>
+        <rect x="8" y="10" width="4" height="16" rx="2" fill="#fff"/>
+        <rect x="16" y="10" width="4" height="16" rx="2" fill="#fff"/>
+        <rect x="24" y="10" width="4" height="16" rx="2" fill="#fff"/>
+        <circle cx="28" cy="8" r="3" fill="#FFD700"/>
+      </svg>
+      <span class="brand-wordmark"><span class="white">Metodolog</span><span class="gold">IA</span></span>
+    </div>
+    <div class="header-meta">
+      <div>Nexus Assistant OS &mdash; Discovery Deep Dive</div>
+      <div>Documento 12 de 15 &bull; 2026-04-02</div>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════ MAIN ══════════════════════════════════════════ -->
+<main id="main-content" data-mtia="main-content">
+
+  <h1 style="font-family:var(--font-display);font-weight:700;font-size:1.8rem;margin-bottom:.3rem;">12 &mdash; Hallazgos Funcionales</h1>
+  <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:2rem;">Nexus Assistant OS &bull; Discovery Deep Dive</p>
+
+  <!-- TL;DR -->
+  <div class="tldr-banner" data-mtia="tldr">
+    <h2>TL;DR</h2>
+    <p>Analisis de journeys de usuario, gaps de UX, y oportunidades funcionales. El journey critico (Voz &rarr; Propuesta) funciona parcialmente pero carece de memoria de proyectos y versionado. Se identifican 12 modulos con completitud funcional variable y 15 capacidades en niveles de madurez CMM 0-5. Las 5 oportunidades de mayor impacto: Smart Schedule, Proactive Notifications, Template Library, Batch Processing y Analytics Dashboard.</p>
+  </div>
+
+  <!-- ═══════ SECTION 1: User Journey Map ═══════ -->
+  <section class="section-card" data-mtia="section-journey-map">
+    <h2>1. User Journey Map</h2>
+    <p style="margin-bottom:1rem;color:var(--text-muted);font-size:.88rem;">5 journeys principales del operador, con pasos, touchpoints, pain points y gaps identificados.</p>
+
+    <!-- J1 -->
+    <div class="journey-card">
+      <h4>J1 &mdash; Consultar Estado de Proyecto</h4>
+      <p><span class="label">Pasos:</span> Abrir Telegram &rarr; Escribir/decir nombre de proyecto &rarr; Router clasifica intent &rarr; Agent consulta KB &rarr; Respuesta con estado actual.</p>
+      <p><span class="label">Touchpoints:</span> Telegram chat, Groq Router, Knowledge Base Agent, text response.</p>
+      <p><span class="label">Pain Points:</span> Sin memoria de contexto previo &mdash; cada consulta es aislada. No hay dashboard visual; solo texto plano.</p>
+      <p><span class="label">Gaps:</span> Falta historial de consultas, trending de progreso, y alertas proactivas de proyectos estancados.</p>
+    </div>
+
+    <!-- J2 -->
+    <div class="journey-card">
+      <h4>J2 &mdash; Generar Propuesta via Voz</h4>
+      <p><span class="label">Pasos:</span> Grabar audio en Telegram &rarr; Whisper transcribe &rarr; Router clasifica como propuesta &rarr; ProposalAgent genera borrador &rarr; Respuesta con propuesta en texto.</p>
+      <p><span class="label">Touchpoints:</span> Telegram voice, Whisper API, Groq Router, ProposalAgent, OpenRouter LLM.</p>
+      <p><span class="label">Pain Points:</span> No hay preview antes de enviar. Sin versionado de propuestas. Limite de 4096 chars de Telegram trunca propuestas largas.</p>
+      <p><span class="label">Gaps:</span> Falta template library, version history, approval workflow, y export a formatos (PDF/DOCX).</p>
+    </div>
+
+    <!-- J3 -->
+    <div class="journey-card">
+      <h4>J3 &mdash; Aprobar Accion Externa</h4>
+      <p><span class="label">Pasos:</span> Sistema propone accion &rarr; Inline button en Telegram &rarr; Usuario confirma/rechaza &rarr; Accion ejecutada o cancelada.</p>
+      <p><span class="label">Touchpoints:</span> Telegram inline keyboards, Approval Queue, External API integration.</p>
+      <p><span class="label">Pain Points:</span> Botones no persisten despues de reinicio. Sin log de aprobaciones historicas. No hay bulk approve.</p>
+      <p><span class="label">Gaps:</span> Audit trail, approval delegation, timeout policies, batch approval.</p>
+    </div>
+
+    <!-- J4 -->
+    <div class="journey-card">
+      <h4>J4 &mdash; Research Profundo</h4>
+      <p><span class="label">Pasos:</span> Usuario pide investigacion &rarr; Router a ResearchAgent &rarr; Multi-query a web &rarr; Synthesis &rarr; Respuesta estructurada.</p>
+      <p><span class="label">Touchpoints:</span> Telegram, Groq Router, ResearchAgent, web APIs, synthesis LLM.</p>
+      <p><span class="label">Pain Points:</span> Sin indicador de progreso. Tiempo de respuesta variable (10s-60s). No se pueden guardar investigaciones.</p>
+      <p><span class="label">Gaps:</span> Progress indicators, research library, source citations, follow-up queries.</p>
+    </div>
+
+    <!-- J5 -->
+    <div class="journey-card">
+      <h4>J5 &mdash; Resumen Matutino Proactivo</h4>
+      <p><span class="label">Pasos:</span> Cron trigger 8:00 AM &rarr; Recopilar estado de proyectos &rarr; Generar resumen &rarr; Enviar a Telegram.</p>
+      <p><span class="label">Touchpoints:</span> Scheduler, Knowledge Base, Summary Agent, Telegram push.</p>
+      <p><span class="label">Pain Points:</span> Contenido generico, no priorizado. No adaptable a dia de la semana. No incluye calendario.</p>
+      <p><span class="label">Gaps:</span> Personalizacion por dia, integracion calendario, prioridad por deadline, tone adjustment.</p>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION 2: Gap Analysis Funcional ═══════ -->
+  <section class="section-card" data-mtia="section-gap-analysis">
+    <h2>2. Gap Analysis Funcional</h2>
+    <p style="margin-bottom:1rem;color:var(--text-muted);font-size:.88rem;">12 modulos evaluados por completitud funcional. Color-coded: <span class="badge badge-high">Alto</span> <span class="badge badge-medium">Medio</span> <span class="badge badge-partial">Parcial</span> <span class="badge badge-low">Bajo</span> <span class="badge badge-none">Ausente</span></p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Modulo</th>
+            <th>Completitud</th>
+            <th>Estado</th>
+            <th>Gaps Principales</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>M01</td><td>Semantic Router (Groq)</td><td><span class="badge badge-high">85%</span></td><td>Funcional</td><td>Precision en edge cases, fallback lento</td></tr>
+          <tr><td>M02</td><td>Voice Pipeline (Whisper)</td><td><span class="badge badge-medium">70%</span></td><td>Funcional</td><td>Solo transcripcion, no structured data</td></tr>
+          <tr><td>M03</td><td>ProposalAgent</td><td><span class="badge badge-medium">65%</span></td><td>Funcional</td><td>Sin templates, sin versionado, sin export</td></tr>
+          <tr><td>M04</td><td>Knowledge Base</td><td><span class="badge badge-partial">50%</span></td><td>Parcial</td><td>Text search vs semantic, sin vector DB</td></tr>
+          <tr><td>M05</td><td>ResearchAgent</td><td><span class="badge badge-medium">60%</span></td><td>Funcional</td><td>Sin cache, sin citations, variable latency</td></tr>
+          <tr><td>M06</td><td>Scheduler/Cron</td><td><span class="badge badge-partial">45%</span></td><td>Parcial</td><td>Solo cron basico, no smart scheduling</td></tr>
+          <tr><td>M07</td><td>Approval Queue</td><td><span class="badge badge-partial">40%</span></td><td>Parcial</td><td>Sin audit trail, sin delegation, sin timeout</td></tr>
+          <tr><td>M08</td><td>Context Manager</td><td><span class="badge badge-partial">55%</span></td><td>Parcial</td><td>Auto-compression basica, sin memory projects</td></tr>
+          <tr><td>M09</td><td>Telegram Interface</td><td><span class="badge badge-high">80%</span></td><td>Funcional</td><td>4096 char limit, no rich UI, no file preview</td></tr>
+          <tr><td>M10</td><td>Analytics/Metrics</td><td><span class="badge badge-low">15%</span></td><td>Minimo</td><td>Solo logs basicos, sin dashboard, sin KPIs</td></tr>
+          <tr><td>M11</td><td>Template Engine</td><td><span class="badge badge-low">20%</span></td><td>Minimo</td><td>Templates hardcoded, no library, no versioning</td></tr>
+          <tr><td>M12</td><td>External Integrations</td><td><span class="badge badge-partial">35%</span></td><td>Parcial</td><td>Solo Telegram + LLM APIs, sin calendar/CRM</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION 3: UX Findings ═══════ -->
+  <section class="section-card" data-mtia="section-ux-findings">
+    <h2>3. UX Findings</h2>
+    <p style="margin-bottom:1rem;">Telegram como interfaz principal: analisis de pros y contras para un asistente agentico.</p>
+
+    <h3>Ventajas (Pros)</h3>
+    <ul>
+      <li><strong>Friccion zero:</strong> No requiere instalacion de app adicional. El usuario ya tiene Telegram.</li>
+      <li><strong>Audio nativo:</strong> Grabacion de voz integrada, ideal para input rapido en movimiento.</li>
+      <li><strong>Inline buttons:</strong> Teclados inline permiten flujos de aprobacion y seleccion sin salir del chat.</li>
+      <li><strong>Notificaciones push:</strong> Entrega garantizada de resumen matutino y alertas.</li>
+      <li><strong>Cross-platform:</strong> Funciona en mobile, desktop y web sin adaptacion.</li>
+      <li><strong>Bot API madura:</strong> Documentacion extensa, webhooks confiables, rate limits generosos.</li>
+    </ul>
+
+    <h3>Limitaciones (Contras)</h3>
+    <ul>
+      <li><strong>No rendering HTML:</strong> Imposible mostrar tablas, graficos o dashboards ricos. Solo Markdown basico.</li>
+      <li><strong>Limite 4096 chars:</strong> Propuestas y reportes largos se truncan o requieren splitting artificial.</li>
+      <li><strong>No rich UI:</strong> Sin formularios, dropdowns, date pickers. Todo via texto o botones simples.</li>
+      <li><strong>Sin file preview:</strong> No se pueden previsualizar PDFs o documentos generados inline.</li>
+      <li><strong>Session state limitado:</strong> No hay concepto nativo de "sesion" o "contexto persistente".</li>
+      <li><strong>Discoverability baja:</strong> Nuevos usuarios no saben que comandos existen sin documentacion externa.</li>
+    </ul>
+
+    <h3>Recomendacion UX</h3>
+    <p>Mantener Telegram como interfaz primaria (H1-H2). Agregar web companion para dashboards y document preview (H2+). Evaluar webapp PWA para B2B (H3).</p>
+  </section>
+
+  <!-- ═══════ SECTION 4: Capability Maturity ═══════ -->
+  <section class="section-card" data-mtia="section-capability-maturity">
+    <h2>4. Capability Maturity</h2>
+    <p style="margin-bottom:1rem;color:var(--text-muted);font-size:.88rem;">15 capacidades evaluadas en escala CMM 0-5. Nivel 0 = Inexistente, 1 = Inicial, 2 = Repetible, 3 = Definido, 4 = Gestionado, 5 = Optimizado.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Capacidad</th><th>Nivel</th><th>Barra</th><th>Observacion</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>C01</td><td>Intent Classification</td><td>3</td>
+            <td><div class="cmm-bar"><div class="cmm-fill" style="width:60%"></div><span class="cmm-label">3/5</span></div></td>
+            <td>Groq router funcional, faltan edge cases</td>
+          </tr>
+          <tr>
+            <td>C02</td><td>Voice Processing</td><td>2</td>
+            <td><div class="cmm-bar"><div class="cmm-fill" style="width:40%"></div><span class="cmm-label">2/5</span></div></td>
+            <td>Whisper transcribe, no structured output</td>
+          </tr>
+          <tr>
+            <td>C03</td><td>Proposal Generation</td><td>2</td>
+            <td><div class="cmm-bar"><div class="cmm-fill" style="width:40%"></div><span class="cmm-label">2/5</span></div></td>
+            <td>Genera texto, sin templates ni versionado</td>
+          </tr>
+          <tr>
+            <td>C04</td><td>Knowledge Retrieval</td><td>2</td>
+            <td><div class="cmm-bar"><div class="cmm-fill" style="width:40%"></div><span class="cmm-label">2/5</span></div></td>
+            <td>Text search basico, sin RAG semantico</td>
+          </tr>
+          <tr>
+            <td>C05</td><td>Context Management</td><td>2</td>
+            <td><div class="cmm-bar"><div class="cmm-fill" style="width:40%"></div><span class="cmm-label">2/5</span></div></td>
+            <td>Auto-compression existe, sin project memory</td>
+          </tr>
+          <tr>
+            <td>C06</td><td>Research Synthesis</td><td>2</td>
+            <td><div class="cmm-bar"><div class="cmm-fill" style="width:40%"></div><span class="cmm-label">2/5</span></div></td>
+            <td>Multi-query funcional, sin cache ni citations</td>
+          </tr>
+          <tr>
+            <td>C07</td><td>Scheduling</td><td>1</td>
+            <td><div class="cmm-bar"><div class="cmm-fill" style="width:20%"></div><span class="cmm-label">1/5</span></div></td>
+            <td>Cron basico, sin smart scheduling</td>
+          </tr>
+          <tr>
+            <td>C08</td><td>Approval Workflows</td><td>1</td>
+            <td><div class="cmm-bar"><div class="cmm-fill" style="width:20%"></div><span class="cmm-label">1/5</span></div></td>
+            <td>Inline buttons, sin audit trail</td>
+          </tr>
+          <tr>
+            <td>C09</td><td>Multi-Agent Orchestration</td><td>3</td>
+            <td><div class="cmm-bar"><div class="cmm-fill" style="width:60%"></div><span class="cmm-label">3/5</span></div></td>
+            <td>Router + agents funcional, sin inter-agent comms</td>
+          </tr>
+          <tr>
+            <td>C10</td><td>Analytics &amp; Reporting</td><td>0</td>
+            <td><div class="cmm-bar"><div class="cmm-fill" style="width:4%"></div><span class="cmm-label">0/5</span></div></td>
+            <td>Solo logs, sin dashboards ni KPIs</td>
+          </tr>
+          <tr>
+            <td>C11</td><td>Template Management</td><td>1</td>
+            <td><div class="cmm-bar"><div class="cmm-fill" style="width:20%"></div><span class="cmm-label">1/5</span></div></td>
+            <td>Hardcoded, sin library ni versioning</td>
+          </tr>
+          <tr>
+            <td>C12</td><td>External Integrations</td><td>1</td>
+            <td><div class="cmm-bar"><div class="cmm-fill" style="width:20%"></div><span class="cmm-label">1/5</span></div></td>
+            <td>Solo Telegram + LLM APIs</td>
+          </tr>
+          <tr>
+            <td>C13</td><td>Security &amp; Auth</td><td>2</td>
+            <td><div class="cmm-bar"><div class="cmm-fill" style="width:40%"></div><span class="cmm-label">2/5</span></div></td>
+            <td>Telegram auth, sin RBAC, sin audit</td>
+          </tr>
+          <tr>
+            <td>C14</td><td>Error Handling</td><td>2</td>
+            <td><div class="cmm-bar"><div class="cmm-fill" style="width:40%"></div><span class="cmm-label">2/5</span></div></td>
+            <td>Try-catch basico, sin retry patterns robustos</td>
+          </tr>
+          <tr>
+            <td>C15</td><td>Proactive Intelligence</td><td>1</td>
+            <td><div class="cmm-bar"><div class="cmm-fill" style="width:20%"></div><span class="cmm-label">1/5</span></div></td>
+            <td>Solo resumen matutino, sin pattern detection</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="margin-top:1rem;color:var(--text-muted);font-size:.85rem;"><strong>Promedio general:</strong> 1.67 / 5.0 &mdash; El sistema esta en transicion de Nivel 1 (Inicial) a Nivel 2 (Repetible). Las capacidades core (routing, voice, generation) lideran; las capacidades de soporte (analytics, templates, integrations) requieren inversion.</p>
+  </section>
+
+  <!-- ═══════ SECTION 5: Oportunidades Funcionales ═══════ -->
+  <section class="section-card" data-mtia="section-oportunidades">
+    <h2>5. Oportunidades Funcionales</h2>
+    <p style="margin-bottom:1rem;">Top 5 features que agregarian mayor valor al sistema, priorizadas por impacto en experiencia del operador.</p>
+
+    <ol class="feature-list">
+      <li>
+        <strong>Smart Schedule</strong> &mdash; Reemplazar cron basico con scheduling inteligente que considere prioridades, deadlines y calendario del operador. Incluir sugerencias proactivas de bloques de trabajo y recordatorios contextuales.
+        <br><span style="color:var(--blue);font-size:.82rem;">Impacto: Alto | Esfuerzo: Medio | Horizonte: H2</span>
+      </li>
+      <li>
+        <strong>Proactive Notifications</strong> &mdash; Sistema de alertas basado en patrones: proyectos estancados, deadlines proximos, anomalias en actividad. No solo resumen matutino sino notificaciones event-driven durante el dia.
+        <br><span style="color:var(--blue);font-size:.82rem;">Impacto: Alto | Esfuerzo: Medio | Horizonte: H2</span>
+      </li>
+      <li>
+        <strong>Template Library</strong> &mdash; Biblioteca de templates para propuestas, reportes, emails. Versionado, tags, y aprendizaje de templates exitosos. Reduce tiempo de generacion y mejora consistencia.
+        <br><span style="color:var(--blue);font-size:.82rem;">Impacto: Alto | Esfuerzo: Bajo | Horizonte: H1</span>
+      </li>
+      <li>
+        <strong>Batch Processing</strong> &mdash; Capacidad de procesar multiples items en una sola instruccion: actualizar N proyectos, generar N propuestas, aprobar N acciones. Reduce interacciones repetitivas.
+        <br><span style="color:var(--blue);font-size:.82rem;">Impacto: Medio | Esfuerzo: Medio | Horizonte: H2</span>
+      </li>
+      <li>
+        <strong>Analytics Dashboard</strong> &mdash; Web companion con metricas de uso, productividad, tendencias de proyectos. Complementa Telegram para visualizacion rica que no es posible en chat.
+        <br><span style="color:var(--blue);font-size:.82rem;">Impacto: Medio | Esfuerzo: Alto | Horizonte: H3</span>
+      </li>
+    </ol>
+  </section>
+
+</main>
+
+<!-- ══════════════════════════════════════════ FOOTER ══════════════════════════════════════════ -->
+<footer data-mtia="footer">
+  <div class="footer-brand"><span class="white">Metodolog</span><span class="gold">IA</span></div>
+  <div class="footer-copy">&copy; 2026 MetodologIA. Copyleft &mdash; Para uso y aprovechamiento de profesionales en la era de la IA.</div>
+  <div class="footer-tagline">Asistentes agenticos que amplifican la inteligencia humana.</div>
+</footer>
+
+</body>
+</html>

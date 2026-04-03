@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="es" data-mtia="brief-tecnico-asis">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>02 — Brief Tecnico AS-IS | Nexus Assistant OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── CSS Custom Properties ── */
+    :root {
+      --color-body:      #1E3258;
+      --color-navy-deep: #122562;
+      --color-gold:      #FFD700;
+      --color-blue:      #137DC5;
+      --color-dark:      #1F2833;
+      --color-lavender:  #BBA0CC;
+      --color-gray:      #808080;
+      --color-text:      #E8E8E8;
+      --color-text-dim:  #A0A8B8;
+      --color-card-bg:   rgba(255,255,255,0.06);
+      --color-card-border: rgba(255,255,255,0.10);
+      --color-success:   #4ADE80;
+      --color-warning:   #FBBF24;
+      --color-danger:    #F87171;
+      --font-display:    'Poppins', sans-serif;
+      --font-body:       'Montserrat', sans-serif;
+      --font-footnote:   'Trebuchet MS', sans-serif;
+      --radius:          12px;
+      --radius-sm:       8px;
+      --blur:            16px;
+      --max-width:       1120px;
+      --transition:      0.25s ease;
+    }
+
+    /* ── Body ── */
+    body {
+      background: var(--color-body);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-weight: 400;
+      font-size: 15px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Skip Link ── */
+    .skip-link {
+      position: absolute; left: -9999px; top: auto;
+      background: var(--color-gold); color: var(--color-body);
+      padding: 8px 16px; border-radius: var(--radius-sm);
+      font-weight: 700; z-index: 1000;
+    }
+    .skip-link:focus { left: 16px; top: 16px; }
+
+    /* ── Layout ── */
+    .container { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
+
+    /* ── Header ── */
+    header[data-mtia="header"] {
+      background: linear-gradient(135deg, var(--color-navy-deep) 0%, var(--color-body) 100%);
+      border-bottom: 1px solid var(--color-card-border);
+      padding: 20px 0;
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .header-inner {
+      display: flex; align-items: center; gap: 14px;
+      max-width: var(--max-width); margin: 0 auto; padding: 0 24px;
+    }
+    .brand-logo {
+      width: 36px; height: 36px; flex-shrink: 0;
+    }
+    .brand-text {
+      font-family: var(--font-display); font-weight: 800; font-size: 22px;
+      letter-spacing: -0.02em; line-height: 1;
+    }
+    .brand-text .white { color: #FFFFFF; }
+    .brand-text .gold  { color: var(--color-gold); }
+
+    /* ── Hero ── */
+    section[data-mtia="hero"] {
+      padding: 56px 0 40px;
+      text-align: center;
+      background: radial-gradient(ellipse at 50% 0%, rgba(19,125,197,0.12) 0%, transparent 65%);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,215,0,0.12);
+      color: var(--color-gold);
+      font-family: var(--font-display); font-weight: 700; font-size: 12px;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      padding: 6px 18px; border-radius: 20px;
+      border: 1px solid rgba(255,215,0,0.25);
+      margin-bottom: 20px;
+    }
+    .hero-title {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(28px, 5vw, 42px);
+      line-height: 1.15; margin-bottom: 12px;
+    }
+    .hero-subtitle {
+      font-size: 17px; color: var(--color-text-dim);
+      max-width: 680px; margin: 0 auto 28px;
+    }
+
+    /* ── TLDR Card ── */
+    .tldr-card {
+      background: linear-gradient(135deg, rgba(19,125,197,0.15), rgba(187,160,204,0.08));
+      border: 1px solid rgba(19,125,197,0.25);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      max-width: 780px; margin: 0 auto;
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+    }
+    .tldr-label {
+      font-family: var(--font-display); font-weight: 700; font-size: 13px;
+      color: var(--color-blue); text-transform: uppercase;
+      letter-spacing: 0.1em; margin-bottom: 8px;
+    }
+    .tldr-card p { font-size: 14px; line-height: 1.7; color: var(--color-text-dim); }
+
+    /* ── Section ── */
+    section[data-mtia] { padding: 48px 0; }
+    .section-number {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: 13px; color: var(--color-gold);
+      text-transform: uppercase; letter-spacing: 0.15em;
+      margin-bottom: 6px;
+    }
+    .section-title {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(22px, 3.5vw, 30px);
+      line-height: 1.2; margin-bottom: 20px;
+    }
+
+    /* ── Glass Card ── */
+    .card {
+      background: var(--color-card-bg);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      border: 1px solid var(--color-card-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 20px;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .card:hover {
+      border-color: rgba(255,215,0,0.20);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    }
+    .card-title {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 16px; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    /* ── Tables ── */
+    .spec-table {
+      width: 100%; border-collapse: collapse;
+      font-size: 13.5px; line-height: 1.55;
+    }
+    .spec-table th,
+    .spec-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      text-align: left; vertical-align: top;
+    }
+    .spec-table th {
+      font-family: var(--font-display); font-weight: 600;
+      color: var(--color-text-dim); font-size: 11px;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      background: rgba(255,255,255,0.03);
+    }
+    .spec-table td:first-child {
+      font-weight: 500; color: var(--color-text);
+      white-space: nowrap;
+    }
+    .spec-table td:last-child { color: var(--color-text-dim); }
+    .spec-table tr:last-child td { border-bottom: none; }
+
+    /* ── Status Badges ── */
+    .badge {
+      display: inline-block; padding: 3px 10px;
+      border-radius: 6px; font-size: 11px; font-weight: 600;
+      font-family: var(--font-display); letter-spacing: 0.04em;
+    }
+    .badge-ok     { background: rgba(74,222,128,0.15); color: var(--color-success); }
+    .badge-partial{ background: rgba(251,191,36,0.15); color: var(--color-warning); }
+    .badge-basic  { background: rgba(187,160,204,0.15); color: var(--color-lavender); }
+    .badge-crit   { background: rgba(248,113,113,0.20); color: var(--color-danger); }
+    .badge-high   { background: rgba(251,191,36,0.18); color: var(--color-warning); }
+    .badge-med    { background: rgba(19,125,197,0.18); color: var(--color-blue); }
+    .badge-low    { background: rgba(128,128,128,0.18); color: var(--color-gray); }
+
+    /* ── Evidence Tags ── */
+    .evidence {
+      font-size: 10px; font-family: var(--font-display); font-weight: 700;
+      padding: 2px 7px; border-radius: 4px; letter-spacing: 0.06em;
+      vertical-align: middle;
+    }
+    .ev-code { background: rgba(74,222,128,0.12); color: var(--color-success); }
+    .ev-doc  { background: rgba(19,125,197,0.14); color: var(--color-blue); }
+    .ev-inf  { background: rgba(251,191,36,0.14); color: var(--color-warning); }
+
+    /* ── Architecture Visual ── */
+    .arch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px; margin-top: 20px;
+    }
+    .arch-plane {
+      background: var(--color-card-bg);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      border: 1px solid var(--color-card-border);
+      border-radius: var(--radius);
+      padding: 20px; text-align: center;
+      transition: transform var(--transition), border-color var(--transition);
+    }
+    .arch-plane:hover {
+      transform: translateY(-3px);
+      border-color: var(--color-gold);
+    }
+    .arch-plane-icon {
+      font-size: 28px; margin-bottom: 10px;
+    }
+    .arch-plane-name {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 15px; margin-bottom: 4px;
+    }
+    .arch-plane-count {
+      font-size: 26px; font-family: var(--font-display); font-weight: 800;
+      color: var(--color-gold); line-height: 1;
+    }
+    .arch-plane-label {
+      font-size: 11px; color: var(--color-text-dim);
+      text-transform: uppercase; letter-spacing: 0.1em;
+    }
+    .arch-plane-files {
+      margin-top: 10px; font-size: 11.5px; color: var(--color-text-dim);
+      line-height: 1.5; text-align: left;
+    }
+    .arch-plane-files code {
+      font-size: 10.5px; background: rgba(255,255,255,0.06);
+      padding: 1px 5px; border-radius: 3px;
+    }
+
+    /* ── Spec Health Bar ── */
+    .health-bar-container {
+      background: rgba(255,255,255,0.06);
+      border-radius: 8px; height: 18px; overflow: hidden;
+      margin: 12px 0 8px; position: relative;
+    }
+    .health-bar {
+      height: 100%;
+      border-radius: 8px;
+      background: linear-gradient(90deg, var(--color-blue), var(--color-gold));
+      transition: width 0.6s ease;
+    }
+    .health-score {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: 36px; color: var(--color-gold);
+    }
+
+    /* ── Stats Row ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 14px; margin-top: 20px;
+    }
+    .stat-item {
+      background: var(--color-card-bg);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      border: 1px solid var(--color-card-border);
+      border-radius: var(--radius-sm);
+      padding: 16px; text-align: center;
+    }
+    .stat-value {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: 24px; color: var(--color-blue);
+    }
+    .stat-label {
+      font-size: 11px; color: var(--color-text-dim);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin-top: 4px;
+    }
+
+    /* ── Constitution Grid ── */
+    .const-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px; margin-top: 16px;
+    }
+    .const-item {
+      background: var(--color-card-bg);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      border: 1px solid var(--color-card-border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+    }
+    .const-item-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 8px;
+    }
+    .const-item-name {
+      font-family: var(--font-display); font-weight: 700; font-size: 13px;
+    }
+    .const-item-pct {
+      font-family: var(--font-display); font-weight: 700; font-size: 13px;
+    }
+    .const-item-file {
+      font-size: 11px; color: var(--color-text-dim);
+    }
+    .pct-bar {
+      height: 4px; border-radius: 2px;
+      background: rgba(255,255,255,0.08);
+      margin-top: 8px; overflow: hidden;
+    }
+    .pct-bar-fill {
+      height: 100%; border-radius: 2px;
+      background: var(--color-blue);
+    }
+
+    /* ── Recommendation Box ── */
+    .reco-box {
+      background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(19,125,197,0.08));
+      border: 1px solid rgba(255,215,0,0.20);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      margin-top: 12px;
+    }
+    .reco-verdict {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: 20px; margin-bottom: 12px;
+      color: var(--color-gold);
+    }
+    .reco-box p { font-size: 14px; line-height: 1.7; color: var(--color-text-dim); margin-bottom: 10px; }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--color-card-border), transparent);
+      margin: 12px 0;
+    }
+
+    /* ── Footer ── */
+    footer[data-mtia="footer"] {
+      border-top: 1px solid var(--color-card-border);
+      padding: 32px 0;
+      text-align: center;
+    }
+    .footer-brand {
+      font-family: var(--font-display); font-weight: 800; font-size: 16px;
+      margin-bottom: 8px;
+    }
+    .footer-copy {
+      font-size: 12px; color: var(--color-text-dim);
+      font-family: var(--font-footnote);
+      line-height: 1.6;
+    }
+    .footer-tagline {
+      font-size: 11px; color: var(--color-gray);
+      font-style: italic; margin-top: 6px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .container { padding: 0 16px; }
+      .header-inner { padding: 0 16px; }
+      section[data-mtia] { padding: 32px 0; }
+      .card { padding: 18px; }
+      .arch-grid { grid-template-columns: 1fr 1fr; }
+      .const-grid { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .spec-table { font-size: 12px; }
+      .spec-table th, .spec-table td { padding: 8px 10px; }
+    }
+    @media (max-width: 480px) {
+      .arch-grid { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ── Print ── */
+    @media print {
+      body { background: #fff; color: #1a1a1a; font-size: 11pt; }
+      header[data-mtia="header"] { position: static; background: none; border-bottom: 2px solid #1E3258; }
+      .brand-text .white { color: #1E3258; }
+      .brand-text .gold  { color: #B8860B; }
+      .card, .arch-plane, .stat-item, .const-item, .tldr-card, .reco-box {
+        background: #f8f8f8 !important; backdrop-filter: none !important;
+        border-color: #ccc !important; box-shadow: none !important;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      .hero-badge { border-color: #B8860B; color: #B8860B; background: #fef9e7; }
+      .badge { border: 1px solid currentColor; }
+      .health-bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      footer[data-mtia="footer"] { border-top: 2px solid #1E3258; }
+      section[data-mtia="hero"] { background: none; }
+      a { color: inherit; text-decoration: underline; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Saltar al contenido</a>
+
+  <!-- ════ HEADER ════ -->
+  <header data-mtia="header">
+    <div class="header-inner">
+      <svg class="brand-logo" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="36" height="36" rx="8" fill="#122562"/>
+        <rect x="8"  y="10" width="4" height="16" rx="2" fill="#FFFFFF"/>
+        <rect x="16" y="10" width="4" height="16" rx="2" fill="#FFFFFF"/>
+        <rect x="24" y="10" width="4" height="16" rx="2" fill="#FFFFFF"/>
+        <circle cx="28" cy="10" r="3" fill="#FFD700"/>
+      </svg>
+      <span class="brand-text">
+        <span class="white">Metodolog</span><span class="gold">IA</span>
+      </span>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ════ HERO ════ -->
+    <section data-mtia="hero">
+      <div class="container">
+        <div class="hero-badge">02 &mdash; Brief Tecnico AS-IS</div>
+        <h1 class="hero-title">Nexus Assistant OS</h1>
+        <p class="hero-subtitle">Radiografia tecnica del estado actual del sistema. Stack, arquitectura, capacidades, constitution y gaps criticos.</p>
+
+        <div class="tldr-card">
+          <div class="tldr-label">TL;DR</div>
+          <p>Stack: TypeScript + Firebase + Telegram. 50 archivos TS distribuidos en 4 planos arquitectonicos. 6 agentes, 24 skills, 96 workflows. Constitution de 8 principios. Spec score 87/100. Dos gaps criticos: Project State Engine (ausente) y HIL Middleware (15%). Base solida para evolucion, no para rewrite.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ S1: FICHA TECNICA ════ -->
+    <section data-mtia="ficha-tecnica">
+      <div class="container">
+        <div class="section-number">Seccion 01</div>
+        <h2 class="section-title">Ficha Tecnica</h2>
+
+        <div class="card">
+          <table class="spec-table" aria-label="Ficha tecnica del proyecto">
+            <thead>
+              <tr><th>Atributo</th><th>Valor</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Nombre</td><td>Nexus Assistant OS / Pristino Bot v2</td></tr>
+              <tr><td>Repo</td><td>danielfzuluagama-oss/Nexus-Backup</td></tr>
+              <tr><td>Branch</td><td>001-pristino-bot-v2</td></tr>
+              <tr><td>Commits</td><td>39</td></tr>
+              <tr><td>Lenguajes</td><td>Python 47.9% &middot; HTML 43.9% &middot; JS 2.2% &middot; TS 2.2% &middot; Shell 2.1%</td></tr>
+              <tr><td>Framework</td><td>Firebase Functions + Cloud Run</td></tr>
+              <tr><td>Runtime</td><td>Node.js (TypeScript)</td></tr>
+              <tr><td>Database</td><td>Firebase Firestore</td></tr>
+              <tr><td>Storage</td><td>Firebase Cloud Storage</td></tr>
+              <tr><td>Messaging</td><td>Google Cloud Pub/Sub</td></tr>
+              <tr><td>Interface</td><td>Telegram Bot API</td></tr>
+              <tr><td>LLM Providers</td><td>Groq (Llama 3) &middot; OpenRouter (multi) &middot; Google Gemini</td></tr>
+              <tr><td>Speech</td><td>Whisper API</td></tr>
+              <tr><td>Test Framework</td><td>Vitest</td></tr>
+              <tr><td>Deploy</td><td>Cloud Run + Cloud Functions</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ S2: ARQUITECTURA ACTUAL ════ -->
+    <section data-mtia="arquitectura">
+      <div class="container">
+        <div class="section-number">Seccion 02</div>
+        <h2 class="section-title">Arquitectura Actual &mdash; 4 Planos</h2>
+        <p style="color:var(--color-text-dim);margin-bottom:8px;font-size:14px;">50 archivos TypeScript organizados en 4 planos funcionales + cross-cutting concerns.</p>
+
+        <div class="arch-grid">
+          <!-- Ingesta -->
+          <div class="arch-plane">
+            <div class="arch-plane-icon">&#9660;</div>
+            <div class="arch-plane-name">Ingesta</div>
+            <div class="arch-plane-count">4</div>
+            <div class="arch-plane-label">archivos</div>
+            <div class="arch-plane-files">
+              <code>bot.ts</code>, <code>telegram-update-guard.ts</code>, <code>audio.ts</code>, <code>telegram-conversation.ts</code>
+            </div>
+          </div>
+          <!-- Control -->
+          <div class="arch-plane">
+            <div class="arch-plane-icon">&#9881;</div>
+            <div class="arch-plane-name">Control</div>
+            <div class="arch-plane-count">12</div>
+            <div class="arch-plane-label">archivos</div>
+            <div class="arch-plane-files">
+              <code>ecosystem/*.ts</code>, <code>telegram-intents.ts</code>, <code>telegram-controls.ts</code>, <code>circuit-breaker.ts</code>, <code>config.ts</code>, <code>runtime.ts</code>
+            </div>
+          </div>
+          <!-- Ejecucion -->
+          <div class="arch-plane">
+            <div class="arch-plane-icon">&#9654;</div>
+            <div class="arch-plane-name">Ejecucion</div>
+            <div class="arch-plane-count">17</div>
+            <div class="arch-plane-label">archivos</div>
+            <div class="arch-plane-files">
+              <code>agents/*/</code>, <code>tools/*.ts</code>
+            </div>
+          </div>
+          <!-- Persistencia -->
+          <div class="arch-plane">
+            <div class="arch-plane-icon">&#9636;</div>
+            <div class="arch-plane-name">Persistencia</div>
+            <div class="arch-plane-count">6</div>
+            <div class="arch-plane-label">archivos</div>
+            <div class="arch-plane-files">
+              <code>firebase.ts</code>, <code>firebase-secrets.ts</code>, <code>memory.ts</code>, <code>thread-memory.ts</code>, <code>tokens.ts</code>, <code>logger.ts</code>
+            </div>
+          </div>
+          <!-- Cross-cutting -->
+          <div class="arch-plane" style="grid-column: 1 / -1; max-width: 480px; margin: 0 auto;">
+            <div class="arch-plane-icon">&#8644;</div>
+            <div class="arch-plane-name">Cross-Cutting</div>
+            <div class="arch-plane-count">6</div>
+            <div class="arch-plane-label">archivos</div>
+            <div class="arch-plane-files" style="text-align:center;">
+              <code>security.ts</code>, <code>response-contracts.ts</code>, <code>controlled-deliverables.ts</code>, <code>format.ts</code>, <code>service*.ts</code>, <code>quota-notifications.ts</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Flow arrow summary -->
+        <div class="card" style="margin-top:24px; text-align:center; padding:20px;">
+          <span style="font-family:var(--font-display);font-weight:700;font-size:13px;color:var(--color-text-dim);">
+            Telegram &rarr; Ingesta &rarr; Control &rarr; Ejecucion &rarr; Persistencia &rarr; Telegram
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ S3: CAPACIDADES EXISTENTES ════ -->
+    <section data-mtia="capacidades">
+      <div class="container">
+        <div class="section-number">Seccion 03</div>
+        <h2 class="section-title">Capacidades Existentes</h2>
+
+        <div class="card">
+          <table class="spec-table" aria-label="Capacidades existentes del sistema">
+            <thead>
+              <tr><th>Capacidad</th><th>Status</th><th>Evidencia</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Multi-agent orchestration (single/terna/committee)</td>
+                <td><span class="badge badge-ok">Implementado</span></td>
+                <td><span class="evidence ev-code">CODIGO</span> ecosystem/committee.ts</td>
+              </tr>
+              <tr>
+                <td>Declarative agent loading</td>
+                <td><span class="badge badge-ok">Implementado</span></td>
+                <td><span class="evidence ev-code">CODIGO</span> ecosystem/loader.ts</td>
+              </tr>
+              <tr>
+                <td>3-tier memory</td>
+                <td><span class="badge badge-partial">Parcial</span></td>
+                <td><span class="evidence ev-code">CODIGO</span> memory.ts</td>
+              </tr>
+              <tr>
+                <td>Security checkpoints CP1/CP2/CP3</td>
+                <td><span class="badge badge-ok">Implementado</span></td>
+                <td><span class="evidence ev-code">CODIGO</span> security.ts</td>
+              </tr>
+              <tr>
+                <td>Circuit breaker per-provider</td>
+                <td><span class="badge badge-ok">Implementado</span></td>
+                <td><span class="evidence ev-code">CODIGO</span> circuit-breaker.ts</td>
+              </tr>
+              <tr>
+                <td>Graceful degradation</td>
+                <td><span class="badge badge-ok">Implementado</span></td>
+                <td><span class="evidence ev-code">CODIGO</span> router.ts</td>
+              </tr>
+              <tr>
+                <td>Proposal generation</td>
+                <td><span class="badge badge-partial">Parcial</span></td>
+                <td><span class="evidence ev-code">CODIGO</span> src/proposals/</td>
+              </tr>
+              <tr>
+                <td>Brand voice enforcement</td>
+                <td><span class="badge badge-ok">Implementado</span></td>
+                <td><span class="evidence ev-code">CODIGO</span> prompt-composer.ts</td>
+              </tr>
+              <tr>
+                <td>Operational KB (&gt;100MB)</td>
+                <td><span class="badge badge-ok">Implementado</span></td>
+                <td><span class="evidence ev-code">CODIGO</span> knowledge.ts</td>
+              </tr>
+              <tr>
+                <td>Token tracking</td>
+                <td><span class="badge badge-basic">Basico</span></td>
+                <td><span class="evidence ev-code">CODIGO</span> tokens.ts</td>
+              </tr>
+              <tr>
+                <td>Mirror instance support</td>
+                <td><span class="badge badge-ok">Implementado</span></td>
+                <td><span class="evidence ev-doc">DOC</span> PREMISE.md</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ S4: CONSTITUTION ════ -->
+    <section data-mtia="constitution">
+      <div class="container">
+        <div class="section-number">Seccion 04</div>
+        <h2 class="section-title">Constitution &mdash; 8 Principios</h2>
+
+        <div class="const-grid">
+          <div class="const-item">
+            <div class="const-item-header">
+              <span class="const-item-name">P1 &mdash; User Sovereignty</span>
+              <span class="const-item-pct" style="color:var(--color-success);">95%</span>
+            </div>
+            <div class="const-item-file">security.ts, telegram-controls.ts</div>
+            <div class="pct-bar"><div class="pct-bar-fill" style="width:95%;background:var(--color-success);"></div></div>
+          </div>
+          <div class="const-item">
+            <div class="const-item-header">
+              <span class="const-item-name">P2 &mdash; Transparency</span>
+              <span class="const-item-pct" style="color:var(--color-success);">90%</span>
+            </div>
+            <div class="const-item-file">logger.ts, response-contracts.ts</div>
+            <div class="pct-bar"><div class="pct-bar-fill" style="width:90%;background:var(--color-success);"></div></div>
+          </div>
+          <div class="const-item">
+            <div class="const-item-header">
+              <span class="const-item-name">P3 &mdash; Safety First</span>
+              <span class="const-item-pct" style="color:var(--color-success);">100%</span>
+            </div>
+            <div class="const-item-file">security.ts (CP1/CP2/CP3)</div>
+            <div class="pct-bar"><div class="pct-bar-fill" style="width:100%;background:var(--color-success);"></div></div>
+          </div>
+          <div class="const-item">
+            <div class="const-item-header">
+              <span class="const-item-name">P4 &mdash; Graceful Degradation</span>
+              <span class="const-item-pct" style="color:var(--color-success);">85%</span>
+            </div>
+            <div class="const-item-file">circuit-breaker.ts, router.ts</div>
+            <div class="pct-bar"><div class="pct-bar-fill" style="width:85%;background:var(--color-blue);"></div></div>
+          </div>
+          <div class="const-item">
+            <div class="const-item-header">
+              <span class="const-item-name">P5 &mdash; Brand Consistency</span>
+              <span class="const-item-pct" style="color:var(--color-success);">90%</span>
+            </div>
+            <div class="const-item-file">prompt-composer.ts, format.ts</div>
+            <div class="pct-bar"><div class="pct-bar-fill" style="width:90%;background:var(--color-success);"></div></div>
+          </div>
+          <div class="const-item">
+            <div class="const-item-header">
+              <span class="const-item-name">P6 &mdash; Multi-Agent Coordination</span>
+              <span class="const-item-pct" style="color:var(--color-blue);">75%</span>
+            </div>
+            <div class="const-item-file">ecosystem/committee.ts, loader.ts</div>
+            <div class="pct-bar"><div class="pct-bar-fill" style="width:75%;background:var(--color-blue);"></div></div>
+          </div>
+          <div class="const-item">
+            <div class="const-item-header">
+              <span class="const-item-name">P7 &mdash; Operational Knowledge</span>
+              <span class="const-item-pct" style="color:var(--color-blue);">80%</span>
+            </div>
+            <div class="const-item-file">knowledge.ts, memory.ts</div>
+            <div class="pct-bar"><div class="pct-bar-fill" style="width:80%;background:var(--color-blue);"></div></div>
+          </div>
+          <div class="const-item">
+            <div class="const-item-header">
+              <span class="const-item-name">P8 &mdash; Human-in-the-Loop</span>
+              <span class="const-item-pct" style="color:var(--color-danger);">15%</span>
+            </div>
+            <div class="const-item-file">No formal middleware</div>
+            <div class="pct-bar"><div class="pct-bar-fill" style="width:15%;background:var(--color-danger);"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ S5: SPEC HEALTH ════ -->
+    <section data-mtia="spec-health">
+      <div class="container">
+        <div class="section-number">Seccion 05</div>
+        <h2 class="section-title">Spec Health</h2>
+
+        <div class="card" style="text-align:center;">
+          <div class="health-score">87<span style="font-size:18px;color:var(--color-text-dim);font-weight:400;">/100</span></div>
+          <div class="health-bar-container">
+            <div class="health-bar" style="width:87%;"></div>
+          </div>
+          <p style="font-size:12px;color:var(--color-text-dim);margin-top:4px;">Spec Health Score</p>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-item">
+            <div class="stat-value">42/43</div>
+            <div class="stat-label">FRs Tagged (97.7%)</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">77</div>
+            <div class="stat-label">BDD Scenarios</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">12/12</div>
+            <div class="stat-label">User Stories</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">93</div>
+            <div class="stat-label">Tasks (100% trazables)</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:20px;">
+          <div class="card-title">Issues Detectados</div>
+          <table class="spec-table" aria-label="Issues de especificacion">
+            <thead><tr><th>Severidad</th><th>Cantidad</th><th>Detalle</th></tr></thead>
+            <tbody>
+              <tr><td><span class="badge badge-high">HIGH</span></td><td>1</td><td>CP3 mischaracterization</td></tr>
+              <tr><td><span class="badge badge-med">MEDIUM</span></td><td>4</td><td>Spec inconsistencies</td></tr>
+              <tr><td><span class="badge badge-low">LOW</span></td><td>1</td><td>Minor documentation gap</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ S6: RIESGOS TECNICOS ════ -->
+    <section data-mtia="riesgos">
+      <div class="container">
+        <div class="section-number">Seccion 06</div>
+        <h2 class="section-title">Riesgos Tecnicos Detectados</h2>
+
+        <div class="card">
+          <table class="spec-table" aria-label="Riesgos tecnicos detectados">
+            <thead>
+              <tr><th>Riesgo</th><th>Severidad</th><th>Evidencia</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>No test coverage metrics available</td>
+                <td><span class="badge badge-crit">CRITICO</span></td>
+                <td><span class="evidence ev-inf">INFERENCIA</span></td>
+              </tr>
+              <tr>
+                <td>KB &gt;100MB split en 2 archivos</td>
+                <td><span class="badge badge-med">MEDIO</span></td>
+                <td><span class="evidence ev-doc">DOC</span> README.md</td>
+              </tr>
+              <tr>
+                <td>CP3 solo detecta, no enforce</td>
+                <td><span class="badge badge-high">ALTO</span></td>
+                <td><span class="evidence ev-doc">DOC</span> analysis.md</td>
+              </tr>
+              <tr>
+                <td>No project state persistence</td>
+                <td><span class="badge badge-crit">CRITICO</span></td>
+                <td><span class="evidence ev-inf">INFERENCIA</span></td>
+              </tr>
+              <tr>
+                <td>No HIL middleware formal</td>
+                <td><span class="badge badge-crit">CRITICO</span></td>
+                <td><span class="evidence ev-inf">INFERENCIA</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ S7: RECOMENDACION ════ -->
+    <section data-mtia="recomendacion">
+      <div class="container">
+        <div class="section-number">Seccion 07</div>
+        <h2 class="section-title">Recomendacion</h2>
+
+        <div class="reco-box">
+          <div class="reco-verdict">EXTENSION, no REWRITE</div>
+          <p>El sistema tiene base solida para extension progresiva. Los 2 gaps criticos identificados &mdash; M-09 Project State Engine y M-08 HIL Middleware &mdash; son adiciones a la arquitectura existente, no cambios destructivos.</p>
+          <div class="divider"></div>
+          <p>La continuidad natural del flujo AS-IS al TO-BE permite construir sobre lo existente: la capa de Ingesta, el Control (ecosystem), la Ejecucion (agents + tools) y la Persistencia (Firestore) estan suficientemente desacopladas para absorber los nuevos modulos sin regression en las capacidades actuales.</p>
+          <div class="divider"></div>
+          <p style="font-size:13px;color:var(--color-gold);font-family:var(--font-display);font-weight:600;">AS-IS &rarr; TO-BE: evolucion incremental, no migracion disruptiva.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ════ FOOTER ════ -->
+  <footer data-mtia="footer">
+    <div class="container">
+      <div class="footer-brand">
+        <span style="color:#FFFFFF;">Metodolog</span><span style="color:var(--color-gold);">IA</span>
+      </div>
+      <div class="footer-copy">&copy; 2026 MetodologIA. Copyleft &mdash; Para uso y aprovechamiento de profesionales en la era de la IA.</div>
+      <div class="footer-tagline">Generado por agentes agenticos &middot; Arquitectura impulsada por IA</div>
+    </div>
+  </footer>
+
+</body>
+</html>

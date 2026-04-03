@@ -31,6 +31,6 @@ Generated from .feature files | 2026-04-03
 ## Summary
 - Total FR: 12 | Covered: 12 | Untested: 0
 - Total SC: 7 | Covered: 7 | Untested: 0
-- Total Scenarios: 34
+- Total Scenarios: 35
 - Coverage: 100%
 - Assertion Hash: 4c5478ba2591482a10fcd3aee2bbc7acbe76281b243a73bbf2a61c34d1580287

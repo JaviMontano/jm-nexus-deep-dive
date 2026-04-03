@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="es" data-mtia="handover-operacional">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Handover Operacional — Nexus Assistant OS — Discovery Cerrado">
+  <title>09 · Handover Operacional — Nexus Assistant OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ── CSS Variables ── */
+    :root {
+      --color-body: #1E3258;
+      --color-card: rgba(255,255,255,0.06);
+      --color-card-border: rgba(255,255,255,0.10);
+      --color-gold: #FFD700;
+      --color-blue: #137DC5;
+      --color-text: #E8E8E8;
+      --color-text-muted: #B0B8C8;
+      --color-navy-deep: #122562;
+      --color-lilac: #BBA0CC;
+      --color-gray: #808080;
+      --color-surface: #1F2833;
+      --color-success: #2ECC71;
+      --color-warning: #E67E22;
+      --color-danger: #E74C3C;
+      --font-display: 'Poppins', sans-serif;
+      --font-body: 'Montserrat', sans-serif;
+      --font-footnote: 'Trebuchet MS', sans-serif;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --blur: blur(16px);
+      --shadow: 0 4px 24px rgba(0,0,0,0.25);
+      --max-width: 1100px;
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Skip link ── */
+    .skip-link {
+      position: absolute; top: -100%; left: 1rem;
+      background: var(--color-gold); color: var(--color-body);
+      padding: 0.5rem 1rem; border-radius: var(--radius-sm);
+      font-family: var(--font-body); font-weight: 600; z-index: 999;
+      text-decoration: none;
+    }
+    .skip-link:focus { top: 1rem; }
+
+    /* ── Body ── */
+    body {
+      background: var(--color-body);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-weight: 400;
+      line-height: 1.7;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Layout ── */
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* ── Header ── */
+    header[data-mtia="header"] {
+      background: linear-gradient(135deg, var(--color-navy-deep) 0%, var(--color-body) 100%);
+      border-bottom: 2px solid var(--color-gold);
+      padding: 1.5rem 0;
+      position: sticky; top: 0; z-index: 50;
+      backdrop-filter: var(--blur);
+    }
+    .header-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+    .brand-text {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+    .brand-text .white { color: #fff; }
+    .brand-text .gold { color: var(--color-gold); }
+    .header-meta {
+      font-family: var(--font-footnote);
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+      text-align: right;
+    }
+
+    /* ── Hero ── */
+    .hero[data-mtia="hero"] {
+      text-align: center;
+      padding: 3rem 1.5rem 2rem;
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+    .hero h1 .gold { color: var(--color-gold); }
+    .hero .subtitle {
+      font-size: 1.1rem;
+      color: var(--color-text-muted);
+      max-width: 700px;
+      margin: 0 auto 1.5rem;
+    }
+    .badge-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 20px;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.78rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .badge--gold { background: var(--color-gold); color: var(--color-navy-deep); }
+    .badge--blue { background: var(--color-blue); color: #fff; }
+    .badge--success { background: var(--color-success); color: #fff; }
+    .badge--lilac { background: var(--color-lilac); color: var(--color-navy-deep); }
+
+    /* ── TL;DR ── */
+    .tldr[data-mtia="tldr"] {
+      background: linear-gradient(135deg, rgba(255,215,0,0.12) 0%, rgba(19,125,197,0.08) 100%);
+      border-left: 4px solid var(--color-gold);
+      border-radius: var(--radius-sm);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2.5rem;
+      font-size: 0.95rem;
+    }
+    .tldr strong { color: var(--color-gold); font-family: var(--font-display); }
+
+    /* ── Section ── */
+    section[data-mtia] {
+      margin-bottom: 2.5rem;
+    }
+    .section-heading {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.35rem;
+      color: #fff;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid rgba(255,215,0,0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-heading .num {
+      background: var(--color-gold);
+      color: var(--color-navy-deep);
+      font-size: 0.8rem;
+      font-weight: 700;
+      min-width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--color-card);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border: 1px solid var(--color-card-border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    /* ── Tables ── */
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 1rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    thead th {
+      background: rgba(255,215,0,0.12);
+      color: var(--color-gold);
+      font-family: var(--font-display);
+      font-weight: 600;
+      text-align: left;
+      padding: 0.65rem 0.75rem;
+      border-bottom: 2px solid var(--color-gold);
+      white-space: nowrap;
+    }
+    tbody td {
+      padding: 0.55rem 0.75rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      vertical-align: top;
+    }
+    tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+    /* ── Status pills ── */
+    .status {
+      display: inline-block;
+      padding: 0.15rem 0.55rem;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-family: var(--font-display);
+      white-space: nowrap;
+    }
+    .status--complete { background: rgba(46,204,113,0.2); color: var(--color-success); }
+    .status--active { background: rgba(255,215,0,0.2); color: var(--color-gold); }
+    .status--open { background: rgba(231,76,60,0.2); color: var(--color-danger); }
+    .status--pending { background: rgba(230,126,34,0.2); color: var(--color-warning); }
+
+    /* ── Timeline ── */
+    .timeline[data-mtia="timeline"] {
+      position: relative;
+      padding-left: 2rem;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0.6rem;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--color-gold) 0%, var(--color-blue) 50%, var(--color-lilac) 100%);
+      border-radius: 2px;
+    }
+    .tl-item {
+      position: relative;
+      margin-bottom: 1.5rem;
+      padding-left: 1rem;
+    }
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: -1.65rem;
+      top: 0.35rem;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 3px solid var(--color-gold);
+      background: var(--color-body);
+    }
+    .tl-item.tl--gate::before {
+      background: var(--color-gold);
+      box-shadow: 0 0 8px rgba(255,215,0,0.5);
+    }
+    .tl-item.tl--retro::before {
+      border-color: var(--color-lilac);
+      background: var(--color-lilac);
+    }
+    .tl-week {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--color-gold);
+    }
+    .tl-title {
+      font-weight: 600;
+      color: #fff;
+      margin: 0.15rem 0;
+    }
+    .tl-detail {
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+    }
+
+    /* ── Gate card ── */
+    .gate-card {
+      background: linear-gradient(135deg, rgba(255,215,0,0.08) 0%, rgba(19,125,197,0.06) 100%);
+      border: 1px solid rgba(255,215,0,0.25);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+    .gate-icon {
+      font-size: 1.3rem;
+    }
+    .gate-label {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--color-gold);
+    }
+
+    /* ── Risk severity ── */
+    .risk-9 { color: var(--color-danger); font-weight: 700; }
+    .risk-6 { color: var(--color-warning); font-weight: 600; }
+
+    /* ── Governance list ── */
+    .gov-list {
+      list-style: none;
+      padding: 0;
+    }
+    .gov-list li {
+      padding: 0.6rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-size: 0.92rem;
+    }
+    .gov-list li::before {
+      content: '';
+      display: inline-block;
+      min-width: 8px;
+      height: 8px;
+      margin-top: 0.45rem;
+      border-radius: 50%;
+      background: var(--color-gold);
+    }
+    .gov-list strong { color: #fff; }
+
+    /* ── Supuestos grid ── */
+    .supuestos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+    .supuesto-chip {
+      background: var(--color-card);
+      backdrop-filter: var(--blur);
+      border: 1px solid var(--color-card-border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+    }
+    .supuesto-chip .code {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--color-gold);
+      margin-bottom: 0.25rem;
+    }
+    .supuesto-chip p {
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+    }
+
+    /* ── Next step ── */
+    .next-step[data-mtia="next-step"] {
+      background: linear-gradient(135deg, rgba(19,125,197,0.15) 0%, rgba(255,215,0,0.08) 100%);
+      border: 1px solid var(--color-blue);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      font-size: 0.95rem;
+    }
+    .next-step strong { color: var(--color-blue); }
+
+    /* ── Formal close ── */
+    .formal-close[data-mtia="formal-close"] {
+      border: 3px solid var(--color-gold);
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(255,215,0,0.06) 0%, rgba(18,37,98,0.4) 100%);
+      box-shadow: 0 0 40px rgba(255,215,0,0.08);
+      margin-top: 3rem;
+    }
+    .formal-close h2 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+      color: var(--color-gold);
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .close-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      text-align: left;
+      max-width: 800px;
+      margin: 0 auto 1.5rem;
+    }
+    .close-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .close-item .label {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-text-muted);
+    }
+    .close-item .value {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #fff;
+    }
+    .close-item .value.gold { color: var(--color-gold); }
+    .close-gates {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    .close-gate {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--color-success);
+    }
+    .close-status {
+      margin-top: 1.5rem;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      color: var(--color-gold);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-top: 1px solid rgba(255,215,0,0.3);
+      padding-top: 1rem;
+    }
+
+    /* ── Footer ── */
+    footer[data-mtia="footer"] {
+      border-top: 2px solid var(--color-gold);
+      padding: 2rem 0;
+      text-align: center;
+      margin-top: 3rem;
+    }
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .footer-brand .brand-text { font-size: 1.2rem; }
+    .footer-copy {
+      font-family: var(--font-footnote);
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── Print ── */
+    @media print {
+      body { background: #fff; color: #1a1a1a; }
+      header[data-mtia="header"] { position: static; border-bottom: 2px solid #333; }
+      .card { border: 1px solid #ccc; box-shadow: none; backdrop-filter: none; background: #f9f9f9; }
+      .formal-close { border-color: #333; background: #f5f5e6; }
+      .formal-close h2 { color: #333; }
+      .badge { border: 1px solid #999; }
+      .tldr { border-left-color: #333; background: #f5f5e6; }
+      .timeline::before { background: #999; }
+      .section-heading { border-bottom-color: #ccc; color: #1a1a1a; }
+      thead th { background: #eee; color: #333; border-bottom-color: #333; }
+      tbody td { border-bottom-color: #ddd; }
+      .tl-week { color: #333; }
+      .tl-title { color: #1a1a1a; }
+      .status { border: 1px solid currentColor; }
+      .brand-text .white { color: #1a1a1a; }
+      .brand-text .gold { color: #996600; }
+      footer[data-mtia="footer"] { border-top-color: #333; }
+      .next-step { border-color: #999; background: #f0f7ff; }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .container { padding: 1.25rem 1rem; }
+      .header-inner { flex-direction: column; align-items: flex-start; }
+      .close-grid { grid-template-columns: 1fr; }
+      .supuestos-grid { grid-template-columns: 1fr; }
+      table { font-size: 0.8rem; }
+      thead th, tbody td { padding: 0.45rem 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Saltar al contenido</a>
+
+<!-- ════════ HEADER ════════ -->
+<header data-mtia="header">
+  <div class="header-inner">
+    <div class="brand">
+      <!-- SVG Squircle Logo -->
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="36" height="36" rx="8" fill="#122562"/>
+        <rect x="8" y="10" width="4" height="16" rx="2" fill="#fff"/>
+        <rect x="16" y="8" width="4" height="20" rx="2" fill="#fff"/>
+        <rect x="24" y="12" width="4" height="14" rx="2" fill="#fff"/>
+        <circle cx="28" cy="8" r="3.5" fill="#FFD700"/>
+      </svg>
+      <span class="brand-text"><span class="white">Metodolog</span><span class="gold">IA</span></span>
+    </div>
+    <div class="header-meta">
+      Entregable 09 / 16 &middot; Nexus Assistant OS<br>
+      2026-04-02 &middot; Discovery Framework
+    </div>
+  </div>
+</header>
+
+<!-- ════════ HERO ════════ -->
+<div class="hero" data-mtia="hero">
+  <h1>Handover <span class="gold">Operacional</span></h1>
+  <p class="subtitle">Nexus Assistant OS &mdash; Transici&oacute;n de Discovery a Implementaci&oacute;n</p>
+  <div class="badge-row">
+    <span class="badge badge--gold">Entregable 09</span>
+    <span class="badge badge--success">Discovery Cerrado</span>
+    <span class="badge badge--blue">16/16 Completos</span>
+    <span class="badge badge--lilac">4 Gates Aprobados</span>
+  </div>
+</div>
+
+<!-- ════════ MAIN ════════ -->
+<main id="main" class="container">
+
+  <!-- TL;DR -->
+  <div class="tldr" data-mtia="tldr">
+    <strong>TL;DR:</strong> Paquete de transici&oacute;n del discovery a implementaci&oacute;n. Resume los 16 entregables, 4 gates auto-aprobados, y define el plan de 90 d&iacute;as, governance, risk tracker, y stakeholder transition. Nexus est&aacute; listo para comenzar S1 (Project State Engine) esta semana.
+  </div>
+
+  <!-- ── S1: Transition Summary ── -->
+  <section data-mtia="transition-summary">
+    <h2 class="section-heading"><span class="num">1</span> Transition Summary</h2>
+    <div class="card">
+      <p>El discovery de <strong style="color:#fff;">Nexus Assistant OS</strong> est&aacute; <strong style="color:var(--color-gold);">CERRADO</strong>. Se produjeron <strong style="color:#fff;">16 entregables</strong> a lo largo de 8 fases. Los 4 gates fueron auto-aprobados con supuestos documentados.</p>
+      <br>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;">
+        <div class="card" style="text-align:center;padding:1rem;">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:2rem;color:var(--color-gold);">16/16</div>
+          <div style="font-size:0.8rem;color:var(--color-text-muted);">Entregables</div>
+        </div>
+        <div class="card" style="text-align:center;padding:1rem;">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:2rem;color:var(--color-success);">4/4</div>
+          <div style="font-size:0.8rem;color:var(--color-text-muted);">Gates Aprobados</div>
+        </div>
+        <div class="card" style="text-align:center;padding:1rem;">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:2rem;color:var(--color-blue);">4.2/5.0</div>
+          <div style="font-size:0.8rem;color:var(--color-text-muted);">Score Escenario</div>
+        </div>
+        <div class="card" style="text-align:center;padding:1rem;">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:2rem;color:var(--color-lilac);">~6</div>
+          <div style="font-size:0.8rem;color:var(--color-text-muted);">FTE-meses / 16 sem</div>
+        </div>
+      </div>
+      <p style="margin-top:1rem;font-size:0.88rem;color:var(--color-text-muted);">Escenario aprobado: <strong style="color:#fff;">Evoluci&oacute;n Incremental</strong>. Viabilidad: <strong style="color:var(--color-success);">FEASIBLE</strong> (6/7 criterios positivos, 7.7/10 overall).</p>
+    </div>
+  </section>
+
+  <!-- ── S2: Inventario de Entregables ── -->
+  <section data-mtia="inventario-entregables">
+    <h2 class="section-heading"><span class="num">2</span> Inventario de Entregables (16)</h2>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Entregable</th>
+              <th>Fase</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>00</td><td>Discovery Plan</td><td>0</td><td><span class="status status--complete">Completo</span></td></tr>
+            <tr><td>01</td><td>Stakeholder Map</td><td>0</td><td><span class="status status--complete">Completo</span></td></tr>
+            <tr><td>02</td><td>Brief T&eacute;cnico AS-IS</td><td>1</td><td><span class="status status--complete">Completo</span></td></tr>
+            <tr><td>03</td><td>An&aacute;lisis AS-IS</td><td>1</td><td><span class="status status--complete">Completo</span></td></tr>
+            <tr><td>04</td><td>Mapeo de Flujos</td><td>2</td><td><span class="status status--complete">Completo</span></td></tr>
+            <tr><td>05</td><td>Escenarios ToT</td><td>3</td><td><span class="status status--complete">Completo</span></td></tr>
+            <tr><td>05b</td><td>Feasibility Think Tank</td><td>3b</td><td><span class="status status--complete">Completo</span></td></tr>
+            <tr><td>06</td><td>Solution Roadmap</td><td>4</td><td><span class="status status--complete">Completo</span></td></tr>
+            <tr><td>07</td><td>Especificaci&oacute;n Funcional</td><td>5a</td><td><span class="status status--complete">Completo</span></td></tr>
+            <tr><td>08</td><td>Pitch Ejecutivo</td><td>5b</td><td><span class="status status--complete">Completo</span></td></tr>
+            <tr style="background:rgba(255,215,0,0.06);"><td><strong>09</strong></td><td><strong>Handover Operaciones</strong></td><td><strong>6</strong></td><td><span class="status status--active">Este documento</span></td></tr>
+            <tr><td>10</td><td>Presentaci&oacute;n Hallazgos</td><td>7a</td><td><span class="status status--complete">Completo</span></td></tr>
+            <tr><td>11</td><td>Hallazgos T&eacute;cnicos</td><td>7b</td><td><span class="status status--complete">Completo</span></td></tr>
+            <tr><td>12</td><td>Hallazgos Funcionales</td><td>7c</td><td><span class="status status--complete">Completo</span></td></tr>
+            <tr><td>13</td><td>Revisi&oacute;n Negocio (INTERNAL)</td><td>7d</td><td><span class="status status--complete">Completo</span></td></tr>
+            <tr><td>14</td><td>Oportunidades IA</td><td>7e</td><td><span class="status status--complete">Completo</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S3: Gates Summary ── -->
+  <section data-mtia="gates-summary">
+    <h2 class="section-heading"><span class="num">3</span> Gates Summary</h2>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Gate</th>
+              <th>Fase</th>
+              <th>Decisi&oacute;n</th>
+              <th>Score</th>
+              <th>Supuestos</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong style="color:var(--color-gold);">G1</strong></td>
+              <td>3</td>
+              <td>Escenario A: Evoluci&oacute;n Incremental</td>
+              <td>4.2 / 5.0</td>
+              <td>State Machine &gt; Swarm</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--color-gold);">G1.5</strong></td>
+              <td>3b</td>
+              <td>FEASIBLE (6/7 positivos)</td>
+              <td>7.7 / 10</td>
+              <td>Priorizar Nexus sobre LifeSync</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--color-gold);">G2</strong></td>
+              <td>4</td>
+              <td>Roadmap 3 Horizontes aprobado</td>
+              <td>~6 FTE-meses</td>
+              <td>Single developer H1</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--color-gold);">G3</strong></td>
+              <td>6</td>
+              <td>Discovery CERRADO</td>
+              <td>16/16</td>
+              <td>Inferencias ~85% precisas</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S4: Plan 90 Dias ── -->
+  <section data-mtia="plan-90-dias">
+    <h2 class="section-heading"><span class="num">4</span> Plan 90 D&iacute;as</h2>
+    <div class="card">
+      <div class="timeline" data-mtia="timeline">
+
+        <div class="tl-item">
+          <span class="tl-week">W1 &ndash; W2</span>
+          <div class="tl-title">S1: Project State Engine</div>
+          <div class="tl-detail">Colecci&oacute;n <code>projects</code> + CRUD + integraci&oacute;n con <code>prompt-composer</code></div>
+        </div>
+
+        <div class="tl-item">
+          <span class="tl-week">W2 &ndash; W3</span>
+          <div class="tl-title">S2: HIL Middleware</div>
+          <div class="tl-detail"><code>pending_actions</code> + Inline Buttons + <code>audit_log</code></div>
+        </div>
+
+        <div class="tl-item">
+          <span class="tl-week">W3 &ndash; W4</span>
+          <div class="tl-title">S3: Artifact Versioning</div>
+          <div class="tl-detail">Colecci&oacute;n <code>artifacts</code> + Storage URLs + versionado</div>
+        </div>
+
+        <div class="tl-item tl--gate">
+          <span class="tl-week">W4</span>
+          <div class="tl-title">S4: Memory + Token Budget</div>
+          <div class="tl-detail">CRON compresi&oacute;n + TTL + budget enforcement</div>
+          <div class="gate-card">
+            <span class="gate-icon" aria-hidden="true">&#9878;</span>
+            <span class="gate-label">Gate H1 &mdash; Horizonte 1 Checkpoint</span>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <span class="tl-week">W5 &ndash; W6</span>
+          <div class="tl-title">S5&ndash;6: Google Tasks + Calendar</div>
+          <div class="tl-detail">OAuth + L2 approval + sync bidireccional</div>
+        </div>
+
+        <div class="tl-item">
+          <span class="tl-week">W7 &ndash; W8</span>
+          <div class="tl-title">S7&ndash;8: Deep Research Pipeline</div>
+          <div class="tl-detail">Multi-source + citaci&oacute;n + sandbox de ejecuci&oacute;n</div>
+        </div>
+
+        <div class="tl-item">
+          <span class="tl-week">W8 &ndash; W9</span>
+          <div class="tl-title">S8: n8n Spike</div>
+          <div class="tl-detail">1 flujo e2e &mdash; decisi&oacute;n adoptar / descartar</div>
+        </div>
+
+        <div class="tl-item tl--gate">
+          <span class="tl-week">W9 &ndash; W10</span>
+          <div class="tl-title">S9&ndash;10: Observability Dashboard</div>
+          <div class="tl-detail">Token tracking + latencia + circuit breaker status</div>
+          <div class="gate-card">
+            <span class="gate-icon" aria-hidden="true">&#9878;</span>
+            <span class="gate-label">Gate H2 &mdash; Horizonte 2 Checkpoint</span>
+          </div>
+        </div>
+
+        <div class="tl-item tl--retro">
+          <span class="tl-week">W11 &ndash; W12</span>
+          <div class="tl-title">Retrospectiva H1&ndash;H2 + Planning H3</div>
+          <div class="tl-detail">Lessons learned + plan de Horizonte 3</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S5: Governance Model ── -->
+  <section data-mtia="governance-model">
+    <h2 class="section-heading"><span class="num">5</span> Governance Model</h2>
+    <div class="card">
+      <ul class="gov-list">
+        <li><strong>Decision authority:</strong> Fundador (Daniel Zuluaga, SH-01) &mdash; autoridad final sobre alcance, prioridades y trade-offs.</li>
+        <li><strong>Technical decisions:</strong> V&iacute;a Constitution (8 principios inmutables, semver para cambios). Toda modificaci&oacute;n a la constituci&oacute;n requiere justificaci&oacute;n documentada.</li>
+        <li><strong>Gate reviews:</strong> Weekly check informal. Gate formal al cierre de cada horizonte (H1 W4, H2 W10).</li>
+        <li><strong>Risk escalation:</strong> Cualquier risk con score 9 (R-04, R-10, R-13) escala inmediatamente al fundador.</li>
+        <li><strong>Change control:</strong> ADRs (Architecture Decision Records) para decisiones arquitect&oacute;nicas. Spec updates v&iacute;a PR con revisi&oacute;n m&iacute;nima antes de merge.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── S6: Risk Tracker ── -->
+  <section data-mtia="risk-tracker">
+    <h2 class="section-heading"><span class="num">6</span> Risk Tracker &mdash; Top 5 para H1</h2>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Risk</th>
+              <th>Score</th>
+              <th>Owner</th>
+              <th>Mitigaci&oacute;n</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>R-04: L0&ndash;L4 no implementado</td>
+              <td><span class="risk-9">9</span></td>
+              <td>Fundador</td>
+              <td>HIL en S2</td>
+              <td><span class="status status--open">Open &mdash; closes W3</span></td>
+            </tr>
+            <tr>
+              <td>R-10: Webhook timeout</td>
+              <td><span class="risk-9">9</span></td>
+              <td>Fundador</td>
+              <td>Validar ACK &lt;2s</td>
+              <td><span class="status status--open">Open &mdash; validate W1</span></td>
+            </tr>
+            <tr>
+              <td>R-13: Context bloat</td>
+              <td><span class="risk-9">9</span></td>
+              <td>Fundador</td>
+              <td>500 token cap + CRON</td>
+              <td><span class="status status--open">Open &mdash; closes W4</span></td>
+            </tr>
+            <tr>
+              <td>R-08: CRON pierde info</td>
+              <td><span class="risk-6">6</span></td>
+              <td>Fundador</td>
+              <td><code>compression_log</code></td>
+              <td><span class="status status--pending">Open &mdash; closes W4</span></td>
+            </tr>
+            <tr>
+              <td>R-IDEM: Telegram duplicados</td>
+              <td><span class="risk-6">6</span></td>
+              <td>Fundador</td>
+              <td>Deduplicar <code>update_id</code></td>
+              <td><span class="status status--pending">Open &mdash; closes W1</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S7: Stakeholder Transition ── -->
+  <section data-mtia="stakeholder-transition">
+    <h2 class="section-heading"><span class="num">7</span> Stakeholder Transition</h2>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Stakeholder</th>
+              <th>Rol en Discovery</th>
+              <th>Rol en Implementaci&oacute;n</th>
+              <th>Comunicaci&oacute;n</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong style="color:var(--color-gold);">Daniel (SH-01)</strong></td>
+              <td>Decision maker</td>
+              <td>Developer + tester</td>
+              <td>Continuo (self)</td>
+            </tr>
+            <tr>
+              <td>Germ&aacute;n (SH-02)</td>
+              <td>Context provider</td>
+              <td>Beta tester H1</td>
+              <td>Weekly update</td>
+            </tr>
+            <tr>
+              <td>Javier (SH-03)</td>
+              <td>Context provider</td>
+              <td>Beta tester H1</td>
+              <td>Weekly update</td>
+            </tr>
+            <tr>
+              <td>Katherine (SH-04)</td>
+              <td>Informed</td>
+              <td>Beta tester H2</td>
+              <td>Monthly update</td>
+            </tr>
+            <tr>
+              <td>Deonto (SH-05)</td>
+              <td>Mirror testing</td>
+              <td>Regression testing</td>
+              <td>Per-sprint</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S8: Supuestos Activos ── -->
+  <section data-mtia="supuestos-activos">
+    <h2 class="section-heading"><span class="num">8</span> Supuestos Activos al Cierre</h2>
+    <div class="supuestos-grid">
+      <div class="supuesto-chip">
+        <div class="code">S-01</div>
+        <p>State Machine es superior a Swarm para el contexto de un solo developer.</p>
+      </div>
+      <div class="supuesto-chip">
+        <div class="code">S-02</div>
+        <p>Nexus tiene prioridad sobre LifeSync en asignaci&oacute;n de tiempo de desarrollo.</p>
+      </div>
+      <div class="supuesto-chip">
+        <div class="code">S-03</div>
+        <p>Un solo developer puede sostener H1 (4 semanas, 4 sprints) sin bloqueos externos.</p>
+      </div>
+      <div class="supuesto-chip">
+        <div class="code">S-04</div>
+        <p>Las inferencias del discovery son ~85% precisas respecto al c&oacute;digo real.</p>
+      </div>
+      <div class="supuesto-chip">
+        <div class="code">S-05</div>
+        <p>Firebase + Telegram son suficientes como stack base para H1&ndash;H2.</p>
+      </div>
+      <div class="supuesto-chip">
+        <div class="code">S-06</div>
+        <p>El token budget de 500 tokens por compresi&oacute;n es viable sin p&eacute;rdida cr&iacute;tica de informaci&oacute;n.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S9: Proximo Paso ── -->
+  <section data-mtia="proximo-paso">
+    <h2 class="section-heading"><span class="num">9</span> Pr&oacute;ximo Paso Inmediato</h2>
+    <div class="next-step" data-mtia="next-step">
+      <p><strong>Comenzar S1 esta semana:</strong> implementar colecci&oacute;n <code>projects</code> + CRUD + integraci&oacute;n con <code>prompt-composer.ts</code>.</p>
+      <p style="margin-top:0.75rem;">Montar disco <code>/Volumes/backup/Antigravity/Nexus</code> para validar inferencias contra c&oacute;digo TypeScript real. Esto confirmar&aacute; o ajustar&aacute; el supuesto S-04 (~85% precisi&oacute;n).</p>
+    </div>
+  </section>
+
+  <!-- ── S10: Cierre Formal ── -->
+  <section data-mtia="cierre-formal">
+    <h2 class="section-heading"><span class="num">10</span> Cierre Formal</h2>
+    <div class="formal-close" data-mtia="formal-close">
+      <h2>Discovery Completo &mdash; Cierre Formal</h2>
+      <div class="close-grid">
+        <div class="close-item">
+          <span class="label">Sistema</span>
+          <span class="value">Nexus Assistant OS</span>
+        </div>
+        <div class="close-item">
+          <span class="label">Industria</span>
+          <span class="value">Tecnolog&iacute;a / SaaS / Productividad</span>
+        </div>
+        <div class="close-item">
+          <span class="label">Pipeline</span>
+          <span class="value">Full (8 fases, 4 gates)</span>
+        </div>
+        <div class="close-item">
+          <span class="label">Escenario</span>
+          <span class="value gold">Evoluci&oacute;n Incremental (4.2/5.0)</span>
+        </div>
+        <div class="close-item">
+          <span class="label">Viabilidad</span>
+          <span class="value gold">FEASIBLE (7.7/10)</span>
+        </div>
+        <div class="close-item">
+          <span class="label">Magnitud P80</span>
+          <span class="value">~6 FTE-meses en 16 semanas</span>
+        </div>
+        <div class="close-item">
+          <span class="label">Peak</span>
+          <span class="value">1&ndash;2 FTE</span>
+        </div>
+        <div class="close-item">
+          <span class="label">Entregables</span>
+          <span class="value gold">16 / 16 completos</span>
+        </div>
+      </div>
+      <div class="close-gates">
+        <span class="close-gate">G1 &#10003;</span>
+        <span class="close-gate">G1.5 &#10003;</span>
+        <span class="close-gate">G2 &#10003;</span>
+        <span class="close-gate">G3 &#10003;</span>
+      </div>
+      <div class="close-status">Discovery Cerrado</div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ════════ FOOTER ════════ -->
+<footer data-mtia="footer">
+  <div class="footer-brand">
+    <svg width="28" height="28" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="36" height="36" rx="8" fill="#122562"/>
+      <rect x="8" y="10" width="4" height="16" rx="2" fill="#fff"/>
+      <rect x="16" y="8" width="4" height="20" rx="2" fill="#fff"/>
+      <rect x="24" y="12" width="4" height="14" rx="2" fill="#fff"/>
+      <circle cx="28" cy="8" r="3.5" fill="#FFD700"/>
+    </svg>
+    <span class="brand-text"><span class="white">Metodolog</span><span class="gold">IA</span></span>
+  </div>
+  <p class="footer-copy">
+    &copy; 2026 MetodologIA. Copyleft &mdash; Para uso y aprovechamiento de profesionales en la era de la IA.<br>
+    Construido por profesionales, potenciado por la red ag&eacute;ntica de MetodologIA.
+  </p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>07 — Especificacion Funcional Consolidada | Nexus Assistant OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ── CSS Reset & Variables ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#1E3258;--bg-deep:#122562;--gold:#FFD700;--blue:#137DC5;
+  --dark:#1F2833;--lavender:#BBA0CC;--grey:#808080;
+  --text:#E8E8E8;--text-muted:#A8B2C1;--text-dim:#8090A8;
+  --card:rgba(255,255,255,0.06);--card-hover:rgba(255,255,255,0.10);
+  --border:rgba(255,255,255,0.12);--border-gold:rgba(255,215,0,0.35);
+  --font-display:'Poppins',sans-serif;--font-body:'Montserrat',sans-serif;
+  --font-footnote:'Trebuchet MS',sans-serif;
+  --radius:12px;--radius-sm:8px;--blur:blur(16px);
+  --green:#22C55E;--yellow:#EAB308;--red:#EF4444;--orange:#F97316;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--font-body);
+  font-weight:400;line-height:1.65;min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--blue);text-decoration:none;transition:color .2s}
+a:hover{color:var(--gold)}
+img{max-width:100%}
+
+/* ── Skip link ── */
+.skip-link{position:absolute;top:-100%;left:16px;background:var(--gold);color:var(--bg-deep);
+  padding:8px 16px;border-radius:var(--radius-sm);font-weight:600;z-index:9999;transition:top .2s}
+.skip-link:focus{top:16px}
+
+/* ── Layout ── */
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+section{padding:48px 0}
+section+section{border-top:1px solid var(--border)}
+
+/* ── Typography ── */
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;line-height:1.25;color:#fff}
+h1{font-size:clamp(1.8rem,4vw,2.6rem);margin-bottom:8px}
+h2{font-size:clamp(1.4rem,3vw,1.9rem);margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid var(--border-gold)}
+h3{font-size:clamp(1.1rem,2.2vw,1.35rem);margin-bottom:14px;color:var(--gold)}
+h4{font-size:1rem;margin-bottom:8px;color:var(--blue)}
+p{margin-bottom:12px}
+.subtitle{font-size:1.05rem;color:var(--text-muted);margin-bottom:4px}
+.date-tag{font-size:.85rem;color:var(--grey);font-family:var(--font-footnote)}
+.evidence-tag{display:inline-block;font-size:.7rem;font-weight:600;padding:2px 7px;border-radius:4px;
+  margin-left:4px;vertical-align:middle;text-transform:uppercase;letter-spacing:.4px}
+.ev-code{background:rgba(34,197,94,.2);color:var(--green)}
+.ev-doc{background:rgba(19,125,197,.2);color:var(--blue)}
+.ev-inf{background:rgba(234,179,8,.2);color:var(--yellow)}
+.ev-config{background:rgba(187,160,204,.2);color:var(--lavender)}
+
+/* ── Glass Card ── */
+.glass{background:var(--card);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+  border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px;
+  transition:background .25s,border-color .25s}
+.glass:hover{background:var(--card-hover);border-color:var(--border-gold)}
+
+/* ── Header ── */
+header{background:linear-gradient(135deg,var(--bg-deep) 0%,var(--bg) 100%);padding:20px 0;
+  border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;
+  backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand svg{flex-shrink:0}
+.brand-text{font-family:var(--font-display);font-weight:800;font-size:1.45rem;letter-spacing:-.5px}
+.brand-text .ia{color:var(--gold)}
+.header-meta{text-align:right;font-size:.8rem;color:var(--text-muted);font-family:var(--font-footnote)}
+
+/* ── Hero ── */
+.hero{padding:48px 0 32px;text-align:center}
+.hero h1{margin-bottom:12px}
+.hero .tldr{max-width:880px;margin:0 auto 32px;font-size:1.05rem;color:var(--text-muted);line-height:1.7}
+.status-summary{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-top:24px}
+.status-pill{display:flex;align-items:center;gap:10px;padding:14px 28px;border-radius:var(--radius);
+  background:var(--card);backdrop-filter:var(--blur);border:1px solid var(--border);min-width:180px}
+.status-pill .num{font-family:var(--font-display);font-weight:700;font-size:2rem;line-height:1}
+.status-pill .lbl{font-size:.85rem;color:var(--text-muted);text-align:left}
+.pill-green .num{color:var(--green)}
+.pill-green{border-color:rgba(34,197,94,.3)}
+.pill-yellow .num{color:var(--yellow)}
+.pill-yellow{border-color:rgba(234,179,8,.3)}
+.pill-red .num{color:var(--red)}
+.pill-red{border-color:rgba(239,68,68,.3)}
+
+/* ── TOC ── */
+.toc{columns:2;column-gap:32px}
+.toc-item{break-inside:avoid;padding:8px 0;border-bottom:1px solid var(--border)}
+.toc-item a{display:flex;align-items:baseline;gap:8px;font-size:.95rem}
+.toc-num{font-family:var(--font-display);font-weight:700;color:var(--gold);min-width:28px}
+
+/* ── Tables ── */
+table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:.9rem}
+th{background:rgba(255,255,255,0.08);text-align:left;padding:10px 12px;font-family:var(--font-display);
+  font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.5px;color:var(--gold);
+  border-bottom:2px solid var(--border-gold)}
+td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:hover td{background:rgba(255,255,255,0.03)}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600;white-space:nowrap}
+.badge-green{background:rgba(34,197,94,.18);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+.badge-yellow{background:rgba(234,179,8,.18);color:var(--yellow);border:1px solid rgba(234,179,8,.3)}
+.badge-red{background:rgba(239,68,68,.18);color:var(--red);border:1px solid rgba(239,68,68,.3)}
+.badge-blue{background:rgba(19,125,197,.18);color:var(--blue);border:1px solid rgba(19,125,197,.3)}
+.badge-grey{background:rgba(128,128,128,.18);color:var(--grey);border:1px solid rgba(128,128,128,.3)}
+
+/* ── Module Map ── */
+.module-map{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;margin-bottom:20px}
+.cluster{border-radius:var(--radius);padding:20px;background:var(--card);backdrop-filter:var(--blur);
+  border:2px solid var(--border)}
+.cluster-ingesta{border-color:rgba(19,125,197,.5)}
+.cluster-control{border-color:rgba(255,215,0,.5)}
+.cluster-ejecucion{border-color:rgba(34,197,94,.5)}
+.cluster-persistencia{border-color:rgba(239,68,68,.5)}
+.cluster-transversal{border-color:rgba(187,160,204,.5)}
+.cluster-title{font-family:var(--font-display);font-weight:700;font-size:.85rem;text-transform:uppercase;
+  letter-spacing:1px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.cluster-ingesta .cluster-title{color:var(--blue)}
+.cluster-control .cluster-title{color:var(--gold)}
+.cluster-ejecucion .cluster-title{color:var(--green)}
+.cluster-persistencia .cluster-title{color:var(--red)}
+.cluster-transversal .cluster-title{color:var(--lavender)}
+.mod-chip{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--radius-sm);
+  background:rgba(255,255,255,0.04);margin-bottom:8px;font-size:.88rem;transition:background .2s}
+.mod-chip:hover{background:rgba(255,255,255,0.08)}
+.mod-id{font-family:var(--font-display);font-weight:700;font-size:.75rem;color:var(--text-muted);min-width:38px}
+
+/* ── Use Cases ── */
+details{margin-bottom:12px}
+details summary{cursor:pointer;padding:14px 20px;border-radius:var(--radius-sm);
+  background:var(--card);backdrop-filter:var(--blur);border:1px solid var(--border);
+  font-family:var(--font-display);font-weight:600;font-size:.95rem;color:#fff;
+  list-style:none;display:flex;align-items:center;gap:10px;transition:all .25s}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:'▸';color:var(--gold);font-size:1.1rem;transition:transform .2s}
+details[open] summary::before{transform:rotate(90deg)}
+details[open] summary{border-color:var(--border-gold);background:var(--card-hover);border-bottom-left-radius:0;border-bottom-right-radius:0}
+details .uc-body{padding:20px;background:var(--card);border:1px solid var(--border);border-top:none;
+  border-radius:0 0 var(--radius-sm) var(--radius-sm);backdrop-filter:var(--blur)}
+.uc-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
+.uc-meta-item{font-size:.88rem}
+.uc-meta-label{font-weight:600;color:var(--blue);font-size:.78rem;text-transform:uppercase;letter-spacing:.4px}
+.callout{padding:12px 16px;border-radius:var(--radius-sm);margin-bottom:10px;font-size:.88rem}
+.callout-red{background:rgba(239,68,68,.1);border-left:3px solid var(--red);color:#fca5a5}
+.callout-gold{background:rgba(255,215,0,.08);border-left:3px solid var(--gold);color:var(--gold)}
+.callout-blue{background:rgba(19,125,197,.1);border-left:3px solid var(--blue);color:#93c5fd}
+.uc-group-title{font-family:var(--font-display);font-weight:700;font-size:1.1rem;color:var(--gold);
+  margin:28px 0 14px;padding-bottom:6px;border-bottom:1px solid var(--border-gold)}
+
+/* ── NFR Cards ── */
+.nfr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.nfr-card{padding:20px;border-radius:var(--radius);background:var(--card);backdrop-filter:var(--blur);
+  border:1px solid var(--border);transition:border-color .25s}
+.nfr-card:hover{border-color:var(--border-gold)}
+.nfr-id{font-family:var(--font-display);font-weight:700;font-size:.78rem;color:var(--text-muted)}
+.nfr-cat{display:inline-block;font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:12px;
+  margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px}
+.cat-latencia{background:rgba(19,125,197,.2);color:var(--blue)}
+.cat-disponibilidad{background:rgba(34,197,94,.2);color:var(--green)}
+.cat-seguridad{background:rgba(239,68,68,.2);color:var(--red)}
+.cat-costo{background:rgba(255,215,0,.2);color:var(--gold)}
+.cat-resiliencia{background:rgba(249,115,22,.2);color:var(--orange)}
+.cat-testabilidad{background:rgba(187,160,204,.2);color:var(--lavender)}
+.cat-extensibilidad{background:rgba(128,128,128,.2);color:var(--text-muted)}
+.cat-auditabilidad{background:rgba(255,255,255,.1);color:#fff}
+.nfr-metric{font-size:.82rem;color:var(--text-muted);margin-top:8px;font-style:italic}
+
+/* ── Complexity Matrix ── */
+.matrix-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;
+  max-width:700px;margin:0 auto 20px;border-radius:var(--radius);overflow:hidden}
+.matrix-cell{padding:20px;background:var(--card);backdrop-filter:var(--blur);min-height:160px}
+.matrix-cell-title{font-family:var(--font-display);font-weight:700;font-size:.78rem;text-transform:uppercase;
+  letter-spacing:.5px;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.matrix-q1 .matrix-cell-title{color:var(--red)}
+.matrix-q2 .matrix-cell-title{color:var(--orange)}
+.matrix-q3 .matrix-cell-title{color:var(--yellow)}
+.matrix-q4 .matrix-cell-title{color:var(--green)}
+.matrix-module{font-size:.84rem;padding:4px 0;display:flex;align-items:center;gap:6px}
+.matrix-module .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.matrix-labels{display:flex;justify-content:space-between;max-width:700px;margin:0 auto 8px;
+  font-size:.75rem;color:var(--text-dim);font-family:var(--font-display);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.matrix-y-label{writing-mode:vertical-lr;transform:rotate(180deg);position:absolute;left:-30px;top:50%;
+  font-size:.75rem;color:var(--text-dim);font-family:var(--font-display);font-weight:600;text-transform:uppercase}
+
+/* ── Permission Tiers ── */
+.perm-tiers{display:flex;flex-direction:column;gap:4px;max-width:800px;margin:0 auto}
+.perm-tier{display:grid;grid-template-columns:80px 1fr 160px;align-items:center;padding:16px 20px;
+  border-radius:var(--radius-sm);background:var(--card);backdrop-filter:var(--blur);border:1px solid var(--border)}
+.perm-level{font-family:var(--font-display);font-weight:700;font-size:1.3rem}
+.perm-name{font-weight:600;margin-bottom:4px}
+.perm-actions{font-size:.85rem;color:var(--text-muted)}
+.perm-approval{text-align:center;font-size:.82rem;font-weight:600;padding:6px 12px;border-radius:20px}
+.perm-auto{background:rgba(34,197,94,.15);color:var(--green)}
+.perm-hil{background:rgba(255,215,0,.15);color:var(--gold)}
+.perm-disabled{background:rgba(249,115,22,.15);color:var(--orange)}
+.perm-blocked{background:rgba(239,68,68,.15);color:var(--red)}
+.tier-l0{border-left:4px solid var(--green)}
+.tier-l0 .perm-level{color:var(--green)}
+.tier-l1{border-left:4px solid var(--blue)}
+.tier-l1 .perm-level{color:var(--blue)}
+.tier-l2{border-left:4px solid var(--gold)}
+.tier-l2 .perm-level{color:var(--gold)}
+.tier-l3{border-left:4px solid var(--orange)}
+.tier-l3 .perm-level{color:var(--orange)}
+.tier-l4{border-left:4px solid var(--red)}
+.tier-l4 .perm-level{color:var(--red)}
+
+/* ── Sequence Diagrams ── */
+.seq-diagram{margin-bottom:32px}
+.seq-participants{display:flex;justify-content:space-around;gap:8px;margin-bottom:4px;flex-wrap:wrap}
+.seq-actor{text-align:center;padding:10px 14px;border-radius:var(--radius-sm);font-size:.78rem;
+  font-weight:600;font-family:var(--font-display);min-width:80px;background:var(--card);border:1px solid var(--border)}
+.seq-actor.actor-human{border-color:var(--gold);color:var(--gold)}
+.seq-actor.actor-system{border-color:var(--blue);color:var(--blue)}
+.seq-steps{position:relative;padding:16px 0}
+.seq-step{display:flex;align-items:flex-start;gap:12px;padding:10px 16px;margin-bottom:6px;
+  border-radius:var(--radius-sm);background:var(--card);backdrop-filter:var(--blur);border:1px solid var(--border);
+  font-size:.85rem;transition:border-color .2s}
+.seq-step:hover{border-color:var(--border-gold)}
+.seq-num{font-family:var(--font-display);font-weight:700;color:var(--gold);min-width:24px;font-size:.82rem}
+.seq-from{font-weight:600;color:var(--blue);min-width:60px;font-size:.8rem}
+.seq-arrow{color:var(--text-dim);min-width:20px;text-align:center}
+.seq-to{font-weight:600;color:var(--green);min-width:60px;font-size:.8rem}
+.seq-msg{color:var(--text);flex:1}
+
+/* ── Dependencies ── */
+.dep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+.dep-card{padding:18px;border-radius:var(--radius);background:var(--card);backdrop-filter:var(--blur);
+  border:1px solid var(--border)}
+.dep-name{font-family:var(--font-display);font-weight:700;margin-bottom:6px}
+.dep-purpose{font-size:.88rem;color:var(--text-muted);margin-bottom:8px}
+.dep-row{display:flex;justify-content:space-between;font-size:.82rem;padding:4px 0;border-top:1px solid var(--border)}
+
+/* ── Glossary ── */
+.glossary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+.gloss-item{padding:16px;border-radius:var(--radius-sm);background:var(--card);backdrop-filter:var(--blur);border:1px solid var(--border)}
+.gloss-term{font-family:var(--font-display);font-weight:700;color:var(--gold);margin-bottom:6px;font-size:.95rem}
+.gloss-def{font-size:.88rem;color:var(--text-muted)}
+
+/* ── IS / IS NOT ── */
+.is-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.is-col h4{margin-bottom:12px}
+.is-item{padding:10px 14px;border-radius:var(--radius-sm);font-size:.88rem;margin-bottom:8px}
+.is-yes{background:rgba(34,197,94,.08);border-left:3px solid var(--green)}
+.is-no{background:rgba(239,68,68,.08);border-left:3px solid var(--red)}
+
+/* ── Footer ── */
+footer{padding:32px 0;border-top:1px solid var(--border);text-align:center}
+.footer-brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px}
+.footer-copy{font-family:var(--font-footnote);font-size:.85rem;color:var(--text-muted)}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .container{padding:0 16px}
+  .toc{columns:1}
+  .is-grid{grid-template-columns:1fr}
+  .perm-tier{grid-template-columns:60px 1fr;gap:8px}
+  .perm-approval{grid-column:1/-1}
+  .matrix-grid{grid-template-columns:1fr}
+  .status-summary{flex-direction:column;align-items:center}
+  .header-meta{display:none}
+  .seq-from,.seq-to{display:none}
+}
+
+/* ── Print ── */
+@media print{
+  body{background:#fff;color:#222;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  header{position:static;background:#fff;border-bottom:2px solid #222}
+  .brand-text,.brand-text .ia{color:#222!important}
+  .glass,.cluster,.nfr-card,.dep-card,.gloss-item,.seq-step,.perm-tier{
+    background:#f8f8f8!important;backdrop-filter:none!important;border-color:#ccc!important}
+  h2{border-bottom-color:#222}
+  h3{color:#333}
+  .skip-link{display:none}
+  details{break-inside:avoid}
+  details[open] summary~.uc-body{display:block}
+  section{padding:24px 0}
+  .hero{padding:24px 0 16px}
+}
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Ir al contenido principal</a>
+
+<!-- ════ HEADER ════ -->
+<header data-mtia="header">
+<div class="container header-inner">
+  <div class="brand">
+    <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="36" height="36" rx="8" fill="#122562"/>
+      <rect x="8" y="10" width="4" height="16" rx="2" fill="#fff"/>
+      <rect x="16" y="10" width="4" height="16" rx="2" fill="#fff"/>
+      <rect x="24" y="10" width="4" height="16" rx="2" fill="#fff"/>
+      <circle cx="28" cy="10" r="3" fill="#FFD700"/>
+    </svg>
+    <span class="brand-text">Metodolog<span class="ia">IA</span></span>
+  </div>
+  <div class="header-meta">
+    Especificacion Funcional Consolidada<br>
+    Nexus Assistant OS &middot; 2026-04-03
+  </div>
+</div>
+</header>
+
+<main id="main">
+
+<!-- ════ HERO ════ -->
+<section class="hero" data-mtia="hero">
+<div class="container">
+  <p class="subtitle">Discovery de Arquitectura de Alta Densidad</p>
+  <h1>07 — Especificacion Funcional Consolidada</h1>
+  <p class="date-tag">Nexus Assistant OS (Pristino Bot v2) &middot; Orquestador Multi-Agente &middot; Telegram + Firebase + Multi-LLM &middot; 2026-04-03</p>
+  <p class="tldr">Nexus es un Work OS conversacional que orquesta 6 agentes especializados via Telegram, mantiene memoria estructurada de proyectos, genera artefactos facturables, y requiere aprobacion humana para acciones externas. Esta especificacion define <strong>12 modulos</strong>, <strong>24 casos de uso</strong>, <strong>15 reglas de negocio</strong>, NFRs, y la matriz complejidad-riesgo.</p>
+
+  <div class="status-summary">
+    <div class="status-pill pill-green glass">
+      <span class="num">8</span>
+      <span class="lbl">Modulos<br>Implementados</span>
+    </div>
+    <div class="status-pill pill-yellow glass">
+      <span class="num">2</span>
+      <span class="lbl">Modulos<br>Parciales</span>
+    </div>
+    <div class="status-pill pill-red glass">
+      <span class="num">2</span>
+      <span class="lbl">Criticos<br>Ausentes</span>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ════ TOC ════ -->
+<section data-mtia="toc">
+<div class="container">
+  <h2>Tabla de Contenido</h2>
+  <div class="toc">
+    <div class="toc-item"><a href="#s1"><span class="toc-num">01</span> Vision del Producto</a></div>
+    <div class="toc-item"><a href="#s2"><span class="toc-num">02</span> Modulos Funcionales</a></div>
+    <div class="toc-item"><a href="#s3"><span class="toc-num">03</span> Casos de Uso (24)</a></div>
+    <div class="toc-item"><a href="#s4"><span class="toc-num">04</span> Reglas de Negocio (15)</a></div>
+    <div class="toc-item"><a href="#s5"><span class="toc-num">05</span> Requerimientos No Funcionales</a></div>
+    <div class="toc-item"><a href="#s6"><span class="toc-num">06</span> Matriz Complejidad-Riesgo</a></div>
+    <div class="toc-item"><a href="#s7"><span class="toc-num">07</span> Modelo de Permisos</a></div>
+    <div class="toc-item"><a href="#s8"><span class="toc-num">08</span> Data Model (Referencia)</a></div>
+    <div class="toc-item"><a href="#s9"><span class="toc-num">09</span> Diagramas de Flujo</a></div>
+    <div class="toc-item"><a href="#s10"><span class="toc-num">10</span> Dependencias Externas</a></div>
+    <div class="toc-item"><a href="#s11"><span class="toc-num">11</span> Supuestos y Restricciones</a></div>
+    <div class="toc-item"><a href="#s12"><span class="toc-num">12</span> Glosario</a></div>
+  </div>
+</div>
+</section>
+
+<!-- ════ S1: VISION ════ -->
+<section id="s1" data-mtia="vision">
+<div class="container">
+  <h2>1. Vision del Producto</h2>
+
+  <div class="glass">
+    <h3>1.1 Definicion Canonica</h3>
+    <p>Nexus Assistant OS es un sistema operativo de trabajo conversacional que ingiere requerimientos de baja fidelidad (voz/texto via Telegram), recupera contexto de alta fidelidad (memoria de estado en Firestore), ensambla artefactos o ejecuta acciones, y notifica asincronamente el resultado.</p>
+    <span class="evidence-tag ev-doc">DOC</span>
+  </div>
+
+  <div class="glass">
+    <h3>1.2 JTBD Principal</h3>
+    <p style="font-style:italic;color:var(--gold);font-size:1.05rem">"Delegar la carga cognitiva de gestion de proyectos, research profundo y generacion de artefactos a un sistema unificado, para enfocarme en direccion estrategica y venta."</p>
+  </div>
+
+  <div class="glass">
+    <h3>1.3 Usuarios</h3>
+    <table>
+      <thead><tr><th>Usuario</th><th>Rol</th><th>Acceso</th><th>Fase</th></tr></thead>
+      <tbody>
+        <tr><td>Fundador/Operador</td><td>PM/PO/Experto IA — dogfooding extremo</td><td>Admin completo</td><td>H1+</td></tr>
+        <tr><td>Chief Officers (x4)</td><td>Content creation, research, methodology, decisions</td><td>Operador via Telegram</td><td>H1+</td></tr>
+        <tr><td>Deonto</td><td>Mirror instance experimental</td><td>Aislado, mismo features</td><td>H1+</td></tr>
+        <tr><td>Clientes B2B</td><td>Flujos empaquetados (propuestas, research)</td><td>Tenant aislado, features acotados</td><td>H3+</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="glass">
+    <h3>1.4 Lo que el sistema ES y NO ES</h3>
+    <div class="is-grid">
+      <div class="is-col">
+        <h4 style="color:var(--green)">ES</h4>
+        <div class="is-item is-yes">Router cognitivo de herramientas</div>
+        <div class="is-item is-yes">Maquina de estados asincrona</div>
+        <div class="is-item is-yes">Orquestador de agentes especializados</div>
+        <div class="is-item is-yes">Generador de artefactos facturables</div>
+        <div class="is-item is-yes">Capa de orquestacion sobre herramientas existentes</div>
+      </div>
+      <div class="is-col">
+        <h4 style="color:var(--red)">NO ES</h4>
+        <div class="is-item is-no">LLM entrenado con conocimiento propio</div>
+        <div class="is-item is-no">Agent loop autonomo (AutoGPT-style)</div>
+        <div class="is-item is-no">Chatbot generico</div>
+        <div class="is-item is-no">ERP, CRM, ni herramienta de estilo de vida</div>
+        <div class="is-item is-no">Reemplazo de Google Workspace</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ════ S2: MODULOS ════ -->
+<section id="s2" data-mtia="modulos">
+<div class="container">
+  <h2>2. Modulos Funcionales</h2>
+
+  <h3>Mapa de Modulos</h3>
+  <div class="module-map">
+    <div class="cluster cluster-ingesta">
+      <div class="cluster-title">Ingesta</div>
+      <div class="mod-chip"><span class="mod-id">M-01</span> Telegram Gateway <span class="badge badge-green">Implementado</span></div>
+      <div class="mod-chip"><span class="mod-id">M-02</span> Voice Processing <span class="badge badge-yellow">Parcial</span></div>
+    </div>
+    <div class="cluster cluster-control">
+      <div class="cluster-title">Control</div>
+      <div class="mod-chip"><span class="mod-id">M-03</span> Intent Router <span class="badge badge-green">Implementado</span></div>
+      <div class="mod-chip"><span class="mod-id">M-04</span> Orchestrator <span class="badge badge-green">Implementado</span></div>
+      <div class="mod-chip"><span class="mod-id">M-05</span> Prompt Composer <span class="badge badge-green">Implementado</span></div>
+    </div>
+    <div class="cluster cluster-ejecucion">
+      <div class="cluster-title">Ejecucion</div>
+      <div class="mod-chip"><span class="mod-id">M-06</span> Agent Pool <span class="badge badge-green">Implementado</span></div>
+      <div class="mod-chip"><span class="mod-id">M-07</span> Skill Engine <span class="badge badge-green">Implementado</span></div>
+      <div class="mod-chip"><span class="mod-id">M-08</span> HIL Middleware <span class="badge badge-red">Critico Ausente</span></div>
+    </div>
+    <div class="cluster cluster-persistencia">
+      <div class="cluster-title">Persistencia</div>
+      <div class="mod-chip"><span class="mod-id">M-09</span> Project State Engine <span class="badge badge-red">Critico Ausente</span></div>
+      <div class="mod-chip"><span class="mod-id">M-10</span> Memory Manager <span class="badge badge-yellow">Parcial</span></div>
+      <div class="mod-chip"><span class="mod-id">M-11</span> Artifact Pipeline <span class="badge badge-yellow">Parcial</span></div>
+    </div>
+    <div class="cluster cluster-transversal" style="grid-column:1/-1">
+      <div class="cluster-title">Transversal</div>
+      <div class="mod-chip"><span class="mod-id">M-12</span> Security &amp; Observability <span class="badge badge-green">Implementado</span></div>
+    </div>
+  </div>
+
+  <h3>Inventario de Modulos</h3>
+  <div class="glass" style="overflow-x:auto">
+    <table>
+      <thead><tr><th>ID</th><th>Modulo</th><th>Plano</th><th>Estado</th><th>Prioridad</th><th>Archivos Repo</th></tr></thead>
+      <tbody>
+        <tr><td>M-01</td><td>Telegram Gateway</td><td>Ingesta</td><td><span class="badge badge-green">Implementado</span></td><td>—</td><td style="font-size:.8rem">bot.ts, telegram-update-guard.ts, telegram-conversation.ts, telegram-controls.ts</td></tr>
+        <tr><td>M-02</td><td>Voice Processing</td><td>Ingesta</td><td><span class="badge badge-yellow">Parcial</span></td><td>H1-S4</td><td style="font-size:.8rem">audio.ts</td></tr>
+        <tr><td>M-03</td><td>Intent Router</td><td>Control</td><td><span class="badge badge-green">Implementado</span></td><td>—</td><td style="font-size:.8rem">ecosystem/router.ts</td></tr>
+        <tr><td>M-04</td><td>Orchestrator</td><td>Control</td><td><span class="badge badge-green">Implementado</span></td><td>—</td><td style="font-size:.8rem">agents/pristino-orchestrator/, ecosystem/committee.ts</td></tr>
+        <tr><td>M-05</td><td>Prompt Composer</td><td>Control</td><td><span class="badge badge-green">Implementado</span></td><td>—</td><td style="font-size:.8rem">ecosystem/prompt-composer.ts, ecosystem/skill-composer.ts</td></tr>
+        <tr><td>M-06</td><td>Agent Pool</td><td>Ejecucion</td><td><span class="badge badge-green">Implementado</span></td><td>—</td><td style="font-size:.8rem">agents/{analyst,researcher,synthesizer,timekeeper,validator}/</td></tr>
+        <tr><td>M-07</td><td>Skill Engine</td><td>Ejecucion</td><td><span class="badge badge-green">Implementado</span></td><td>—</td><td style="font-size:.8rem">ecosystem/skill-engine.ts, ecosystem/workflow-tool.ts</td></tr>
+        <tr><td>M-08</td><td>HIL Middleware</td><td>Ejecucion</td><td><span class="badge badge-red">Critico Ausente</span></td><td><strong>H1-S2</strong></td><td style="font-size:.8rem">telegram-controls.ts (parcial)</td></tr>
+        <tr><td>M-09</td><td>Project State Engine</td><td>Persistencia</td><td><span class="badge badge-red">Critico Ausente</span></td><td><strong>H1-S1</strong></td><td style="font-size:.8rem">—</td></tr>
+        <tr><td>M-10</td><td>Memory Manager</td><td>Persistencia</td><td><span class="badge badge-yellow">Parcial</span></td><td>H1-S4</td><td style="font-size:.8rem">memory.ts, thread-memory.ts</td></tr>
+        <tr><td>M-11</td><td>Artifact Pipeline</td><td>Persistencia</td><td><span class="badge badge-yellow">Parcial</span></td><td>H1-S3</td><td style="font-size:.8rem">src/proposals/, controlled-deliverables.ts</td></tr>
+        <tr><td>M-12</td><td>Security &amp; Observability</td><td>Transversal</td><td><span class="badge badge-green">Implementado</span></td><td>—</td><td style="font-size:.8rem">security.ts, circuit-breaker.ts, tokens.ts, logger.ts</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</section>
+
+<!-- ════ S3: CASOS DE USO ════ -->
+<section id="s3" data-mtia="casos-de-uso">
+<div class="container">
+  <h2>3. Casos de Uso (24)</h2>
+
+  <!-- M-01 -->
+  <div class="uc-group-title">M-01: Telegram Gateway</div>
+
+  <details>
+    <summary>CU-01: Recibir mensaje de texto</summary>
+    <div class="uc-body">
+      <div class="uc-meta">
+        <div class="uc-meta-item"><div class="uc-meta-label">Actor</div>Operador</div>
+        <div class="uc-meta-item"><div class="uc-meta-label">Precondicion</div>Operador autenticado por Telegram user_id</div>
+        <div class="uc-meta-item"><div class="uc-meta-label">Postcondicion</div>Mensaje en cola Pub/Sub</div>
+      </div>
+      <p><strong>Flujo:</strong> Telegram envia webhook &rarr; Cloud Function recibe &rarr; valida firma &rarr; extrae payload (user_id, timestamp, text) &rarr; publica en Pub/Sub &rarr; retorna HTTP 200 a Telegram (&lt;2s)</p>
+      <div class="callout callout-red"><strong>Caso borde [CB-IDEM]:</strong> Telegram reenvia webhook por timeout. Deduplicar por update_id + operator_id. Procesar solo primera vez.</div>
+      <div class="callout callout-gold"><strong>Criterio:</strong> ACK a Telegram en &lt;2s. 0 mensajes duplicados procesados.</div>
+      <p><span class="evidence-tag ev-code">CODIGO</span> bot.ts, telegram-update-guard.ts</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>CU-02: Recibir rafaga de mensajes</summary>
+    <div class="uc-body">
+      <div class="uc-meta">
+        <div class="uc-meta-item"><div class="uc-meta-label">Actor</div>Operador envia 3+ mensajes en &lt;3s</div>
+      </div>
+      <p><strong>Flujo:</strong> Debounce de 2s agrupa mensajes del mismo user_id &rarr; concatena &rarr; publica como payload unico</p>
+      <div class="callout callout-red"><strong>Caso borde [CB-DEBOUNCE]:</strong> Si el 3er mensaje llega a los 2.1s, se procesa como segundo batch. Aceptable.</div>
+      <div class="callout callout-gold"><strong>Criterio:</strong> Mensajes en rafaga se procesan como unidad coherente, no como 3 intenciones separadas.</div>
+      <p><span class="evidence-tag ev-doc">DOC</span> D1 seccion 6, D3 seccion 6</p>
+    </div>
+  </details>
+
+  <!-- M-02 -->
+  <div class="uc-group-title">M-02: Voice Processing</div>
+
+  <details>
+    <summary>CU-03: Transcribir nota de voz</summary>
+    <div class="uc-body">
+      <div class="uc-meta">
+        <div class="uc-meta-item"><div class="uc-meta-label">Actor</div>Operador envia audio</div>
+      </div>
+      <p><strong>Flujo:</strong> Telegram envia file_id &rarr; Cloud Function descarga audio &rarr; envia a Whisper API &rarr; recibe transcripcion &rarr; inyecta como texto en pipeline normal</p>
+      <div class="callout callout-red"><strong>Caso borde [CB-AUDIO60]:</strong> Audio &gt;60s puede exceder timeout. Chunking: dividir en segmentos de 50s con 5s overlap, transcribir en paralelo, concatenar.</div>
+      <div class="callout callout-gold"><strong>Criterio:</strong> Audio de 90s transcrito correctamente en &lt;15s. Idioma espanol detectado automaticamente.</div>
+      <p><span class="evidence-tag ev-code">CODIGO</span> audio.ts <span class="evidence-tag ev-doc">DOC</span> D3 seccion 2</p>
+    </div>
+  </details>
+
+  <!-- M-03 -->
+  <div class="uc-group-title">M-03: Intent Router</div>
+
+  <details>
+    <summary>CU-04: Clasificar intencion</summary>
+    <div class="uc-body">
+      <div class="uc-meta">
+        <div class="uc-meta-item"><div class="uc-meta-label">Actor</div>Sistema (automatico post-ingesta)</div>
+        <div class="uc-meta-item"><div class="uc-meta-label">Postcondicion</div>Intent clasificado en &lt;800ms</div>
+      </div>
+      <p><strong>Flujo:</strong> Worker consume Pub/Sub &rarr; pasa texto a Groq Llama 3 8B con system prompt de clasificacion &rarr; recibe JSON: {intent, extracted_project_name, requires_web_search, requires_code_execution, urgency} &rarr; pasa a Orchestrator</p>
+      <p><strong>Intents soportados:</strong> <span class="badge badge-blue">CHITCHAT</span> <span class="badge badge-blue">PROJECT_QUERY</span> <span class="badge badge-blue">RESEARCH</span> <span class="badge badge-blue">ARTIFACT_GENERATION</span> <span class="badge badge-blue">TASK_EXECUTION</span></p>
+      <div class="callout callout-red"><strong>Caso borde [CB-AMBIG]:</strong> Texto ambiguo ("haz eso") sin verbo ni proyecto. Router clasifica como CHITCHAT. Orchestrator responde pidiendo clarificacion.</div>
+      <div class="callout callout-red"><strong>Caso borde [CB-FALLBACK]:</strong> Groq no disponible. Circuit breaker conmuta a OpenRouter (Llama 3). Si tambien falla, Gemini. Si todos fallan, degradacion directa.</div>
+      <div class="callout callout-gold"><strong>Criterio:</strong> 95% precision en test set de 100 mensajes. Latencia P95 &lt;800ms.</div>
+      <p><span class="evidence-tag ev-code">CODIGO</span> ecosystem/router.ts <span class="evidence-tag ev-doc">DOC</span> D1 seccion 4, D3 seccion 2</p>
+    </div>
+  </details>
+
+  <!-- M-04 -->
+  <div class="uc-group-title">M-04: Orchestrator</div>
+
+  <details>
+    <summary>CU-05: Seleccionar modo de delegacion</summary>
+    <div class="uc-body">
+      <div class="uc-meta">
+        <div class="uc-meta-item"><div class="uc-meta-label">Actor</div>Sistema</div>
+      </div>
+      <p><strong>Flujo:</strong> Orchestrator evalua intent + urgency + complexity &rarr; selecciona modo:</p>
+      <ul style="margin:8px 0 12px 20px;color:var(--text-muted);font-size:.9rem">
+        <li><strong>SINGLE (&le;15s):</strong> queries simples, CHITCHAT, PROJECT_QUERY basico</li>
+        <li><strong>TERNA (&le;30s):</strong> analisis multi-perspectiva, RESEARCH, ARTIFACT_GENERATION</li>
+        <li><strong>COMMITTEE (&le;60s):</strong> decisiones estrategicas, evaluaciones complejas</li>
+      </ul>
+      <p><strong>Degradation:</strong> COMMITTEE &rarr; TERNA &rarr; SINGLE &rarr; DIRECT</p>
+      <div class="callout callout-gold"><strong>Criterio:</strong> Modo seleccionado en &lt;100ms. Degradation automatica sin intervencion.</div>
+      <p><span class="evidence-tag ev-code">CODIGO</span> ecosystem/committee.ts <span class="evidence-tag ev-doc">DOC</span> spec.md, data-model.md</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>CU-06: Ensamblar contexto</summary>
+    <div class="uc-body">
+      <div class="uc-meta">
+        <div class="uc-meta-item"><div class="uc-meta-label">Actor</div>Sistema</div>
+        <div class="uc-meta-item"><div class="uc-meta-label">Dependencia</div>M-09 (Project State Engine) — CRITICO</div>
+      </div>
+      <p><strong>Flujo:</strong> Orchestrator lee operator profile &rarr; identifica active_context_id &rarr; carga project.compressed_context (&le;500 tokens) &rarr; carga short_term_memory (ultimos 15 turns) &rarr; pasa a Prompt Composer</p>
+      <div class="callout callout-red"><strong>Caso borde [CB-NOPROJECT]:</strong> No hay proyecto activo. Orchestrator procede sin project context. Si intent requiere proyecto, pregunta cual usar.</div>
+      <div class="callout callout-gold"><strong>Criterio:</strong> Context retrieval en &lt;200ms. 0 cross-project contamination.</div>
+      <p><span class="evidence-tag ev-code">CODIGO</span> ecosystem/prompt-composer.ts, memory.ts</p>
+    </div>
+  </details>
+
+  <!-- M-05 -->
+  <div class="uc-group-title">M-05: Prompt Composer</div>
+
+  <details>
+    <summary>CU-07: Componer prompt maestro</summary>
+    <div class="uc-body">
+      <div class="uc-meta">
+        <div class="uc-meta-item"><div class="uc-meta-label">Actor</div>Sistema</div>
+      </div>
+      <p><strong>Flujo:</strong> Recibe intent + context + request &rarr; ensambla prompt: Constitution (reglas) + Operator preferences + Project context + Short-term memory + User request &rarr; aplica CP2 (prompt hardening) &rarr; envia a agente(s) seleccionado(s)</p>
+      <p><strong>Token budget:</strong> single=4K, terna=12K, committee=20K. Si excede, truncar short_term_memory primero, luego compressed_context.</p>
+      <div class="callout callout-gold"><strong>Criterio:</strong> Prompt ensamblado cumple token budget en &gt;90% de requests. Truncamiento logeado.</div>
+      <p><span class="evidence-tag ev-code">CODIGO</span> ecosystem/prompt-composer.ts, ecosystem/skill-composer.ts</p>
+    </div>
+  </details>
+
+  <!-- M-06 -->
+  <div class="uc-group-title">M-06: Agent Pool</div>
+
+  <details>
+    <summary>CU-08: Ejecutar agente Analyst</summary>
+    <div class="uc-body">
+      <p><strong>Flujo:</strong> Analyst recibe prompt + context &rarr; ejecuta analisis estrategico &rarr; genera respuesta estructurada (Minto pyramid, MECE) &rarr; retorna a Orchestrator</p>
+      <p><strong>Scope:</strong> Strategic analysis, market evaluation, competitive intelligence</p>
+      <p><span class="evidence-tag ev-code">CODIGO</span> agents/analyst/</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>CU-09: Ejecutar agente Researcher</summary>
+    <div class="uc-body">
+      <div class="uc-meta">
+        <div class="uc-meta-item"><div class="uc-meta-label">Constraint</div>Researcher tiene IAM read-only. No escribe en projects ni memory.</div>
+      </div>
+      <p><strong>Flujo:</strong> Researcher recibe query &rarr; ejecuta busqueda web &rarr; consolida fuentes &rarr; genera resumen con citaciones &rarr; retorna</p>
+      <div class="callout callout-red"><strong>Caso borde [CB-INJECT]:</strong> Pagina web maliciosa intenta prompt injection. CP3 escanea output antes de persistir. Si detecta instrucciones sospechosas, sanitiza y warn.</div>
+      <div class="callout callout-red"><strong>Caso borde [CB-LOOP]:</strong> Research entra en loop de navegacion. Max 5 iteraciones por query.</div>
+      <div class="callout callout-gold"><strong>Criterio:</strong> Research multi-fuente con &ge;3 fuentes citadas. 0 loops infinitos. 0 datos inyectados por prompt injection.</div>
+      <p><span class="evidence-tag ev-code">CODIGO</span> agents/researcher/, tools/search-operational-knowledge.ts</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>CU-10: Ejecutar agente Synthesizer</summary>
+    <div class="uc-body">
+      <p><strong>Flujo:</strong> Synthesizer recibe outputs de multiples agentes &rarr; consolida perspectivas &rarr; genera sintesis integrada &rarr; retorna</p>
+      <p><span class="evidence-tag ev-code">CODIGO</span> agents/synthesizer/</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>CU-11: Ejecutar agente Timekeeper</summary>
+    <div class="uc-body">
+      <p><strong>Flujo:</strong> Timekeeper parsea referencias temporales del mensaje &rarr; propone acciones de calendario/tarea &rarr; pasa a HIL si L2</p>
+      <div class="callout callout-red"><strong>Caso borde [CB-TIMEZONE]:</strong> "El viernes" es ambiguo (cual viernes?). Timekeeper pide confirmacion con fecha explicita.</div>
+      <p><span class="evidence-tag ev-code">CODIGO</span> agents/timekeeper/</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>CU-12: Ejecutar agente Validator</summary>
+    <div class="uc-body">
+      <p><strong>Flujo:</strong> Validator verifica calidad de output (brand voice, estructura, completitud) &rarr; aprueba o devuelve para correccion</p>
+      <p><span class="evidence-tag ev-code">CODIGO</span> agents/validator/</p>
+    </div>
+  </details>
+
+  <!-- M-07 -->
+  <div class="uc-group-title">M-07: Skill Engine</div>
+
+  <details>
+    <summary>CU-13: Cargar y ejecutar skill</summary>
+    <div class="uc-body">
+      <p><strong>Flujo:</strong> Loader lee agent.md + skill.yaml al startup &rarr; valida con Zod schema &rarr; registra en runtime. En ejecucion: Orchestrator solicita skill &rarr; Skill Engine localiza &rarr; ejecuta workflow multi-step &rarr; valida cada step &rarr; retorna resultado</p>
+      <div class="callout callout-red"><strong>Caso borde [CB-INVALID]:</strong> Definicion de skill invalida. Loader skip + warn en logs. Otros skills funcionan normalmente.</div>
+      <p><strong>Metricas:</strong> 24 skills, 96 workflows activos</p>
+      <div class="callout callout-gold"><strong>Criterio:</strong> Skill invalida no bloquea startup. Workflow ejecuta steps secuencialmente con validacion per-step.</div>
+      <p><span class="evidence-tag ev-code">CODIGO</span> ecosystem/skill-engine.ts, ecosystem/loader.ts, ecosystem/workflow-tool.ts</p>
+    </div>
+  </details>
+
+  <!-- M-08 -->
+  <div class="uc-group-title">M-08: HIL Middleware <span class="badge badge-red" style="font-size:.7rem;vertical-align:middle;margin-left:8px">A CONSTRUIR — H1-S2</span></div>
+
+  <details>
+    <summary>CU-14: Solicitar aprobacion para accion L2</summary>
+    <div class="uc-body">
+      <p><strong>Flujo:</strong> Agente genera payload de accion &rarr; Orchestrator evalua permission level &rarr; Si L2: crea documento en pending_actions (status=AWAITING_APPROVAL, TTL=24h) &rarr; envia mensaje a Telegram con botones Inline [Aprobar] [Rechazar] &rarr; espera callback</p>
+      <div class="callout callout-gold"><strong>Criterio:</strong> 100% de acciones L2+ pasan por HIL. 0 acciones ejecutadas sin aprobacion explicita.</div>
+      <p><span class="evidence-tag ev-doc">DOC</span> D3 seccion 3, Constitution Principio I</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>CU-15: Resolver accion pendiente</summary>
+    <div class="uc-body">
+      <p><strong>Flujo:</strong> Telegram envia callback_query &rarr; Sistema verifica callback.user_id == pending_action.operator_id &rarr; verifica status == AWAITING_APPROVAL &rarr; verifica expires_at &gt; now &rarr; Si OK: actualiza status (APPROVED/REJECTED) &rarr; ejecuta o cancela + log en audit_log</p>
+      <div class="callout callout-red"><strong>Caso borde [CB-EXPIRED]:</strong> Operador aprueba despues de 24h. Sistema responde: "Esta accion expiro. Quieres que la re-proponga?"</div>
+      <div class="callout callout-red"><strong>Caso borde [CB-DOUBLE]:</strong> Operador hace doble-click en Aprobar. Idempotencia: verificar status antes de ejecutar.</div>
+      <div class="callout callout-red"><strong>Caso borde [CB-SPOOF]:</strong> Otro usuario intenta aprobar. Firestore rule + callback verification rechazan. Log en audit como intento sospechoso.</div>
+      <div class="callout callout-gold"><strong>Criterio:</strong> Solo operator_id original puede resolver. Expiradas no se ejecutan. Doble-click es idempotente.</div>
+      <p><span class="evidence-tag ev-doc">DOC</span> D3 seccion 5, ADR-003</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>CU-16: Bloquear accion L4</summary>
+    <div class="uc-body">
+      <p><strong>Flujo:</strong> Orchestrator detecta L4 &rarr; bloqueo duro &rarr; log en audit_log &rarr; notifica operador: "Accion bloqueada: [descripcion]. Esta capacidad esta desactivada en esta version."</p>
+      <div class="callout callout-gold"><strong>Criterio:</strong> 100% de acciones L4 bloqueadas. 0 excepciones.</div>
+      <p><span class="evidence-tag ev-doc">DOC</span> D2 seccion 8, D3 seccion 5</p>
+    </div>
+  </details>
+
+  <!-- M-09 -->
+  <div class="uc-group-title">M-09: Project State Engine <span class="badge badge-red" style="font-size:.7rem;vertical-align:middle;margin-left:8px">A CONSTRUIR — H1-S1</span></div>
+
+  <details>
+    <summary>CU-17: Crear proyecto</summary>
+    <div class="uc-body">
+      <p><strong>Flujo:</strong> Router clasifica PROJECT_QUERY &rarr; Orchestrator detecta intencion de creacion &rarr; crea documento en coleccion projects con: name, owner_id, status=ACTIVE, compressed_context="" &rarr; confirma al operador &rarr; establece como active_context_id</p>
+      <div class="callout callout-gold"><strong>Criterio:</strong> Proyecto creado y activo en &lt;3s. Owner_id correcto.</div>
+      <p><span class="evidence-tag ev-doc">DOC</span> D1 seccion 2, D3 seccion 4</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>CU-18: Recuperar contexto de proyecto</summary>
+    <div class="uc-body">
+      <p><strong>Flujo:</strong> Router extrae project_name &rarr; Orchestrator busca en projects por name + owner_id &rarr; carga compressed_context &rarr; inyecta en Prompt Composer &rarr; responde con resumen de estado</p>
+      <div class="callout callout-red"><strong>Caso borde [CB-AMBIG-PROJECT]:</strong> Nombre ambiguo ("proyecto nuevo" x3). Orchestrator lista matches con detalles.</div>
+      <div class="callout callout-red"><strong>Caso borde [CB-EMPTY]:</strong> compressed_context vacio (proyecto recien creado). Degradacion: pide contexto al operador.</div>
+      <div class="callout callout-gold"><strong>Criterio:</strong> Recuperacion en &lt;3s. Contexto de proyecto inactivo 30d recuperado correctamente. 0 cross-project contamination.</div>
+      <p><span class="evidence-tag ev-doc">DOC</span> D3 seccion 2 (Gherkin), ADR-005</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>CU-19: Archivar proyecto inactivo</summary>
+    <div class="uc-body">
+      <div class="uc-meta">
+        <div class="uc-meta-item"><div class="uc-meta-label">Actor</div>CRON automatico</div>
+      </div>
+      <p><strong>Flujo:</strong> CRON diario evalua last_interaction de cada proyecto &rarr; Si &gt; auto_archive_after_days (default 30): cambia status a ARCHIVED &rarr; no borra (projects nunca se borran)</p>
+      <div class="callout callout-gold"><strong>Criterio:</strong> Archivado automatico funcional. Proyectos archivados no aparecen en context retrieval (pero si en busqueda explicita).</div>
+      <p><span class="evidence-tag ev-doc">DOC</span> D2 seccion 7, D3 seccion 4</p>
+    </div>
+  </details>
+
+  <!-- M-10 -->
+  <div class="uc-group-title">M-10: Memory Manager</div>
+
+  <details>
+    <summary>CU-20: Comprimir contexto nocturno</summary>
+    <div class="uc-body">
+      <div class="uc-meta">
+        <div class="uc-meta-item"><div class="uc-meta-label">Actor</div>CRON nocturno</div>
+      </div>
+      <p><strong>Flujo:</strong> Para cada proyecto ACTIVE con compressed_context modificado: LLM resume a &le;500 tokens &rarr; registra compression_log: {date, before_tokens, after_tokens, dropped_topics} &rarr; persiste en Firestore (transaction)</p>
+      <div class="callout callout-red"><strong>Caso borde [CB-CRON-FAIL]:</strong> Compresion falla mid-process. Firestore transaction revierte. Datos originales intactos.</div>
+      <div class="callout callout-red"><strong>Caso borde [CB-OVER500]:</strong> Resultado de compresion &gt;500 tokens. Re-comprime con prompt mas agresivo. Si aun excede, trunca a 500 y log warning.</div>
+      <div class="callout callout-gold"><strong>Criterio:</strong> compressed_context &le;500 tokens post-CRON. compression_log registrado. 0 datos perdidos sin log.</div>
+      <p><span class="evidence-tag ev-doc">DOC</span> D3 seccion 2, ADR-005</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>CU-21: Purgar memoria efimera</summary>
+    <div class="uc-body">
+      <div class="uc-meta">
+        <div class="uc-meta-item"><div class="uc-meta-label">Actor</div>Firestore TTL automatico</div>
+      </div>
+      <p><strong>Flujo:</strong> Documentos en short_term_memory con expires_at &lt; now se eliminan automaticamente por TTL de Firestore</p>
+      <div class="callout callout-gold"><strong>Criterio:</strong> Documentos expirados eliminados en &lt;1h post-expiry. Max 15 turns retenidos por thread.</div>
+      <p><span class="evidence-tag ev-doc">DOC</span> D1 seccion 2, D3 seccion 4</p>
+    </div>
+  </details>
+
+  <!-- M-11 -->
+  <div class="uc-group-title">M-11: Artifact Pipeline</div>
+
+  <details>
+    <summary>CU-22: Generar artefacto HTML</summary>
+    <div class="uc-body">
+      <p><strong>Flujo:</strong> Router clasifica ARTIFACT_GENERATION &rarr; Orchestrator carga project context &rarr; delega a agente &rarr; agente genera contenido &rarr; Proposal Engine formatea como HTML &rarr; sube a Cloud Storage &rarr; genera URL firmada (7d expiry) &rarr; crea documento en artifacts (status=DRAFT, version=1) &rarr; asocia a proyecto &rarr; envia link a Telegram</p>
+      <div class="callout callout-red"><strong>Caso borde [CB-PARTIAL]:</strong> Generacion falla a mitad (LLM timeout). No guardar artefacto parcial. Reintentar 1 vez.</div>
+      <div class="callout callout-red"><strong>Caso borde [CB-QUOTA]:</strong> Storage quota excedida. Notificar sin perder artefacto en memoria.</div>
+      <div class="callout callout-red"><strong>Caso borde [CB-4096]:</strong> Respuesta &gt;4096 chars (limite Telegram). Fragmentar en N mensajes o subir como .txt a Storage y enviar URL.</div>
+      <div class="callout callout-gold"><strong>Criterio:</strong> URL firmada funcional por 7 dias. Artefacto versionado y asociado a proyecto. 0 parciales guardados.</div>
+      <p><span class="evidence-tag ev-code">CODIGO</span> src/proposals/, controlled-deliverables.ts <span class="evidence-tag ev-doc">DOC</span> D3 seccion 2</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>CU-23: Versionar artefacto</summary>
+    <div class="uc-body">
+      <p><strong>Flujo:</strong> Orchestrator identifica artefacto anterior por project_id + type &rarr; crea nueva version (version++) &rarr; marca anterior como ARCHIVED &rarr; nueva como DRAFT</p>
+      <div class="callout callout-gold"><strong>Criterio:</strong> Versiones anteriores accesibles. Nueva version linked al proyecto.</div>
+      <p><span class="evidence-tag ev-doc">DOC</span> ADR-005, D3 seccion 2</p>
+    </div>
+  </details>
+
+  <!-- M-12 -->
+  <div class="uc-group-title">M-12: Security &amp; Observability</div>
+
+  <details>
+    <summary>CU-24: Ejecutar pipeline de seguridad</summary>
+    <div class="uc-body">
+      <p><strong>Flujo:</strong></p>
+      <ul style="margin:8px 0 12px 20px;color:var(--text-muted);font-size:.9rem">
+        <li><strong>CP1 (Input):</strong> sanitiza input, rechaza payloads malformados &rarr; HARD BLOCK</li>
+        <li><strong>CP2 (Prompt):</strong> inyecta hardening en system prompt, verifica no prompt leak &rarr; HARD BLOCK</li>
+        <li><strong>CP3 (Output):</strong> escanea respuesta por brand violations, prompt leak, datos sensibles &rarr; SOFT PASS (detecta y warn)</li>
+      </ul>
+      <div class="callout callout-red"><strong>Caso borde [CB-CP3]:</strong> CP3 detecta posible brand violation pero respuesta es urgente. Entrega con warning interno. Log para revision posterior.</div>
+      <div class="callout callout-gold"><strong>Criterio:</strong> 100% mensajes pasan CP1+CP2. CP3 detecta violations con &gt;80% recall. 0 prompt leaks en output.</div>
+      <p><span class="evidence-tag ev-code">CODIGO</span> security.ts, telegram-update-guard.ts <span class="evidence-tag ev-doc">DOC</span> Constitution Principio III</p>
+    </div>
+  </details>
+
+</div>
+</section>
+
+<!-- ════ S4: REGLAS DE NEGOCIO ════ -->
+<section id="s4" data-mtia="reglas-negocio">
+<div class="container">
+  <h2>4. Reglas de Negocio (15)</h2>
+  <div class="glass" style="overflow-x:auto">
+    <table>
+      <thead><tr><th>#</th><th>Regla</th><th>Modulo</th><th>Enforcement</th><th>Evidencia</th></tr></thead>
+      <tbody>
+        <tr><td>RN-01</td><td>Todo mensaje recibe ACK en &lt;2s a Telegram</td><td>M-01</td><td>Pub/Sub desacopla procesamiento</td><td><span class="evidence-tag ev-doc">DOC</span></td></tr>
+        <tr><td>RN-02</td><td>Toda operacion &gt;5s se procesa asincrona</td><td>M-01</td><td>Pub/Sub + notificacion posterior</td><td><span class="evidence-tag ev-doc">DOC</span></td></tr>
+        <tr><td>RN-03</td><td>Intent Router clasifica en &lt;800ms</td><td>M-03</td><td>Groq Llama 3 (ultrarapido)</td><td><span class="evidence-tag ev-doc">DOC</span></td></tr>
+        <tr><td>RN-04</td><td>Compressed context nunca excede 500 tokens</td><td>M-09/M-10</td><td>CRON + invariante Firestore</td><td><span class="evidence-tag ev-doc">DOC</span></td></tr>
+        <tr><td>RN-05</td><td>Short-term memory limitada a 15 turns</td><td>M-10</td><td>Truncamiento en Prompt Composer</td><td><span class="evidence-tag ev-doc">DOC</span></td></tr>
+        <tr><td>RN-06</td><td>Acciones L2 requieren aprobacion explicita via boton Inline</td><td>M-08</td><td>pending_actions + Firestore rules</td><td><span class="evidence-tag ev-doc">DOC</span></td></tr>
+        <tr><td>RN-07</td><td>Acciones L4 bloqueadas sin excepcion</td><td>M-08</td><td>Hard block en Orchestrator</td><td><span class="evidence-tag ev-doc">DOC</span></td></tr>
+        <tr><td>RN-08</td><td>Solo operator_id original puede resolver pending_action</td><td>M-08</td><td>Firestore rule + callback verification</td><td><span class="evidence-tag ev-doc">DOC</span></td></tr>
+        <tr><td>RN-09</td><td>Pending actions expiran en 24h</td><td>M-08</td><td>TTL en Firestore</td><td><span class="evidence-tag ev-doc">DOC</span></td></tr>
+        <tr><td>RN-10</td><td>Proyectos nunca se borran, solo se archivan</td><td>M-09</td><td>Firestore rule (delete: false)</td><td><span class="evidence-tag ev-doc">DOC</span></td></tr>
+        <tr><td>RN-11</td><td>Token budget per-request: single=4K, terna=12K, committee=20K</td><td>M-05</td><td>Orchestrator trunca</td><td><span class="evidence-tag ev-doc">DOC</span></td></tr>
+        <tr><td>RN-12</td><td>Audit log es append-only</td><td>M-12</td><td>Firestore rule (no update/delete)</td><td><span class="evidence-tag ev-doc">DOC</span></td></tr>
+        <tr><td>RN-13</td><td>Cada agente opera con IAM minimo</td><td>M-06</td><td>Researcher: read-only. Coder: no credentials.</td><td><span class="evidence-tag ev-doc">DOC</span></td></tr>
+        <tr><td>RN-14</td><td>Brand voice: Minto pyramid, MECE, anti-hype</td><td>M-05/M-12</td><td>Constitution II + CP3</td><td><span class="evidence-tag ev-doc">DOC</span></td></tr>
+        <tr><td>RN-15</td><td>Artefactos parciales nunca se persisten</td><td>M-11</td><td>Validacion pre-upload</td><td><span class="evidence-tag ev-inf">INF</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</section>
+
+<!-- ════ S5: NFRs ════ -->
+<section id="s5" data-mtia="nfrs">
+<div class="container">
+  <h2>5. Requerimientos No Funcionales (15)</h2>
+  <div class="nfr-grid">
+
+    <div class="nfr-card"><span class="nfr-id">NFR-01</span> <span class="nfr-cat cat-latencia">Latencia</span><p>ACK a Telegram &lt;2s</p><p class="nfr-metric">P99 &lt;2s <span class="evidence-tag ev-doc">DOC</span></p></div>
+    <div class="nfr-card"><span class="nfr-id">NFR-02</span> <span class="nfr-cat cat-latencia">Latencia</span><p>Single agent response &lt;15s</p><p class="nfr-metric">P95 &lt;15s <span class="evidence-tag ev-doc">DOC</span></p></div>
+    <div class="nfr-card"><span class="nfr-id">NFR-03</span> <span class="nfr-cat cat-latencia">Latencia</span><p>Terna response &lt;30s</p><p class="nfr-metric">P95 &lt;30s <span class="evidence-tag ev-doc">DOC</span></p></div>
+    <div class="nfr-card"><span class="nfr-id">NFR-04</span> <span class="nfr-cat cat-latencia">Latencia</span><p>Committee response &lt;60s</p><p class="nfr-metric">P95 &lt;60s <span class="evidence-tag ev-doc">DOC</span></p></div>
+    <div class="nfr-card"><span class="nfr-id">NFR-05</span> <span class="nfr-cat cat-disponibilidad">Disponibilidad</span><p>99.5% uptime via graceful degradation</p><p class="nfr-metric">Monthly SLA <span class="evidence-tag ev-doc">DOC</span></p></div>
+    <div class="nfr-card"><span class="nfr-id">NFR-06</span> <span class="nfr-cat cat-seguridad">Seguridad</span><p>3 security checkpoints per message (CP1/CP2/CP3)</p><p class="nfr-metric">100% enforcement CP1/CP2 <span class="evidence-tag ev-code">CODIGO</span></p></div>
+    <div class="nfr-card"><span class="nfr-id">NFR-07</span> <span class="nfr-cat cat-seguridad">Seguridad</span><p>0 prompt leaks en output</p><p class="nfr-metric">CP3 detection <span class="evidence-tag ev-doc">DOC</span></p></div>
+    <div class="nfr-card"><span class="nfr-id">NFR-08</span> <span class="nfr-cat cat-seguridad">Seguridad</span><p>Per-instance memory isolation (mirror instances)</p><p class="nfr-metric">0 cross-instance leaks <span class="evidence-tag ev-doc">DOC</span></p></div>
+    <div class="nfr-card"><span class="nfr-id">NFR-09</span> <span class="nfr-cat cat-costo">Costo</span><p>Token budget enforced per-request</p><p class="nfr-metric">&gt;90% requests within budget <span class="evidence-tag ev-doc">DOC</span></p></div>
+    <div class="nfr-card"><span class="nfr-id">NFR-10</span> <span class="nfr-cat cat-costo">Costo</span><p>Router usa modelo barato (~$0.05/1M tokens)</p><p class="nfr-metric">Groq Llama 3 <span class="evidence-tag ev-doc">DOC</span></p></div>
+    <div class="nfr-card"><span class="nfr-id">NFR-11</span> <span class="nfr-cat cat-resiliencia">Resiliencia</span><p>Circuit breaker per LLM provider</p><p class="nfr-metric">CLOSED &rarr; OPEN &rarr; HALF-OPEN <span class="evidence-tag ev-code">CODIGO</span></p></div>
+    <div class="nfr-card"><span class="nfr-id">NFR-12</span> <span class="nfr-cat cat-resiliencia">Resiliencia</span><p>Degradation cascade automatica</p><p class="nfr-metric">COMMITTEE &rarr; TERNA &rarr; SINGLE &rarr; DIRECT <span class="evidence-tag ev-doc">DOC</span></p></div>
+    <div class="nfr-card"><span class="nfr-id">NFR-13</span> <span class="nfr-cat cat-testabilidad">Testabilidad</span><p>80% global line coverage, 100% security+routing</p><p class="nfr-metric">vitest <span class="evidence-tag ev-doc">DOC</span></p></div>
+    <div class="nfr-card"><span class="nfr-id">NFR-14</span> <span class="nfr-cat cat-extensibilidad">Extensibilidad</span><p>Agents cargados declarativamente (agent.md/skill.yaml)</p><p class="nfr-metric">0 code changes to add agent <span class="evidence-tag ev-code">CODIGO</span></p></div>
+    <div class="nfr-card"><span class="nfr-id">NFR-15</span> <span class="nfr-cat cat-auditabilidad">Auditabilidad</span><p>Toda accion L2+ logueada en audit_log (append-only)</p><p class="nfr-metric">100% traceability <span class="evidence-tag ev-doc">DOC</span></p></div>
+
+  </div>
+</div>
+</section>
+
+<!-- ════ S6: MATRIZ ════ -->
+<section id="s6" data-mtia="matriz">
+<div class="container">
+  <h2>6. Matriz Complejidad-Riesgo</h2>
+
+  <div class="matrix-labels"><span>&larr; Complejidad Baja</span><span>Complejidad Alta &rarr;</span></div>
+  <div class="matrix-grid">
+    <!-- Q1: Alta Complejidad + Alto Riesgo -->
+    <div class="matrix-cell matrix-q1">
+      <div class="matrix-cell-title">Alta Complejidad + Riesgo Critico</div>
+      <div class="matrix-module"><span class="dot" style="background:var(--red)"></span> <strong>M-09</strong> Project State Engine <span class="badge badge-red" style="font-size:.65rem">H1-S1</span></div>
+      <div class="matrix-module"><span class="dot" style="background:var(--red)"></span> <strong>M-10</strong> Memory Manager <span class="badge badge-yellow" style="font-size:.65rem">H1-S4</span></div>
+    </div>
+    <!-- Q2: Baja Complejidad + Alto Riesgo -->
+    <div class="matrix-cell matrix-q2">
+      <div class="matrix-cell-title">Media Complejidad + Riesgo Critico/Alto</div>
+      <div class="matrix-module"><span class="dot" style="background:var(--orange)"></span> <strong>M-08</strong> HIL Middleware <span class="badge badge-red" style="font-size:.65rem">H1-S2</span></div>
+      <div class="matrix-module"><span class="dot" style="background:var(--orange)"></span> <strong>M-11</strong> Artifact Pipeline <span class="badge badge-yellow" style="font-size:.65rem">H1-S3</span></div>
+      <div class="matrix-module"><span class="dot" style="background:var(--yellow)"></span> <strong>M-02</strong> Voice Processing</div>
+    </div>
+    <!-- Q3: Alta Complejidad + Bajo Riesgo -->
+    <div class="matrix-cell matrix-q3">
+      <div class="matrix-cell-title">Alta Complejidad + Bajo Riesgo</div>
+      <div class="matrix-module"><span class="dot" style="background:var(--green)"></span> <strong>M-04</strong> Orchestrator</div>
+      <div class="matrix-module"><span class="dot" style="background:var(--green)"></span> <strong>M-07</strong> Skill Engine</div>
+    </div>
+    <!-- Q4: Baja Complejidad + Bajo Riesgo -->
+    <div class="matrix-cell matrix-q4">
+      <div class="matrix-cell-title">Baja/Media Complejidad + Bajo Riesgo</div>
+      <div class="matrix-module"><span class="dot" style="background:var(--green)"></span> <strong>M-01</strong> Telegram Gateway</div>
+      <div class="matrix-module"><span class="dot" style="background:var(--green)"></span> <strong>M-03</strong> Intent Router</div>
+      <div class="matrix-module"><span class="dot" style="background:var(--green)"></span> <strong>M-05</strong> Prompt Composer</div>
+      <div class="matrix-module"><span class="dot" style="background:var(--green)"></span> <strong>M-06</strong> Agent Pool</div>
+      <div class="matrix-module"><span class="dot" style="background:var(--green)"></span> <strong>M-12</strong> Security &amp; Obs.</div>
+    </div>
+  </div>
+  <div class="matrix-labels"><span>&uarr; Riesgo Alto</span><span>Riesgo Bajo &darr;</span></div>
+</div>
+</section>
+
+<!-- ════ S7: PERMISOS ════ -->
+<section id="s7" data-mtia="permisos">
+<div class="container">
+  <h2>7. Modelo de Permisos</h2>
+  <div class="perm-tiers">
+
+    <div class="perm-tier tier-l0">
+      <div class="perm-level">L0</div>
+      <div>
+        <div class="perm-name">Solo Lectura</div>
+        <div class="perm-actions">Leer Firestore, buscar web, consultar calendar</div>
+        <div style="font-size:.82rem;color:var(--text-dim);margin-top:4px">Ej: Consultar estado proyecto, web search, leer KB</div>
+      </div>
+      <div class="perm-approval perm-auto">Automatica</div>
+    </div>
+
+    <div class="perm-tier tier-l1">
+      <div class="perm-level">L1</div>
+      <div>
+        <div class="perm-name">Borrador / Generacion</div>
+        <div class="perm-actions">Generar HTML, codigo, resumenes</div>
+        <div style="font-size:.82rem;color:var(--text-dim);margin-top:4px">Ej: Crear propuesta, generar codigo, idear negocio</div>
+      </div>
+      <div class="perm-approval perm-auto">Automatica</div>
+    </div>
+
+    <div class="perm-tier tier-l2">
+      <div class="perm-level">L2</div>
+      <div>
+        <div class="perm-name">Accion Externa Segura</div>
+        <div class="perm-actions">Crear tarea GTasks, borrador email, agendar reunion</div>
+        <div style="font-size:.82rem;color:var(--text-dim);margin-top:4px">Ej: Crear evento calendar, mover ticket</div>
+      </div>
+      <div class="perm-approval perm-hil">Boton Inline Telegram</div>
+    </div>
+
+    <div class="perm-tier tier-l3">
+      <div class="perm-level">L3</div>
+      <div>
+        <div class="perm-name">Accion Multicanal</div>
+        <div class="perm-actions">Enviar comunicacion externa</div>
+        <div style="font-size:.82rem;color:var(--text-dim);margin-top:4px">Ej: Enviar email a cliente</div>
+      </div>
+      <div class="perm-approval perm-disabled">Desactivado MVP</div>
+    </div>
+
+    <div class="perm-tier tier-l4">
+      <div class="perm-level">L4</div>
+      <div>
+        <div class="perm-name">Riesgo Critico</div>
+        <div class="perm-actions">Enviar emails, modificar produccion, compras</div>
+        <div style="font-size:.82rem;color:var(--text-dim);margin-top:4px">Ej: Publicar en produccion, pagos</div>
+      </div>
+      <div class="perm-approval perm-blocked">Bloqueo Duro</div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<!-- ════ S8: DATA MODEL ════ -->
+<section id="s8" data-mtia="data-model">
+<div class="container">
+  <h2>8. Data Model (Referencia)</h2>
+  <p style="color:var(--text-muted);margin-bottom:16px">10 colecciones Firestore canonicas definidas en A6 del discovery.</p>
+  <div class="glass" style="overflow-x:auto">
+    <table>
+      <thead><tr><th>Coleccion</th><th>Modulo Propietario</th><th>Invariantes</th></tr></thead>
+      <tbody>
+        <tr><td><code style="color:var(--gold)">operators</code></td><td>M-01</td><td>—</td></tr>
+        <tr><td><code style="color:var(--gold)">projects</code></td><td>M-09</td><td>compressed_context &le;500 tokens, nunca delete</td></tr>
+        <tr><td><code style="color:var(--gold)">artifacts</code></td><td>M-11</td><td>public_url solo si PUBLISHED</td></tr>
+        <tr><td><code style="color:var(--gold)">pending_actions</code></td><td>M-08</td><td>Solo operator_id resuelve, TTL 24h, no resolver si expirada</td></tr>
+        <tr><td><code style="color:var(--gold)">executions</code></td><td>M-12</td><td>token consumed &le; allocated * 1.1</td></tr>
+        <tr><td><code style="color:var(--gold)">short_term_memory</code></td><td>M-10</td><td>TTL 24h, max 15 turns</td></tr>
+        <tr><td><code style="color:var(--gold)">semantic_memory</code></td><td>M-10</td><td>Confidence scoring</td></tr>
+        <tr><td><code style="color:var(--gold)">skills</code></td><td>M-07</td><td>Declarativos desde skill.yaml</td></tr>
+        <tr><td><code style="color:var(--gold)">workflows</code></td><td>M-07</td><td>Steps con preconditions y RACI</td></tr>
+        <tr><td><code style="color:var(--gold)">audit_log</code></td><td>M-12</td><td>Append-only</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:.85rem;color:var(--text-dim)">Ver: <code>html/A6_Data_Model_Canonico.html</code> para schemas completos, security rules, e indices.</p>
+</div>
+</section>
+
+<!-- ════ S9: DIAGRAMAS ════ -->
+<section id="s9" data-mtia="diagramas">
+<div class="container">
+  <h2>9. Diagramas de Flujo Principales</h2>
+
+  <!-- Flow 1 -->
+  <div class="seq-diagram">
+    <h3>Flujo E2E: Voz &rarr; Propuesta HTML</h3>
+    <div class="seq-participants">
+      <div class="seq-actor actor-human">Operador</div>
+      <div class="seq-actor actor-system">Telegram</div>
+      <div class="seq-actor actor-system">Webhook</div>
+      <div class="seq-actor actor-system">Pub/Sub</div>
+      <div class="seq-actor actor-system">Router (Groq)</div>
+      <div class="seq-actor actor-system">Orchestrator</div>
+      <div class="seq-actor actor-system">Agent</div>
+      <div class="seq-actor actor-system">Proposal Engine</div>
+      <div class="seq-actor actor-system">Firestore</div>
+      <div class="seq-actor actor-system">Cloud Storage</div>
+    </div>
+    <div class="seq-steps">
+      <div class="seq-step"><span class="seq-num">1</span><span class="seq-from">Operador</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Telegram</span><span class="seq-msg">Audio: "Haz propuesta para Cliente X usando plantilla Y"</span></div>
+      <div class="seq-step"><span class="seq-num">2</span><span class="seq-from">Telegram</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Webhook</span><span class="seq-msg">Webhook (file_id)</span></div>
+      <div class="seq-step"><span class="seq-num">3</span><span class="seq-from">Webhook</span><span class="seq-arrow">&circlearrowright;</span><span class="seq-to">Webhook</span><span class="seq-msg">Whisper API &rarr; transcripcion</span></div>
+      <div class="seq-step"><span class="seq-num">4</span><span class="seq-from">Webhook</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Pub/Sub</span><span class="seq-msg">Publish payload</span></div>
+      <div class="seq-step" style="border-color:var(--green)"><span class="seq-num">5</span><span class="seq-from">Webhook</span><span class="seq-arrow">&larr;</span><span class="seq-to">Telegram</span><span class="seq-msg" style="color:var(--green)">HTTP 200 (&lt;2s) &#10003;</span></div>
+      <div class="seq-step"><span class="seq-num">6</span><span class="seq-from">Pub/Sub</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Worker</span><span class="seq-msg">Consume &rarr; CP1: Sanitize</span></div>
+      <div class="seq-step"><span class="seq-num">7</span><span class="seq-from">Worker</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Router</span><span class="seq-msg">Classify intent &rarr; {intent: ARTIFACT_GENERATION, project: "Cliente X"}</span></div>
+      <div class="seq-step"><span class="seq-num">8</span><span class="seq-from">Orchestr.</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Firestore</span><span class="seq-msg">Load project "Cliente X" context &rarr; compressed_context + artifacts[]</span></div>
+      <div class="seq-step"><span class="seq-num">9</span><span class="seq-from">Orchestr.</span><span class="seq-arrow">&circlearrowright;</span><span class="seq-to">Orchestr.</span><span class="seq-msg">Compose prompt (Constitution + Context + Request)</span></div>
+      <div class="seq-step"><span class="seq-num">10</span><span class="seq-from">Orchestr.</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Agent</span><span class="seq-msg">Delegate (single mode) &rarr; Generate HTML content</span></div>
+      <div class="seq-step"><span class="seq-num">11</span><span class="seq-from">Agent</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Proposal</span><span class="seq-msg">Format as HTML</span></div>
+      <div class="seq-step"><span class="seq-num">12</span><span class="seq-from">Proposal</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Storage</span><span class="seq-msg">Upload HTML &rarr; signed_url (7d)</span></div>
+      <div class="seq-step"><span class="seq-num">13</span><span class="seq-from">Proposal</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Firestore</span><span class="seq-msg">Create artifact (DRAFT, v1)</span></div>
+      <div class="seq-step"><span class="seq-num">14</span><span class="seq-from">Orchestr.</span><span class="seq-arrow">&circlearrowright;</span><span class="seq-to">Orchestr.</span><span class="seq-msg">CP3: Scan output</span></div>
+      <div class="seq-step" style="border-color:var(--gold)"><span class="seq-num">15</span><span class="seq-from">Orchestr.</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Telegram</span><span class="seq-msg" style="color:var(--gold)">"Propuesta lista: [URL]" &rarr; Operador</span></div>
+    </div>
+  </div>
+
+  <!-- Flow 2 -->
+  <div class="seq-diagram">
+    <h3>Flujo E2E: Accion L2 con Aprobacion</h3>
+    <div class="seq-participants">
+      <div class="seq-actor actor-human">Operador</div>
+      <div class="seq-actor actor-system">Telegram</div>
+      <div class="seq-actor actor-system">Orchestrator</div>
+      <div class="seq-actor actor-system">Timekeeper</div>
+      <div class="seq-actor actor-system">HIL Middleware</div>
+      <div class="seq-actor actor-system">Firestore</div>
+      <div class="seq-actor actor-system">Google Calendar</div>
+    </div>
+    <div class="seq-steps">
+      <div class="seq-step"><span class="seq-num">1</span><span class="seq-from">Operador</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Telegram</span><span class="seq-msg">"Agenda reunion con Cliente X el viernes a las 3pm"</span></div>
+      <div class="seq-step"><span class="seq-num">2</span><span class="seq-from">Telegram</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Orchestr.</span><span class="seq-msg">Via pipeline normal</span></div>
+      <div class="seq-step"><span class="seq-num">3</span><span class="seq-from">Orchestr.</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Timekeeper</span><span class="seq-msg">Delegate to Timekeeper</span></div>
+      <div class="seq-step"><span class="seq-num">4</span><span class="seq-from">Timekeeper</span><span class="seq-arrow">&circlearrowright;</span><span class="seq-to">Timekeeper</span><span class="seq-msg">Parse: viernes 3pm = 2026-04-04T15:00</span></div>
+      <div class="seq-step"><span class="seq-num">5</span><span class="seq-from">Timekeeper</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Orchestr.</span><span class="seq-msg">Proposed action: CREATE_CALENDAR_EVENT</span></div>
+      <div class="seq-step" style="border-color:var(--gold)"><span class="seq-num">6</span><span class="seq-from">Orchestr.</span><span class="seq-arrow">&circlearrowright;</span><span class="seq-to">Orchestr.</span><span class="seq-msg" style="color:var(--gold)">Permission check: L2 &rarr; requires approval</span></div>
+      <div class="seq-step"><span class="seq-num">7</span><span class="seq-from">Orchestr.</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Firestore</span><span class="seq-msg">Create pending_action (AWAITING, TTL=24h)</span></div>
+      <div class="seq-step"><span class="seq-num">8</span><span class="seq-from">Orchestr.</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Telegram</span><span class="seq-msg">"Quiero crear: Reunion con Cliente X, viernes 4 abril 3pm" [Aprobar] [Rechazar]</span></div>
+      <div class="seq-step" style="border-color:var(--green)"><span class="seq-num">9</span><span class="seq-from">Operador</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Telegram</span><span class="seq-msg" style="color:var(--green)">Click [Aprobar]</span></div>
+      <div class="seq-step"><span class="seq-num">10</span><span class="seq-from">Telegram</span><span class="seq-arrow">&rarr;</span><span class="seq-to">HIL</span><span class="seq-msg">callback_query</span></div>
+      <div class="seq-step"><span class="seq-num">11</span><span class="seq-from">HIL</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Firestore</span><span class="seq-msg">Verify: operator_id match? status=AWAITING? not expired? &rarr; All checks pass</span></div>
+      <div class="seq-step"><span class="seq-num">12</span><span class="seq-from">HIL</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Firestore</span><span class="seq-msg">Update status=APPROVED</span></div>
+      <div class="seq-step"><span class="seq-num">13</span><span class="seq-from">HIL</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Calendar</span><span class="seq-msg">Create calendar event &rarr; Event created</span></div>
+      <div class="seq-step"><span class="seq-num">14</span><span class="seq-from">HIL</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Firestore</span><span class="seq-msg">Log in audit_log</span></div>
+      <div class="seq-step" style="border-color:var(--green)"><span class="seq-num">15</span><span class="seq-from">HIL</span><span class="seq-arrow">&rarr;</span><span class="seq-to">Telegram</span><span class="seq-msg" style="color:var(--green)">"Reunion creada: Cliente X, viernes 3pm" &rarr; Operador</span></div>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- ════ S10: DEPENDENCIAS ════ -->
+<section id="s10" data-mtia="dependencias">
+<div class="container">
+  <h2>10. Dependencias Externas</h2>
+  <div class="dep-grid">
+
+    <div class="dep-card">
+      <div class="dep-name">Telegram Bot API</div>
+      <div class="dep-purpose">Canal de entrada/salida</div>
+      <div class="dep-row"><span>Criticidad</span><span class="badge badge-red">Critica</span></div>
+      <div class="dep-row"><span>Fallback</span><span>Ninguno (single channel)</span></div>
+      <div class="dep-row"><span>Costo</span><span>Gratis</span></div>
+    </div>
+
+    <div class="dep-card">
+      <div class="dep-name">Groq API</div>
+      <div class="dep-purpose">Intent routing (Llama 3 8B)</div>
+      <div class="dep-row"><span>Criticidad</span><span class="badge badge-yellow">Alta</span></div>
+      <div class="dep-row"><span>Fallback</span><span>OpenRouter &rarr; Gemini</span></div>
+      <div class="dep-row"><span>Costo</span><span>~$0.05/1M tokens</span></div>
+    </div>
+
+    <div class="dep-card">
+      <div class="dep-name">OpenRouter</div>
+      <div class="dep-purpose">LLM execution fallback</div>
+      <div class="dep-row"><span>Criticidad</span><span class="badge badge-grey">Media</span></div>
+      <div class="dep-row"><span>Fallback</span><span>Gemini directo</span></div>
+      <div class="dep-row"><span>Costo</span><span>~$3/1M tokens (Claude 3.5)</span></div>
+    </div>
+
+    <div class="dep-card">
+      <div class="dep-name">Google Gemini / Vertex AI</div>
+      <div class="dep-purpose">Complex reasoning</div>
+      <div class="dep-row"><span>Criticidad</span><span class="badge badge-grey">Media</span></div>
+      <div class="dep-row"><span>Fallback</span><span>OpenRouter</span></div>
+      <div class="dep-row"><span>Costo</span><span>Variable</span></div>
+    </div>
+
+    <div class="dep-card">
+      <div class="dep-name">Whisper API</div>
+      <div class="dep-purpose">Speech-to-text</div>
+      <div class="dep-row"><span>Criticidad</span><span class="badge badge-grey">Media</span></div>
+      <div class="dep-row"><span>Fallback</span><span>Google Speech-to-Text</span></div>
+      <div class="dep-row"><span>Costo</span><span>~$0.006/min</span></div>
+    </div>
+
+    <div class="dep-card">
+      <div class="dep-name">Firebase Firestore</div>
+      <div class="dep-purpose">State persistence</div>
+      <div class="dep-row"><span>Criticidad</span><span class="badge badge-red">Critica</span></div>
+      <div class="dep-row"><span>Fallback</span><span>Ninguno (core)</span></div>
+      <div class="dep-row"><span>Costo</span><span>~$0.06/100K reads</span></div>
+    </div>
+
+    <div class="dep-card">
+      <div class="dep-name">Firebase Cloud Storage</div>
+      <div class="dep-purpose">Artifact hosting</div>
+      <div class="dep-row"><span>Criticidad</span><span class="badge badge-yellow">Alta</span></div>
+      <div class="dep-row"><span>Fallback</span><span>Ninguno</span></div>
+      <div class="dep-row"><span>Costo</span><span>~$0.026/GB/mes</span></div>
+    </div>
+
+    <div class="dep-card">
+      <div class="dep-name">Firebase Cloud Functions</div>
+      <div class="dep-purpose">Webhook handler</div>
+      <div class="dep-row"><span>Criticidad</span><span class="badge badge-red">Critica</span></div>
+      <div class="dep-row"><span>Fallback</span><span>Cloud Run directo</span></div>
+      <div class="dep-row"><span>Costo</span><span>Per-invocation</span></div>
+    </div>
+
+    <div class="dep-card">
+      <div class="dep-name">Google Cloud Pub/Sub</div>
+      <div class="dep-purpose">Async queue</div>
+      <div class="dep-row"><span>Criticidad</span><span class="badge badge-red">Critica</span></div>
+      <div class="dep-row"><span>Fallback</span><span>Firebase Queue Functions</span></div>
+      <div class="dep-row"><span>Costo</span><span>~$0.40/1M messages</span></div>
+    </div>
+
+    <div class="dep-card">
+      <div class="dep-name">Google Cloud Run</div>
+      <div class="dep-purpose">Worker execution</div>
+      <div class="dep-row"><span>Criticidad</span><span class="badge badge-yellow">Alta</span></div>
+      <div class="dep-row"><span>Fallback</span><span>Firebase Functions (sincrono, degradado)</span></div>
+      <div class="dep-row"><span>Costo</span><span>Per-request</span></div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<!-- ════ S11: SUPUESTOS ════ -->
+<section id="s11" data-mtia="supuestos">
+<div class="container">
+  <h2>11. Supuestos y Restricciones</h2>
+
+  <h3>Supuestos Activos</h3>
+  <div class="glass" style="overflow-x:auto">
+    <table>
+      <thead><tr><th>ID</th><th>Supuesto</th><th>Impacto si falso</th><th>Mitigacion</th></tr></thead>
+      <tbody>
+        <tr><td>S-01</td><td>Repo branch 001-pristino-bot-v2 es el mas actual</td><td>Spec desalineada</td><td>Verificar con fundador</td></tr>
+        <tr><td>S-02</td><td>D3 + D7 son los docs mas maduros</td><td>Decisiones basadas en fuente incorrecta</td><td>Cross-check con repo</td></tr>
+        <tr><td>S-03</td><td>LifeSync es independiente</td><td>Esfuerzo duplicado si comparten backend</td><td>Confirmar con fundador</td></tr>
+        <tr><td>S-04</td><td>Un solo operador activo</td><td>Multi-tenant premature si hay mas</td><td>Monitorear uso</td></tr>
+        <tr><td>S-05</td><td>Inferencias 85% precisas (sin acceso TS)</td><td>Implementacion descubre gaps</td><td>Validar en S1</td></tr>
+        <tr><td>S-06</td><td>Text search suficiente sin VDB</td><td>Research quality degradada</td><td>Evaluar en H2</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Restricciones Duras</h3>
+  <div class="glass" style="overflow-x:auto">
+    <table>
+      <thead><tr><th>Restriccion</th><th>Origen</th><th>Implicacion</th></tr></thead>
+      <tbody>
+        <tr><td>Telegram webhook timeout 10s</td><td>Telegram API</td><td>Toda operacion cognitiva debe ser asincrona</td></tr>
+        <tr><td>Firestore document max 1MB</td><td>Firebase</td><td>compressed_context debe ser compacto</td></tr>
+        <tr><td>Telegram message max 4096 chars</td><td>Telegram API</td><td>Respuestas largas se fragmentan o externalizan</td></tr>
+        <tr><td>Single developer (fundador)</td><td>Recurso</td><td>H1-H3 secuenciales, no paralelos</td></tr>
+        <tr><td>Constitution immutable sin versionado formal</td><td>Gobernanza</td><td>Cambios requieren MAJOR/MINOR/PATCH semver</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</section>
+
+<!-- ════ S12: GLOSARIO ════ -->
+<section id="s12" data-mtia="glosario">
+<div class="container">
+  <h2>12. Glosario</h2>
+  <div class="glossary-grid">
+    <div class="gloss-item"><div class="gloss-term">Agent</div><div class="gloss-def">Nodo especializado que ejecuta tareas cognitivas atomicas dentro de un dominio acotado</div></div>
+    <div class="gloss-item"><div class="gloss-term">Circuit Breaker</div><div class="gloss-def">Patron de resiliencia que detiene llamadas a un servicio fallido para evitar cascada de fallos</div></div>
+    <div class="gloss-item"><div class="gloss-term">Compressed Context</div><div class="gloss-def">Resumen de &le;500 tokens del estado actual de un proyecto, generado por CRON nocturno</div></div>
+    <div class="gloss-item"><div class="gloss-term">Constitution</div><div class="gloss-def">Documento de gobernanza con 8 principios inmutables que rigen el comportamiento del sistema</div></div>
+    <div class="gloss-item"><div class="gloss-term">Delegation Mode</div><div class="gloss-def">Estrategia de asignacion de agentes: single (1), terna (3 paralelo), committee (5+tiebreaker)</div></div>
+    <div class="gloss-item"><div class="gloss-term">HIL (Human-in-the-Loop)</div><div class="gloss-def">Mecanismo de aprobacion humana para acciones que mutan estado externo</div></div>
+    <div class="gloss-item"><div class="gloss-term">Minto Pyramid</div><div class="gloss-def">Estructura de comunicacion: conclusion primero, luego soportes MECE</div></div>
+    <div class="gloss-item"><div class="gloss-term">OpenClaw</div><div class="gloss-def">Patron de agente autonomo mencionado en D6. No adoptado; Nexus usa State Machine.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Pending Action</div><div class="gloss-def">Documento en Firestore que representa una accion propuesta esperando aprobacion humana</div></div>
+    <div class="gloss-item"><div class="gloss-term">Pub/Sub</div><div class="gloss-def">Sistema de mensajeria asincrona que desacopla ingesta de procesamiento</div></div>
+    <div class="gloss-item"><div class="gloss-term">Skill</div><div class="gloss-def">Capacidad ejecutable definida declarativamente en YAML, perteneciente a un agente</div></div>
+    <div class="gloss-item"><div class="gloss-term">Terna</div><div class="gloss-def">Modo de delegacion que invoca 3 agentes en paralelo para analisis multi-perspectiva</div></div>
+    <div class="gloss-item"><div class="gloss-term">Work OS</div><div class="gloss-def">Sistema operativo de trabajo — orquestador que retiene contexto y ejecuta tareas con aprobacion</div></div>
+    <div class="gloss-item"><div class="gloss-term">Workflow</div><div class="gloss-def">Secuencia de steps ejecutables dentro de un skill, con precondiciones y validacion per-step</div></div>
+  </div>
+</div>
+</section>
+
+<!-- ════ VALIDATION ════ -->
+<section data-mtia="validacion" style="padding:32px 0">
+<div class="container">
+  <div class="glass" style="border-color:var(--green);text-align:center">
+    <h3 style="color:var(--green);margin-bottom:16px">Validacion de Spec Funcional</h3>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;font-size:.85rem">
+      <span class="badge badge-green">12 modulos definidos</span>
+      <span class="badge badge-green">24 casos de uso</span>
+      <span class="badge badge-green">15 reglas de negocio</span>
+      <span class="badge badge-green">15 NFRs con metricas</span>
+      <span class="badge badge-green">Matriz complejidad-riesgo</span>
+      <span class="badge badge-green">Modelo permisos L0-L4</span>
+      <span class="badge badge-green">Data model referencia</span>
+      <span class="badge badge-green">2 flujos E2E</span>
+      <span class="badge badge-green">Dependencias + fallback</span>
+      <span class="badge badge-green">Supuestos y restricciones</span>
+      <span class="badge badge-green">Glosario</span>
+      <span class="badge badge-green">Evidencia taggeada</span>
+      <span class="badge badge-green">TL;DR</span>
+    </div>
+  </div>
+</div>
+</section>
+
+</main>
+
+<!-- ════ FOOTER ════ -->
+<footer data-mtia="footer">
+<div class="container">
+  <div class="footer-brand">
+    <svg width="24" height="24" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="36" height="36" rx="8" fill="#122562"/>
+      <rect x="8" y="10" width="4" height="16" rx="2" fill="#fff"/>
+      <rect x="16" y="10" width="4" height="16" rx="2" fill="#fff"/>
+      <rect x="24" y="10" width="4" height="16" rx="2" fill="#fff"/>
+      <circle cx="28" cy="10" r="3" fill="#FFD700"/>
+    </svg>
+    <span style="font-family:var(--font-display);font-weight:800;font-size:1.1rem">Metodolog<span style="color:var(--gold)">IA</span></span>
+  </div>
+  <p class="footer-copy">&copy; 2026 MetodologIA. Copyleft &mdash; Para uso y aprovechamiento de profesionales en la era de la IA.</p>
+  <p style="font-family:var(--font-footnote);font-size:.78rem;color:var(--grey);margin-top:8px">Discovery de Arquitectura de Alta Densidad &mdash; Nexus Assistant OS</p>
+</div>
+</footer>
+
+</body>
+</html>

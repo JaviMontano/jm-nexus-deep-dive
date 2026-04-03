@@ -167,9 +167,10 @@ only the active project's context.
 
 - **FR-001**: System MUST create a project document with:
   name, owner_id, status (ACTIVE), compressed_context (empty),
-  knowledge_anchors (empty array), open_tasks (empty array),
-  artifacts (empty array), compression_log (empty array),
-  auto_archive_after_days (default 30), created_at, and
+  knowledge_anchors (empty array — reserved, no business logic
+  in this feature per P-V), open_tasks (empty array — reserved),
+  artifacts (empty array — reserved), compression_log (empty
+  array), auto_archive_after_days (default 30), created_at, and
   last_interaction timestamp.
 
 - **FR-002**: System MUST set the newly created project as the
@@ -183,8 +184,10 @@ only the active project's context.
   deterministic transition. Both modes filter by owner_id.
 
 - **FR-004**: System MUST load compressed_context (<=500 tokens)
-  and short_term_memory (last 15 turns) into the orchestrator's
-  context assembly within 3 seconds.
+  and short_term_memory (last 15 turns, filtered strictly by
+  project_id) into the orchestrator's context assembly within
+  3 seconds (p95 processing time, measured from webhook received
+  to response sent to Telegram API).
 
 - **FR-005**: System MUST present disambiguation options when a
   project name matches multiple projects — never auto-select.
@@ -193,9 +196,11 @@ only the active project's context.
   contamination by filtering all queries strictly by
   active_context_id and owner_id.
 
-- **FR-007**: System MUST run a CRON job that evaluates
-  last_interaction against auto_archive_after_days and archives
-  qualifying projects.
+- **FR-007**: System MUST run a daily CRON job (once per 24h)
+  that evaluates last_interaction against auto_archive_after_days
+  and archives qualifying projects. Archival resolution is 24
+  hours — a project may remain ACTIVE up to ~24h beyond its
+  threshold until the next CRON execution.
 
 - **FR-008**: System MUST preserve all project data when
   archiving — status change only, never delete.
@@ -236,10 +241,13 @@ only the active project's context.
 ### Measurable Outcomes
 
 - **SC-001**: Operator can create a project and receive
-  confirmation within 3 seconds.
+  confirmation within 3 seconds (p95 processing time:
+  webhook received → response sent to Telegram API).
 
 - **SC-002**: Operator can resume a project after 5+ days of
-  inactivity with context retrieved accurately within 3 seconds.
+  inactivity with context retrieved accurately within 3 seconds
+  (p95 processing time: webhook received → response sent to
+  Telegram API).
 
 - **SC-003**: Zero cross-project contamination across 100
   consecutive project switches (verified via audit log).
@@ -248,7 +256,8 @@ only the active project's context.
   exceeding auto_archive_after_days without data loss.
 
 - **SC-005**: Archived projects are accessible via explicit
-  search and reactivatable within 3 seconds.
+  search and reactivatable within 3 seconds (p95 processing
+  time: webhook received → response sent to Telegram API).
 
 - **SC-006**: All project lifecycle events appear in audit_log
   with correct operator_id, action type, and ISO timestamp.
@@ -289,3 +298,39 @@ only the active project's context.
   documented: multi-operator targets deferred to feature 008.
   Satisfies P-VII (no overengineering) and P-VI (traceability).
   [SC-001, SC-002, FR-004, FR-006]
+
+- Q: How often should the archival CRON job run (FR-007)?
+  -> A: Once daily (24h resolution). P-VII prohibits
+  overengineering for a 30-day threshold. A ~24h window
+  between threshold breach and archival has no user-facing
+  cost since archival is non-destructive (FR-008) and
+  reactivation is instant (FR-009). P-I satisfied by
+  documenting the 24h resolution. P-VI satisfied by CRON
+  execution logging to audit_log.
+  [FR-007, FR-008, FR-009, FR-010, SC-004]
+
+- Q: What happens to short_term_memory when switching
+  projects? -> A: short_term_memory is strictly per-project,
+  filtered by project_id. On switch, only the target project's
+  turns are loaded — zero turns from prior project. New
+  projects with 0 turns degrade gracefully per US-2 SC-3.
+  Cross-project context assembly deferred to feature 008.
+  P-IV (persistent project context) and FR-006 (zero
+  contamination) both require per-project isolation.
+  [FR-004, FR-006, US-2, US-4, SC-003]
+
+- Q: Are knowledge_anchors, open_tasks, and artifacts in
+  scope for business logic? -> A: No. FR-001 initializes
+  them as empty schema placeholders. No read/write/query
+  logic in this feature. Each requires its own feature
+  specification per P-V (SDD). Documented as "reserved for
+  future feature" to prevent unspecified usage.
+  [FR-001, Key Entity: Project, P-V, P-VII]
+
+- Q: What does "3 seconds" mean in SC-001, SC-002, SC-005?
+  -> A: p95 processing time, measured from webhook received
+  to response sent to Telegram API. Excludes Telegram
+  delivery latency (not controllable). p95 balances P-I
+  (cost-bounded determinism) with P-VII (no tail-latency
+  overengineering for H1 single-operator).
+  [SC-001, SC-002, SC-005, FR-004]

@@ -271,6 +271,36 @@ only the active project's context.
   concurrency targets deferred to H3 spec (feature 008:
   Multi-Tenant Isolation).
 
+### Constitutional Alignment (v1.1.0)
+
+**Governance Principles**: P-I (state machine: ACTIVE/ARCHIVED),
+P-II (exempt: internal state only), P-IV (this IS P-IV),
+P-V (spec-first), P-VI (audit logging FR-010), P-VII (extends P4).
+
+**Runtime Principles**: RP-3 (context compression: 500-token cap
+enforced by context-assembler), RP-6 (idempotent: not applicable —
+project CRUD is not webhook-triggered), RP-7 (fail-closed writes:
+Firestore transactions with retry max 3).
+
+**Security Checkpoints**: CP1 not applicable (no direct user input
+parsing in this feature — input arrives pre-sanitized from P1
+Ingesta plane). CP2 not applicable (no prompt composition in
+project CRUD). CP3 not applicable (no LLM output in project
+lifecycle operations).
+
+**Edge Cases (Discovery CB-xx)**: CB-11 (context bloat) →
+addressed by RP-3 500-token cap + CRON compression. CB-06
+(Firestore contention) → addressed by atomic transactions +
+optimistic locking (_version).
+
+**Risk Registry**: R-13 (context bloat, score 9) → mitigated by
+FR-004 token cap + CRON. R-10 (webhook timeout, score 9) →
+not applicable to project CRUD (async via Pub/Sub worker).
+
+**Feasibility Constraints**: C1 (founder focus) → this is the
+#1 H1 priority (G-06). C2 (no H3 before H1) → single-operator
+only, multi-tenant deferred to feature 008.
+
 ## Clarifications
 
 ### Session 2026-04-03

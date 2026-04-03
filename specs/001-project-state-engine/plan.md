@@ -31,17 +31,43 @@ per P-I.
 
 ## Constitution Check
 
-*GATE: Passed — all technical decisions validated against P-I through P-VII.*
+*GATE: Passed — all decisions validated against Constitution v1.1.0 (P-I–P-VII + RP-1–RP-8).*
+
+### Governance Principles
 
 | Principle | Status | Evidence |
 |-----------|--------|----------|
 | P-I State Machine Determinism | PASS | Project lifecycle is a state machine: ACTIVE ↔ ARCHIVED. No loops. All transitions auditable. Cost-bounded (Firestore ops only, no LLM). |
 | P-II HIL for External Actions | PASS | Project CRUD is internal state management (read/write to Firestore). No external side effects. Exempt per P-II ("internal read-only operations exempt"). Archive/reactivate are internal state changes. |
-| P-III Constitutional Governance | PASS | This feature operates under all 8 operational principles. No conflicts identified. |
+| P-III Constitutional Governance | PASS | This feature operates under all principles. No conflicts identified. |
 | P-IV Persistent Project Context | PASS | This IS P-IV implementation. Context persistence is the core deliverable. |
-| P-V Specification-Driven | PASS | spec.md exists with 12 FRs, 7 SCs, 6 edge cases, 6 clarifications. Quality score 10/10. |
-| P-VI Traceability | PASS | All claims in this plan carry evidence tags. Audit logging (FR-010) ensures runtime traceability. |
+| P-V Specification-Driven | PASS | spec.md exists with 12 FRs, 7 SCs, 6 edge cases, 8 clarifications. |
+| P-VI Traceability | PASS | All claims carry evidence tags (via research.md delegation). Audit logging (FR-010) ensures runtime traceability. |
 | P-VII Incremental Extension | PASS | Extends P4 (Persistencia) plane. No rewrites. projects collection is new; operators collection gets active_context_id field (additive). |
+
+### Runtime Principles
+
+| Principle | Status | Evidence |
+|-----------|--------|----------|
+| RP-1 Async-First | N/A | Project CRUD is invoked by async Pub/Sub worker (not webhook path). No sync LLM calls. |
+| RP-2 State Machine | PASS | ACTIVE ↔ ARCHIVED with max 1 transition per operation. No loops possible. |
+| RP-3 Context Compression | PASS | 500-token cap enforced by context-assembler guard clause. CRON daily compression. Alert at 800. |
+| RP-4 Execution Isolation | N/A | No agent execution in project CRUD. Minimal IAM: service account + owner_id filtering. |
+| RP-5 Declarative Agents | N/A | No agent definitions in this feature. |
+| RP-6 Idempotent Handlers | N/A | Project CRUD is not webhook-triggered; invoked by router after dedup. |
+| RP-7 Fail-Closed Writes | PASS | Firestore transactions with retry max 3. Fail-closed on persistent error (surface to operator). |
+| RP-8 Token Budget | N/A | No LLM calls in project CRUD. Zero token cost per operation. |
+
+### Security & Risk
+
+| Check | Status | Evidence |
+|-------|--------|----------|
+| CP1 Input Sanitization | N/A | Input arrives pre-sanitized from P1 Ingesta. Project name validated by Zod (FR-011). |
+| CP2 Prompt Hardening | N/A | No prompt composition in project lifecycle. |
+| CP3 Output Scan | N/A | No LLM output in project CRUD responses. |
+| R-13 Context Bloat | MITIGATED | RP-3 500-token cap + CRON + alert threshold. |
+| R-10 Webhook Timeout | N/A | Async worker path; not in webhook critical path. |
+| DoR Compliance | PASS | All 10 DoR criteria met (spec, plan, ACs, edge cases, security, tokens, risks, constraints, features, tasks). |
 
 ## Project Structure
 

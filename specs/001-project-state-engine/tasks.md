@@ -154,6 +154,9 @@
 - [ ] T032 [P] Configure Cloud Scheduler job for daily archival CRON at 02:00 UTC per archival-cron.md contract
 - [ ] T033 Verify 80% global test coverage, 100% for routing + security paths, and p95 <3s for project create/retrieve/reactivate (SC-001, SC-002, SC-005)
 - [ ] T034 Run quickstart.md validation scenarios end-to-end
+- [ ] T035 [P] Validate DoD checklist (Constitution v1.1.0): code quality (5 items), integration (4), security (4), performance (4), ops readiness (4), documentation (3)
+- [ ] T036 [P] Verify Zod name validation blocks CP1-equivalent injection patterns (regex, deny-list, 4096 char cap) in project-validators.ts [FR-011]
+- [ ] T037 Verify RP-7 fail-closed behavior: Firestore transaction failure after 3 retries surfaces error to operator, no partial writes persist
 
 ---
 

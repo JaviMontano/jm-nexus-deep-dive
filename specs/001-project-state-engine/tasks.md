@@ -105,12 +105,12 @@
 
 ### Tests (Red Phase)
 
-- [ ] T021 [US3] Write unit tests for archiveProject in tests/unit/project-service.test.ts [TS-013-A, TS-022]
+- [ ] T021 [US3] Write unit tests for archiveProject in tests/unit/project-service.test.ts [TS-035, TS-022]
 - [ ] T022 [P] [US3] Write unit tests for archival-cron in tests/unit/archival-cron.test.ts [TS-012, TS-018, TS-019, TS-021]
 
 ### Implementation (Green Phase)
 
-- [ ] T023 [US3] Implement archiveProject in project-service.ts: status ACTIVE→ARCHIVED, preserve all data (FR-008), clear active_context_id if matches (FR-002) [TS-013-A, TS-022]
+- [ ] T023 [US3] Implement archiveProject in project-service.ts: status ACTIVE→ARCHIVED, preserve all data (FR-008), clear active_context_id if matches (FR-002) [TS-035, TS-022]
 - [ ] T024 [US3] Implement archival-cron.ts Cloud Function: query ACTIVE projects, evaluate last_interaction vs threshold, per-project transactions, partial failure isolation [TS-012, TS-018, TS-019, TS-021]
 - [ ] T025 [US3] Implement searchable archived projects in project-repository.ts [TS-020]
 
@@ -242,4 +242,4 @@ Delivers: full CRUD with context retrieval and contamination guarantees — the 
 
 - Q: Analysis F-003: No dedicated performance benchmark task for SC-001/SC-002 (3s p95). -> A: Expanded T033 to include p95 latency verification for create/retrieve/reactivate alongside coverage checks. BDD scenarios (TS-003, TS-004) assert timing in functional tests; T033 now validates it as a Polish gate. Sufficient for H1 single-operator. [T033, SC-001, SC-002, SC-005]
 
-- Q: Analysis F-004: T009 (audit-logger) has no TS-xxx reference. -> A: Intentional. audit-logger is a utility consumed by project-service operations. It is integration-tested via T026/T027 (contract tests for TS-029 through TS-034). Isolated unit testing of a simple logger wrapper would be testing the framework, not business logic. P-VII satisfied: no unnecessary test infrastructure. [T009, T026, T027]
+- Q: Analysis F-004: T009 (audit-logger) has no TS-xxx reference. -> A: Intentional. audit-logger is a utility consumed by project-service operations. It is integration-tested via T026/T027 (contract tests for TS-029, TS-030, TS-031, TS-032, TS-033, TS-034). Isolated unit testing of a simple logger wrapper would be testing the framework, not business logic. P-VII satisfied: no unnecessary test infrastructure. [T009, T026, T027]

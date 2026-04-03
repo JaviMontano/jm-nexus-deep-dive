@@ -33,9 +33,9 @@
 
 - [ ] T004 [P] Define TypeScript interfaces and ProjectStatus enum in src/ecosystem/project-state/project-types.ts
 - [ ] T005 [P] Define Zod validation schemas (CreateProjectInput, ProjectDocument, ProjectStatus) in src/ecosystem/project-state/project-validators.ts
-- [ ] T006 Write unit tests for project-validators in tests/unit/project-validators.test.ts [TS-013, TS-014, TS-015]
-- [ ] T007 Implement project-repository.ts with Firestore CRUD (create, getById, getByOwnerAndName, updateStatus, updateLastInteraction) in src/ecosystem/project-state/project-repository.ts
-- [ ] T008 Write unit tests for project-repository in tests/unit/project-repository.test.ts
+- [ ] T006 [P] Write unit tests for project-validators in tests/unit/project-validators.test.ts [TS-013, TS-014, TS-015]
+- [ ] T007 [P] Write unit tests for project-repository in tests/unit/project-repository.test.ts
+- [ ] T008 Implement project-repository.ts with Firestore CRUD (create, getById, getByOwnerAndName, updateStatus, updateLastInteraction) in src/ecosystem/project-state/project-repository.ts
 - [ ] T009 [P] Implement audit-logger utility for project lifecycle events (project.create, project.retrieve, project.archive, project.reactivate) in src/ecosystem/project-state/audit-logger.ts
 
 **Checkpoint**: Foundation ready — types, validation, data access, and audit logging available for all stories
@@ -162,23 +162,25 @@
 ### Phase Dependencies
 
 ```
-Phase 1 (Setup) ──────────▶ Phase 2 (Foundational) ──────┐
-                                                           │
-                    ┌──────────────────────────────────────┤
-                    ▼              ▼              ▼        │
-              Phase 3 (US1) Phase 4 (US2) Phase 5 (US4)   │
-                    │              │              │        │
-                    │              ▼              │        │
-                    │        Phase 6 (US3) ◀─────┘        │
-                    │              │                       │
-                    ▼              ▼                       │
-              Phase 7 (Audit) ◀───┘                       │
-                    │                                     │
-                    ▼                                     │
-              Phase 8 (Integration) ◀─────────────────────┘
-                    │
-                    ▼
-              Phase 9 (Polish)
+Phase 1 (Setup) ──▶ Phase 2 (Foundational) ──▶ Phase 3 (US1)
+                                                     │
+                                                     ▼
+                                               Phase 4 (US2)
+                                                     │
+                                                     ▼
+                                               Phase 5 (US4)
+                                                     │
+                                                     ▼
+                                               Phase 6 (US3)
+                                                     │
+                                                     ▼
+                                               Phase 7 (Audit)
+                                                     │
+                                                     ▼
+                                               Phase 8 (Integration)
+                                                     │
+                                                     ▼
+                                               Phase 9 (Polish)
 ```
 
 ### Story Dependencies
@@ -194,16 +196,17 @@ Phase 1 (Setup) ──────────▶ Phase 2 (Foundational) ──�
 
 | Batch | Tasks | Condition |
 |-------|-------|-----------|
-| Foundational parallel | T004, T005, T009 | Different files, no dependencies |
+| Foundational parallel (types) | T004, T005, T009 | Different files, no dependencies |
+| Foundational parallel (tests) | T006, T007 | Different test files, both depend on T004+T005 only |
 | US2 test parallel | T013, T014 | Different test files |
 | US3 test parallel | T021, T022 | Different test files |
 | Polish parallel | T031, T032 | Independent infrastructure |
 
 ### Critical Path
 
-T001 → T004 → T007 → T010 → T011 → T013 → T015 → T016 → T019 → T020 → T026 → T027 → T028 → T029 → T030 → T033
+T001 → T004 → T007 → T008 → T010 → T011 → T013 → T015 → T016 → T019 → T020 → T026 → T027 → T028 → T029 → T030 → T033
 
-**Length**: 16 tasks on critical path
+**Length**: 17 tasks on critical path
 
 ---
 
@@ -223,3 +226,13 @@ Delivers: full CRUD with context retrieval and contamination guarantees — the 
 - All .feature files are locked (hash: 4c5478b...) — fix code to pass tests, never modify features
 - Single-operator H1: no concurrency tests needed (deferred to feature 008)
 - File paths reference target Nexus repo structure per plan.md — adjust if repo layout differs
+
+## Clarifications
+
+### Session 2026-04-03
+
+- Q: ASCII dependency graph shows US1, US2, US4 starting in parallel from Phase 2, but Story Dependencies table says US2→US1 and US4→US2 — which is correct? -> A: Table is correct. US2 (Retrieve) needs existing projects from US1 (Create). US4 (Contamination) needs context-assembler from US2. Graph fixed to sequential flow. [Phase Dependencies graph, Story Dependencies table]
+
+- Q: T007 (repository implementation) comes before T008 (repository tests) — this violates TDD mandatory ordering per P-V. -> A: Swapped. T007 is now repository tests (red), T008 is implementation (green). TDD ordering enforced in Foundational phase same as story phases. Critical path updated to include T008. [T007, T008, Critical Path]
+
+- Q: T006 (validator tests) and T007 (repository tests) both depend on T004+T005 but not each other — should they be parallel? -> A: Yes. Added [P] marker to both. They work on different test files with no shared state. [T006, T007, Parallel Opportunities]

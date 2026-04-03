@@ -165,3 +165,13 @@ No constitution violations detected. No complexity justifications needed.
 | Single module under ecosystem/ | Follows existing pattern | PASS — P-VII extension |
 | Zod validation (not custom) | Industry standard | PASS — already in codebase |
 | CRON via Cloud Scheduler | Managed service, no infra | PASS — P-I deterministic |
+
+## Clarifications
+
+### Session 2026-04-03
+
+- Q: What does the orchestrator do when Project Service returns TRANSACTION_FAILED after 3 Firestore retries? -> A: Surface error to operator via Telegram with a user-friendly message ("Something went wrong, please try again"). No orchestrator-level retry. Rationale: operation is idempotent (no data persisted, no side effects per P-II), operator can trivially retry, adding retry layers risks breaching 3s p95 SLA (SC-001) and violates P-VII (no overengineering). P-I satisfied: deterministic response to a deterministic failure. [Architecture, Trade-offs, contracts/project-crud.md]
+
+- Q: What version pinning strategy applies to dependencies (Firebase Admin SDK, Zod, etc.)? -> A: Caret ranges (`^x.y.z`) in package.json with `package-lock.json` committed to repo. Lockfile guarantees deterministic installs (P-I). Caret ranges allow controlled patch/minor updates via explicit `npm update`. Exact pinning deferred — justified only for multi-team production systems, not H1 single-operator. P-VII satisfied: standard Node.js practice, no extra tooling. [Technical Context, Dependency Risks]
+
+- Q: How does the router classify PROJECT_QUERY intent to hand off to Project Service? -> A: Dual-mode per FR-003. (1) Explicit commands (`/project <name>`, "create project X") are parsed deterministically by the router before LLM classification — fast, no token cost, P-I compliant. (2) Implicit mentions (e.g., "let's work on Acme") go through the router's existing LLM intent classification, which adds `PROJECT_QUERY` as a recognized intent category. Router modification is incremental: add PROJECT_QUERY to the intent enum and route to project-service. P-VII satisfied: reuses existing classification pipeline. [Architecture, Integration Points, Project Structure: router.ts MODIFY]

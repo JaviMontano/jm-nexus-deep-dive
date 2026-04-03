@@ -2,28 +2,29 @@
 
 **Feature Branch**: `001-project-state-engine`
 **Created**: 2026-04-03
-**Status**: Draft
-**Input**: Extracted from discovery deliverables (M-09, G-06, CU-17/18/19, ADR-005)
+**Status**: Specified (Constitution v1.1.0 aligned)
+**Input**: Discovery deliverables (M-09, G-06, CU-17/18/19, ADR-005),
+Architecture TO-BE (A4), Risk Register (A8), Feasibility Think Tank (05b)
+**Constitution**: v1.1.0 — P-I, P-IV, P-V, P-VI, P-VII + RP-3, RP-7
 
 ## User Stories
 
-### User Story 1 - Create and Activate a Project (Priority: P1)
+### User Story 1 — Create and Activate a Project (Priority: P1)
 
 As the operator, I want to create a named project via Telegram
 so that all subsequent interactions are associated with a
 persistent context and I never have to re-explain my project
 from scratch.
 
-**Why this priority**: Project creation is the foundation of
-all project-scoped operations. Without it, no other feature
-(HIL, artifacts, memory, analytics) can associate work to a
-project. This is the single most blocking capability (G-06,
-0% implemented).
+**Why this priority**: Project creation is the foundation of all
+project-scoped operations. Without it, no other feature (HIL,
+artifacts, memory, analytics) can associate work to a project.
+This is the single most blocking capability (G-06, 0% implemented).
+[DOC: A4 section 3, G-06 closure criteria]
 
-**Independent Test**: Send a "create project Acme Proposal"
-message to the bot and verify a project document is created
-with correct initial state. Delivers immediate value: the
-operator has a named container for work.
+**Independent Test**: Send "create project Acme Proposal" to the
+bot → verify project document created with correct initial state.
+Delivers immediate value: operator has a named container for work.
 
 **Acceptance Scenarios**:
 
@@ -39,33 +40,36 @@ operator has a named container for work.
    project becomes the active context.
 
 3. **Given** an operator creates a project, **When** creation
-   completes, **Then** the response time is under 3 seconds and
-   the operator receives confirmation with the project name.
+   completes, **Then** the response time is under 3 seconds
+   (p95 processing time: webhook received → Telegram API
+   response sent) and the operator receives confirmation with
+   the project name.
 
 ---
 
-### User Story 2 - Retrieve Project Context (Priority: P1)
+### User Story 2 — Retrieve Project Context (Priority: P1)
 
 As the operator, I want to resume a conversation about a
 previous project and have the bot recall its full context
 (decisions, tasks, artifacts, compressed history) so that I
 do not lose ~60 hours/year repeating context to prompts.
+[DOC: discovery pain point analysis, 05b Sage 3]
 
 **Why this priority**: Context retrieval is the core value
-proposition that differentiates Nexus from "ChatGPT in
-Telegram". Without it, every session starts from zero.
+proposition that differentiates Nexus from "ChatGPT in Telegram".
+Without it, every session starts from zero.
 
-**Independent Test**: Create a project, add context over
-several interactions, wait 5+ days, then resume the project
-and verify context is retrieved accurately.
+**Independent Test**: Create a project, add context over several
+interactions, wait 5+ days, resume the project → verify context
+retrieved accurately within 3 seconds.
 
 **Acceptance Scenarios**:
 
 1. **Given** an existing project with compressed_context and
-   prior interactions, **When** the operator mentions the
-   project name, **Then** the system loads compressed_context
-   (<=500 tokens) and short_term_memory (last 15 turns) within
-   3 seconds.
+   prior interactions, **When** the operator mentions the project
+   name, **Then** the system loads compressed_context (<=500
+   tokens per RP-3) and short_term_memory (last 15 turns,
+   filtered strictly by project_id) within 3 seconds p95.
 
 2. **Given** a project name that partially matches multiple
    projects (e.g., "Acme"), **When** the operator references it,
@@ -75,35 +79,47 @@ and verify context is retrieved accurately.
 3. **Given** a project with empty compressed_context (new or
    never compressed), **When** context is retrieved, **Then**
    the system degrades gracefully with available short-term
-   memory only — no errors.
+   memory only — no errors (RP-7: fail-open for reads).
 
 4. **Given** a project inactive for 30+ days (ARCHIVED),
-   **When** the operator references it, **Then** the system
-   retrieves and reactivates it.
+   **When** the operator explicitly references it, **Then** the
+   system retrieves and reactivates it to ACTIVE within 3s p95.
+
+5. **Given** the operator sends "/project Acme Proposal"
+   (explicit command), **When** the system processes it,
+   **Then** it switches to "Acme Proposal" deterministically
+   without confirmation (P-I: deterministic transition).
+
+6. **Given** the intent router detects a project name implicitly
+   in the operator's message, **When** the system proposes it,
+   **Then** it presents the project as a suggestion requiring
+   operator confirmation before switching — never auto-switches.
 
 ---
 
-### User Story 3 - Archive Inactive Projects (Priority: P2)
+### User Story 3 — Archive Inactive Projects (Priority: P2)
 
 As the system (CRON job), I want to automatically archive
 projects with no interaction for a configurable number of days
 (default 30) so that active context retrieval stays fast and
 the operator's project list remains manageable.
+[DOC: R-13 mitigation strategy, A8 risk register]
 
-**Why this priority**: Archival prevents context bloat (R-13)
-and keeps the active list clean. Lower priority because the
-system functions without it in the short term.
+**Why this priority**: Archival prevents context bloat (R-13,
+risk score 9) and keeps the active list clean. Lower priority
+because the system functions without it in the short term.
 
 **Independent Test**: Create a project, simulate 30+ days of
-inactivity, run the CRON job, and verify status changes to
-ARCHIVED without data loss.
+inactivity, run CRON job → verify status changes to ARCHIVED
+without data loss.
 
 **Acceptance Scenarios**:
 
 1. **Given** a project whose last_interaction exceeds
-   auto_archive_after_days (default 30), **When** the archival
-   CRON runs, **Then** the project status changes to ARCHIVED
-   and it is excluded from default context retrieval.
+   auto_archive_after_days (default 30), **When** the daily
+   archival CRON runs (24h resolution), **Then** the project
+   status changes to ARCHIVED and it is excluded from default
+   context retrieval.
 
 2. **Given** an ARCHIVED project, **When** the operator
    explicitly searches for it, **Then** it appears in results
@@ -111,23 +127,34 @@ ARCHIVED without data loss.
 
 3. **Given** a project is archived, **Then** no data is
    deleted — status change only. All compressed_context,
-   knowledge_anchors, open_tasks, and artifacts are preserved.
+   knowledge_anchors, open_tasks, and artifacts are preserved
+   (FR-008: never delete).
+
+4. **Given** a project with custom auto_archive_after_days
+   (e.g., 7), **When** last_interaction exceeds that threshold,
+   **Then** the CRON respects the per-project setting.
+
+5. **Given** the operator's active project is archived by CRON,
+   **Then** the operator's active_context_id is set to null.
+   No notification is sent — FR-009 reactivates instantly on
+   next reference (clarification: no consequence from silence).
 
 ---
 
-### User Story 4 - Zero Cross-Project Contamination (Priority: P1)
+### User Story 4 — Zero Cross-Project Contamination (Priority: P1)
 
 As the operator working across multiple projects, I want
 absolute guarantee that context from Project A never leaks
 into Project B so that proposals, research, and decisions
 are never contaminated with wrong-project data.
+[DOC: SC-003 non-negotiable invariant, A4 section 4]
 
 **Why this priority**: Cross-project contamination is a
 reputational and data-integrity risk. The discovery marks
 "0 cross-project contamination" as a non-negotiable invariant.
 
 **Independent Test**: Create two projects with distinct
-contexts, switch between them, and verify responses reference
+contexts, switch 100 times → verify every response references
 only the active project's context.
 
 **Acceptance Scenarios**:
@@ -138,28 +165,33 @@ only the active project's context.
    short_term_memory are loaded — zero leakage from Project A.
 
 2. **Given** a multi-project environment, **When** the
-   orchestrator assembles context (CU-06), **Then** it filters
-   strictly by active_context_id and project_id.
+   orchestrator assembles context, **Then** it filters strictly
+   by active_context_id and owner_id (triple-filter: query-level,
+   assertion-level, defensive-level).
+
+3. **Given** short_term_memory for projects Alpha (10 turns)
+   and Beta (5 turns), **When** the operator switches from Alpha
+   to Beta, **Then** only Beta's turns appear — zero Alpha turns
+   in context.
+
+4. **Given** a new project "Brand New" created while "Existing"
+   has 15 turns, **Then** short_term_memory for "Brand New"
+   contains zero turns — no leakage from "Existing".
 
 ---
 
 ### Edge Cases
 
-- Operator creates a project with a name identical to an
-  existing project: system presents existing match and asks
-  operator to confirm new creation (with suffix) or switch.
-- Concurrent project operations cause write conflicts: atomic
-  transactions with max 3 retries and optimistic versioning.
-- compressed_context exceeds 500 tokens after retrieval:
-  trigger immediate re-compression before injecting into
-  prompt (invariant I-1).
-- CRON archival job fails mid-execution: transactional
-  per-project archival — partial failures do not affect other
-  projects.
-- Operator has 100+ projects: paginated retrieval with
-  most-recent-first ordering.
-- Operator references a project by ambiguous abbreviation:
-  always disambiguate, never auto-select.
+| ID | Case | Handling | Source |
+|----|------|----------|--------|
+| EC-01 | Duplicate project name | Present existing match; ask operator to confirm new creation or switch (FR-012) | CB-06 |
+| EC-02 | Concurrent write conflict | Atomic Firestore transactions, max 3 retries, optimistic versioning (_version), fail-closed (RP-7) | CB-06, R-01 |
+| EC-03 | compressed_context > 500 tokens | context-assembler triggers immediate re-compression before prompt injection (RP-3 invariant) | CB-11, R-13 |
+| EC-04 | CRON archival partial failure | Per-project transactions — failure on one does not affect others; retry next cycle | CB-11 |
+| EC-05 | Operator has 100+ projects | Paginated retrieval, most-recent-first ordering | — |
+| EC-06 | Ambiguous project abbreviation | Always disambiguate, never auto-select (FR-005, SC-007) | — |
+
+---
 
 ## Requirements
 
@@ -167,200 +199,266 @@ only the active project's context.
 
 - **FR-001**: System MUST create a project document with:
   name, owner_id, status (ACTIVE), compressed_context (empty),
-  knowledge_anchors (empty array — reserved, no business logic
-  in this feature per P-V), open_tasks (empty array — reserved),
+  knowledge_anchors (empty array — reserved per P-V, no business
+  logic in this feature), open_tasks (empty array — reserved),
   artifacts (empty array — reserved), compression_log (empty
   array), auto_archive_after_days (default 30), created_at, and
-  last_interaction timestamp.
+  last_interaction timestamp. [DOC: A6 canonical data model]
 
 - **FR-002**: System MUST set the newly created project as the
   operator's active_context_id in their operator profile.
+  Transaction MUST be atomic with project creation. [INFERENCIA:
+  P-I requires deterministic state transitions]
 
-- **FR-003**: System MUST retrieve project context via two
-  modes: (a) implicit detection from the intent router's
+- **FR-003**: System MUST retrieve project context via two modes:
+  (a) implicit detection from the intent router's
   extracted_project_name, presented as a suggestion requiring
-  operator confirmation before switching, and (b) explicit
-  command (e.g., "/project <name>") that executes a
-  deterministic transition. Both modes filter by owner_id.
+  operator confirmation before switching (never auto-switches),
+  and (b) explicit command ("/project <name>") that executes a
+  deterministic transition without confirmation. Both modes
+  filter by owner_id. [DOC: CU-04 router classification]
 
-- **FR-004**: System MUST load compressed_context (<=500 tokens)
-  and short_term_memory (last 15 turns, filtered strictly by
-  project_id) into the orchestrator's context assembly within
-  3 seconds (p95 processing time, measured from webhook received
-  to response sent to Telegram API).
+- **FR-004**: System MUST load compressed_context (<=500 tokens
+  per RP-3) and short_term_memory (last 15 turns, filtered
+  strictly by project_id) into the orchestrator's context
+  assembly within 3 seconds (p95 processing time, measured from
+  webhook received to response sent to Telegram API).
+  [DOC: A4 context assembly contract]
 
 - **FR-005**: System MUST present disambiguation options when a
   project name matches multiple projects — never auto-select.
+  [DOC: SC-007 requirement, TD-06 Telegram inline buttons]
 
 - **FR-006**: System MUST enforce zero cross-project
   contamination by filtering all queries strictly by
-  active_context_id and owner_id.
+  active_context_id and owner_id. Triple-filter: query-level
+  (Firestore WHERE clauses), assertion-level (post-query
+  ownership validation), defensive-level (mismatched turn
+  filtering with warning log). [INFERENCIA: defense-in-depth
+  per T1 Transversal Seguridad]
 
-- **FR-007**: System MUST run a daily CRON job (once per 24h)
-  that evaluates last_interaction against auto_archive_after_days
-  and archives qualifying projects. Archival resolution is 24
-  hours — a project may remain ACTIVE up to ~24h beyond its
-  threshold until the next CRON execution.
+- **FR-007**: System MUST run a daily CRON job (once per 24h,
+  02:00 UTC) that evaluates last_interaction against
+  auto_archive_after_days and archives qualifying projects.
+  Archival resolution is 24 hours — a project may remain
+  ACTIVE up to ~24h beyond its threshold. Per-project
+  transactions with partial failure isolation.
+  [DOC: TD-03 Cloud Scheduler]
 
 - **FR-008**: System MUST preserve all project data when
-  archiving — status change only, never delete.
+  archiving — status change only, never delete. No DELETED
+  state exists (2-state model per ADR-005).
+  [DOC: ADR-005, A6 canonical model]
 
 - **FR-009**: System MUST allow reactivation of ARCHIVED
   projects when the operator explicitly references them.
+  Reactivation sets status=ACTIVE, updates last_interaction,
+  sets active_context_id, and logs to audit_log. [INFERENCIA:
+  state machine reversal per P-I]
 
 - **FR-010**: System MUST log all project lifecycle events
   (create, retrieve, archive, reactivate) to audit_log with
-  operator_id, action, and timestamp.
+  operator_id, action_type, resource (type + id + before/after
+  status), status (success/failure), reason (on failure),
+  metadata (trigger: operator|cron), and ISO timestamp.
+  [DOC: TD-07 audit logging strategy, P-VI traceability]
 
 - **FR-011**: System MUST reject project names that are empty,
-  exceed 100 characters, or contain only whitespace.
+  exceed 100 characters, or contain only whitespace. Validation
+  via Zod schema (TD-02). [CODIGO: existing Zod pattern in
+  ecosystem/loader.ts]
 
 - **FR-012**: System MUST handle duplicate project names by
   presenting existing matches and asking the operator to
-  confirm or switch.
+  confirm new creation or switch. [DOC: TD-06 disambiguation]
 
-### Key Entities
+### Non-Functional Requirements
 
-- **Project**: Central entity representing a named work context.
-  Attributes: project_id, name, owner_id, status
-  (ACTIVE/ARCHIVED), compressed_context, knowledge_anchors,
-  open_tasks, artifacts, compression_log,
-  auto_archive_after_days, created_at, last_interaction.
-  Belongs to one operator, contains many artifacts and tasks.
+- **NFR-001**: Latency — project create, retrieve, and
+  reactivate MUST complete within 3 seconds p95 (webhook
+  received → Telegram API response). Context assembly
+  sub-component MUST complete within 200ms. [DOC: A4 latency
+  targets, Constitution DoD item 14-16]
 
-- **Operator**: The human user. Relevant attribute:
-  active_context_id (FK to project). Owns many projects, has
-  one active context at a time.
+- **NFR-002**: Cost — project CRUD operations MUST incur zero
+  LLM token cost (Firestore operations only). No delegation
+  mode budget consumed. [INFERENCIA: RP-8 token budget;
+  project state is infrastructure, not agent work]
 
-- **Audit Log Entry**: Immutable record of project lifecycle
-  events. Attributes: log_id, operator_id, action, level,
-  result, details, timestamp.
+- **NFR-003**: Resilience — write operations MUST use Firestore
+  transactions with max 3 retries and fail-closed on persistent
+  failure (RP-7). Read operations MUST degrade gracefully
+  (RP-7: fail-open). [DOC: Constitution RP-7]
+
+- **NFR-004**: Auditability — 100% of lifecycle events logged
+  with immutable audit trail. Append-only; 90+ day retention.
+  [DOC: TD-07, Constitution P-VI]
+
+- **NFR-005**: Data integrity — zero cross-project contamination
+  (SC-003). Verified via triple-filter in context assembly.
+  Firestore security rules: read/write by owner_id only,
+  delete NEVER. [DOC: A4 isolation model, FR-006, FR-008]
+
+---
+
+## Key Entities
+
+### Project
+
+Central entity representing a named work context.
+
+| Attribute | Type | Constraint | Notes |
+|-----------|------|-----------|-------|
+| project_id | string | PK, UUID v4 | Auto-generated |
+| name | string | 1-100 chars, trimmed, non-whitespace | FR-011 |
+| owner_id | string | FK → operators.id | Telegram user_id |
+| status | enum | ACTIVE \| ARCHIVED | 2-state model (ADR-005) |
+| compressed_context | string | <=500 tokens (RP-3) | LLM summary |
+| knowledge_anchors | string[] | Default [] | Reserved — no logic (P-V) |
+| open_tasks | string[] | Default [] | Reserved — no logic (P-V) |
+| artifacts | string[] | Default [] | Reserved — no logic (P-V) |
+| compression_log | object[] | Append-only | date, before_tokens, after_tokens, dropped_topics |
+| auto_archive_after_days | number | Default 30, min 1 | Per-project threshold |
+| created_at | Timestamp | Server-generated | Immutable |
+| last_interaction | Timestamp | Updated per operation | Used by archival CRON |
+| _version | number | Default 1, atomic increment | Optimistic locking |
+
+**Relationships**: Belongs to one Operator. Generates many Audit Log Entries.
+**Indexes**: owner_id + status (dashboard), owner_id + name (disambiguation).
+**Security**: Read/write by owner_id only. Delete: NEVER (FR-008).
+
+### Operator (MODIFY — add field)
+
+The human user. This feature adds one field.
+
+| Attribute | Type | Constraint | Change |
+|-----------|------|-----------|--------|
+| active_context_id | string \| null | FK → projects.id | ADD |
+
+**Transition logic**: Set on create (FR-002), switch (FR-003),
+reactivate (FR-009). Clear on archive if matches (FR-007).
+All updates transactional with the project operation.
+
+### Audit Log Entry (EXTEND — add action types)
+
+Immutable lifecycle trail. Adds project action types.
+
+| Attribute | Type | Notes |
+|-----------|------|-------|
+| id | string | UUID v4 |
+| timestamp | Timestamp | Server-generated |
+| operator_id | string | FK → operators.id |
+| action_type | string | project.create, project.retrieve, project.archive, project.reactivate |
+| resource | object | { type: 'project', id, before?, after } |
+| status | string | success \| failure |
+| reason | string? | Error description on failure |
+| metadata | object | { trigger: 'operator' \| 'cron' } |
+
+**Rules**: Append-only. No update. No delete. 90+ day retention.
+
+---
+
+## Invariants
+
+Non-negotiable constraints enforced at all times:
+
+| ID | Invariant | Enforcement | Source |
+|----|-----------|-------------|--------|
+| I-1 | compressed_context ≤ 500 tokens in prompt | context-assembler guard clause; re-compress if exceeded | RP-3, R-13 |
+| I-2 | Status transitions: only ACTIVE↔ARCHIVED | Zod enum validation; no DELETED/SUSPENDED/COMPLETED | ADR-005, P-I |
+| I-3 | No hard delete of project data | Firestore security rules: delete NEVER | FR-008 |
+| I-4 | Zero cross-project contamination | Triple-filter in context assembly | FR-006, SC-003 |
+| I-5 | All lifecycle events audited | audit-logger integration in every operation | FR-010, P-VI |
+| I-6 | Atomic active_context_id transitions | Firestore transaction with project operation | P-I, RP-7 |
+
+---
 
 ## Success Criteria
 
 ### Measurable Outcomes
 
 - **SC-001**: Operator can create a project and receive
-  confirmation within 3 seconds (p95 processing time:
-  webhook received → response sent to Telegram API).
+  confirmation within 3 seconds (p95: webhook → Telegram API).
+  DoD items 14-16. [DOC: A4 latency targets]
 
 - **SC-002**: Operator can resume a project after 5+ days of
   inactivity with context retrieved accurately within 3 seconds
-  (p95 processing time: webhook received → response sent to
-  Telegram API).
+  (p95: webhook → Telegram API). DoD items 6, 9.
+  [DOC: G-06 closure criteria]
 
 - **SC-003**: Zero cross-project contamination across 100
-  consecutive project switches (verified via audit log).
+  consecutive project switches (verified via audit log + context
+  inspection). DoD item 9. Non-negotiable.
+  [DOC: A4 isolation invariant]
 
 - **SC-004**: CRON archival correctly archives 100% of projects
-  exceeding auto_archive_after_days without data loss.
+  exceeding auto_archive_after_days without data loss. DoD
+  item 20. [DOC: R-13 mitigation verification]
 
-- **SC-005**: Archived projects are accessible via explicit
-  search and reactivatable within 3 seconds (p95 processing
-  time: webhook received → response sent to Telegram API).
+- **SC-005**: Archived projects accessible via explicit search
+  and reactivatable within 3 seconds (p95: webhook → Telegram
+  API). DoD items 14-16.
 
 - **SC-006**: All project lifecycle events appear in audit_log
-  with correct operator_id, action type, and ISO timestamp.
+  with correct operator_id, action_type, and ISO timestamp.
+  DoD item 18. [DOC: TD-07, P-VI]
 
 - **SC-007**: Disambiguation prompt appears for ambiguous
   project names 100% of the time — zero auto-selections.
+  [DOC: TD-06 disambiguation strategy]
 
 ### Constraints
 
 - H1 targets assume single-operator usage. Multi-operator
   concurrency targets deferred to H3 spec (feature 008:
-  Multi-Tenant Isolation).
+  Multi-Tenant Isolation). [DOC: 05b feasibility C2]
+- Feasibility constraint C1: founder must prioritize Nexus
+  over LifeSync in H1. This is the #1 H1 priority (G-06).
 
-### Constitutional Alignment (v1.1.0)
+---
 
-**Governance Principles**: P-I (state machine: ACTIVE/ARCHIVED),
-P-II (exempt: internal state only), P-IV (this IS P-IV),
-P-V (spec-first), P-VI (audit logging FR-010), P-VII (extends P4).
+## Constitutional Alignment (v1.1.0)
 
-**Runtime Principles**: RP-3 (context compression: 500-token cap
-enforced by context-assembler), RP-6 (idempotent: not applicable —
-project CRUD is not webhook-triggered), RP-7 (fail-closed writes:
-Firestore transactions with retry max 3).
+### Governance Principles
 
-**Security Checkpoints**: CP1 not applicable (no direct user input
-parsing in this feature — input arrives pre-sanitized from P1
-Ingesta plane). CP2 not applicable (no prompt composition in
-project CRUD). CP3 not applicable (no LLM output in project
-lifecycle operations).
+| Principle | Status | Evidence |
+|-----------|--------|----------|
+| P-I State Machine Determinism | ALIGNED | ACTIVE ↔ ARCHIVED. Max 1 transition per operation. No loops. |
+| P-II Human-in-the-Loop | EXEMPT | Internal state management only. No external side effects. |
+| P-IV Persistent Project Context | ALIGNED | This IS the P-IV implementation. |
+| P-V Specification-Driven | ALIGNED | This spec with 12 FRs, 7 SCs, 6 invariants, 6 edge cases. |
+| P-VI Traceability and Evidence | ALIGNED | Evidence tags on all claims. Audit logging (FR-010). |
+| P-VII Incremental Extension | ALIGNED | Extends P4 plane. No rewrites. Additive changes only. |
 
-**Edge Cases (Discovery CB-xx)**: CB-11 (context bloat) →
-addressed by RP-3 500-token cap + CRON compression. CB-06
-(Firestore contention) → addressed by atomic transactions +
-optimistic locking (_version).
+### Runtime Principles
 
-**Risk Registry**: R-13 (context bloat, score 9) → mitigated by
-FR-004 token cap + CRON. R-10 (webhook timeout, score 9) →
-not applicable to project CRUD (async via Pub/Sub worker).
+| Principle | Status | Evidence |
+|-----------|--------|----------|
+| RP-3 Context Compression | ALIGNED | 500-token cap (I-1). CRON daily. Alert at 800. |
+| RP-7 Fail-Closed Writes | ALIGNED | Firestore transactions + retry max 3. Fail-open reads (US-2 SC-3). |
+| RP-1, RP-2, RP-4–RP-6, RP-8 | N/A | Not in webhook path; no agent execution; no LLM calls. |
 
-**Feasibility Constraints**: C1 (founder focus) → this is the
-#1 H1 priority (G-06). C2 (no H3 before H1) → single-operator
-only, multi-tenant deferred to feature 008.
+### Security & Risk
 
-## Clarifications
+| Check | Status | Evidence |
+|-------|--------|----------|
+| CP1/CP2/CP3 | N/A | No direct user input parsing, no prompt composition, no LLM output. |
+| R-13 Context Bloat | MITIGATED | RP-3 cap + CRON + alert. |
+| R-10 Webhook Timeout | N/A | Async worker path. |
+| C1 Founder Focus | COMPLIANT | #1 H1 priority. |
+| C2 No H3 Before H1 | COMPLIANT | Single-operator only. |
 
-### Session 2026-04-03
+### DoR Compliance
 
-- Q: How does the operator switch to a project — implicit
-  NLP detection, explicit command, or both? -> A: Both.
-  Implicit detection from router (CU-04) proposes project
-  as suggestion requiring confirmation — never auto-switches.
-  Explicit command (`/project <name>`) executes deterministic
-  transition without confirmation. Both pass through FR-005
-  disambiguation for ambiguous matches.
-  [FR-003, FR-005, US-2, SC-002]
-
-- Q: Should the Project entity have states beyond
-  ACTIVE/ARCHIVED (e.g., SUSPENDED, COMPLETED, DELETED)?
-  -> A: No. Two states (ACTIVE/ARCHIVED) are sufficient for
-  H1 per ADR-005 and canonical data model (A6). FR-008
-  "never delete" is a behavioral constraint, not a state.
-  Additional states deferred to H3 via constitutional
-  amendment (P-VII requires ADR for interface changes).
-  [FR-001, FR-007, FR-008, FR-009, Key Entity: Project]
-
-- Q: What concurrency and scale targets apply? -> A: H1
-  assumes single-operator. No concurrency SC added. Constraint
-  documented: multi-operator targets deferred to feature 008.
-  Satisfies P-VII (no overengineering) and P-VI (traceability).
-  [SC-001, SC-002, FR-004, FR-006]
-
-- Q: How often should the archival CRON job run (FR-007)?
-  -> A: Once daily (24h resolution). P-VII prohibits
-  overengineering for a 30-day threshold. A ~24h window
-  between threshold breach and archival has no user-facing
-  cost since archival is non-destructive (FR-008) and
-  reactivation is instant (FR-009). P-I satisfied by
-  documenting the 24h resolution. P-VI satisfied by CRON
-  execution logging to audit_log.
-  [FR-007, FR-008, FR-009, FR-010, SC-004]
-
-- Q: What happens to short_term_memory when switching
-  projects? -> A: short_term_memory is strictly per-project,
-  filtered by project_id. On switch, only the target project's
-  turns are loaded — zero turns from prior project. New
-  projects with 0 turns degrade gracefully per US-2 SC-3.
-  Cross-project context assembly deferred to feature 008.
-  P-IV (persistent project context) and FR-006 (zero
-  contamination) both require per-project isolation.
-  [FR-004, FR-006, US-2, US-4, SC-003]
-
-- Q: Are knowledge_anchors, open_tasks, and artifacts in
-  scope for business logic? -> A: No. FR-001 initializes
-  them as empty schema placeholders. No read/write/query
-  logic in this feature. Each requires its own feature
-  specification per P-V (SDD). Documented as "reserved for
-  future feature" to prevent unspecified usage.
-  [FR-001, Key Entity: Project, P-V, P-VII]
-
-- Q: What does "3 seconds" mean in SC-001, SC-002, SC-005?
-  -> A: p95 processing time, measured from webhook received
-  to response sent to Telegram API. Excludes Telegram
-  delivery latency (not controllable). p95 balances P-I
-  (cost-bounded determinism) with P-VII (no tail-latency
-  overengineering for H1 single-operator).
-  [SC-001, SC-002, SC-005, FR-004]
+| # | Criterion | Status |
+|---|-----------|--------|
+| 1 | Specification exists | YES — this document |
+| 2 | Plan exists | YES — plan.md |
+| 3 | ACs measurable | YES — all SCs have numeric thresholds |
+| 4 | Edge cases documented | YES — 6 cases mapped to CB-xx |
+| 5 | Security checkpoint mapping | YES — CP1/CP2/CP3 assessed (N/A) |
+| 6 | Token budget impact | YES — zero LLM cost (NFR-002) |
+| 7 | Risk registry check | YES — R-13, R-10 assessed |
+| 8 | Feasibility constraints | YES — C1, C2 verified |
+| 9 | Feature files exist | YES — 5 files, 34 scenarios, hash-locked |
+| 10 | Tasks generated | YES — 37 tasks, TDD ordered |

@@ -152,7 +152,7 @@
 
 - [ ] T031 [P] Add Firestore security rules for projects collection: read/write by owner_id, delete NEVER (FR-008)
 - [ ] T032 [P] Configure Cloud Scheduler job for daily archival CRON at 02:00 UTC per archival-cron.md contract
-- [ ] T033 Verify 80% global test coverage and 100% coverage for routing + security paths
+- [ ] T033 Verify 80% global test coverage, 100% for routing + security paths, and p95 <3s for project create/retrieve/reactivate (SC-001, SC-002, SC-005)
 - [ ] T034 Run quickstart.md validation scenarios end-to-end
 
 ---
@@ -236,3 +236,7 @@ Delivers: full CRUD with context retrieval and contamination guarantees — the 
 - Q: T007 (repository implementation) comes before T008 (repository tests) — this violates TDD mandatory ordering per P-V. -> A: Swapped. T007 is now repository tests (red), T008 is implementation (green). TDD ordering enforced in Foundational phase same as story phases. Critical path updated to include T008. [T007, T008, Critical Path]
 
 - Q: T006 (validator tests) and T007 (repository tests) both depend on T004+T005 but not each other — should they be parallel? -> A: Yes. Added [P] marker to both. They work on different test files with no shared state. [T006, T007, Parallel Opportunities]
+
+- Q: Analysis F-003: No dedicated performance benchmark task for SC-001/SC-002 (3s p95). -> A: Expanded T033 to include p95 latency verification for create/retrieve/reactivate alongside coverage checks. BDD scenarios (TS-003, TS-004) assert timing in functional tests; T033 now validates it as a Polish gate. Sufficient for H1 single-operator. [T033, SC-001, SC-002, SC-005]
+
+- Q: Analysis F-004: T009 (audit-logger) has no TS-xxx reference. -> A: Intentional. audit-logger is a utility consumed by project-service operations. It is integration-tested via T026/T027 (contract tests for TS-029 through TS-034). Isolated unit testing of a simple logger wrapper would be testing the framework, not business logic. P-VII satisfied: no unnecessary test infrastructure. [T009, T026, T027]

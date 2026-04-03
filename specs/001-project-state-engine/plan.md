@@ -154,6 +154,25 @@ pattern of existing agent modules. Tests mirror source structure.
 - Only 2 states: ACTIVE, ARCHIVED (per clarification session)
 - All transitions logged to audit_log (FR-010)
 
+## Requirements Traceability
+
+**Evidence delegation**: Technical rationale for all decisions is in research.md (TD-01 through TD-07) with inline evidence tags per P-VI. This plan references research.md for evidence provenance.
+
+| Requirement | Plan Coverage | Evidence Source |
+|-------------|--------------|-----------------|
+| FR-001 | State Machine: `∅ → ACTIVE` | research.md TD-01, TD-04 |
+| FR-002 | Architecture: operators.active_context_id update | research.md TD-04 |
+| FR-003 | Clarifications: dual-mode router (explicit + implicit) | research.md TD-06 |
+| FR-004 | Technical Context: context retrieval <3s p95 | research.md TD-05 |
+| FR-005 | Architecture: disambiguation via Telegram inline buttons | research.md TD-06 |
+| FR-006 | Architecture: context-assembler triple-filter | research.md TD-05 |
+| FR-007 | State Machine: CRON daily archive | research.md TD-03 |
+| FR-008 | State Machine: no DELETED state | research.md TD-01 |
+| FR-009 | State Machine: `ARCHIVED → ACTIVE` | research.md TD-04 |
+| FR-010 | State Machine: all transitions logged | research.md TD-07 |
+| FR-011 | Foundational: Zod validation schemas | research.md TD-02 |
+| FR-012 | Architecture: duplicate name detection | research.md TD-06 |
+
 ## Complexity Tracking
 
 No constitution violations detected. No complexity justifications needed.
@@ -175,3 +194,7 @@ No constitution violations detected. No complexity justifications needed.
 - Q: What version pinning strategy applies to dependencies (Firebase Admin SDK, Zod, etc.)? -> A: Caret ranges (`^x.y.z`) in package.json with `package-lock.json` committed to repo. Lockfile guarantees deterministic installs (P-I). Caret ranges allow controlled patch/minor updates via explicit `npm update`. Exact pinning deferred — justified only for multi-team production systems, not H1 single-operator. P-VII satisfied: standard Node.js practice, no extra tooling. [Technical Context, Dependency Risks]
 
 - Q: How does the router classify PROJECT_QUERY intent to hand off to Project Service? -> A: Dual-mode per FR-003. (1) Explicit commands (`/project <name>`, "create project X") are parsed deterministically by the router before LLM classification — fast, no token cost, P-I compliant. (2) Implicit mentions (e.g., "let's work on Acme") go through the router's existing LLM intent classification, which adds `PROJECT_QUERY` as a recognized intent category. Router modification is incremental: add PROJECT_QUERY to the intent enum and route to project-service. P-VII satisfied: reuses existing classification pipeline. [Architecture, Integration Points, Project Structure: router.ts MODIFY]
+
+- Q: Analysis F-001: FR-002, FR-004, FR-005, FR-006, FR-011, FR-012 not referenced by ID in plan.md body — how to resolve? -> A: Added Requirements Traceability table mapping all 12 FRs to plan sections and research.md evidence sources. Explicit delegation pattern: plan.md references research.md TD-xx for evidence provenance per P-VI. [Requirements Traceability section, all FR-xxx]
+
+- Q: Analysis F-002: P-VI evidence tags delegated to research.md rather than inline in plan.md — acceptable? -> A: Yes. Evidence delegation is documented in the new Requirements Traceability section header. research.md carries [CODIGO]/[DOC]/[INFERENCIA] tags on all 7 technical decisions. plan.md references research.md for provenance. This satisfies P-VI traceability without duplicating evidence tags across artifacts. [Requirements Traceability, P-VI]

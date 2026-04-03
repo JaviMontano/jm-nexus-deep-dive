@@ -59,6 +59,6 @@ Feature: Zero Cross-Project Contamination
     @TS-028 @FR-004 @P2 @acceptance
     Scenario: Context exceeding 500 tokens triggers immediate re-compression
       Given a project with compressed_context at 520 tokens after retrieval
-      When the context is loaded for prompt assembly
-      Then the system triggers immediate re-compression before injection
+      When context-assembler loads the context for prompt assembly
+      Then context-assembler triggers immediate re-compression before injection
       And the resulting compressed_context is 500 tokens or fewer

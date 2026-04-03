@@ -1,7 +1,7 @@
 {
   "testify": {
-    "assertion_hash": "7b86d762032e4eb2a036546e81cdf7aaed5e2828006c1c54f281a96b298a7f02",
-    "generated_at": "2026-04-03T06:54:57Z",
+    "assertion_hash": "4c5478ba2591482a10fcd3aee2bbc7acbe76281b243a73bbf2a61c34d1580287",
+    "generated_at": "2026-04-03T06:59:08Z",
     "features_dir": "specs/001-project-state-engine/tests/features",
     "file_count": 5
   }

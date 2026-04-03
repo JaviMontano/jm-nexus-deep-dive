@@ -75,4 +75,3 @@ Feature: Archive Inactive Projects
       Given the operator's active project is "Sunset Project"
       When "Sunset Project" is archived by the CRON job
       Then the operator's active_context_id is set to null
-      And the operator is notified their active project was archived

@@ -1,108 +1,109 @@
-<p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:122562,100:BBA0CC&height=220&section=header&text=Nexus%20Architecture%20Deep%20Dive&fontSize=40&fontColor=FFD700&fontAlignY=35&desc=Discovery%20arquitect%C3%B3nico%20completo%20con%20MAO%20%2B%20SDD&descSize=18&descColor=ffffff&descAlignY=55" alt="Nexus Deep Dive Banner" />
-</p>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://capsule-render.vercel.app/api?type=waving&color=0:122562,100:137DC5&height=180&section=header&text=Nexus%20Architecture%20Deep%20Dive&fontSize=36&fontColor=FFFFFF&fontAlignY=35&desc=Discovery%20arquitect%C3%B3nico%20completo%20con%20MAO%20%2B%20SDD&descSize=14&descAlignY=55&descColor=BBA0CC">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:122562,100:137DC5&height=180&section=header&text=Nexus%20Architecture%20Deep%20Dive&fontSize=36&fontColor=FFFFFF&fontAlignY=35&desc=Discovery%20arquitect%C3%B3nico%20completo%20con%20MAO%20%2B%20SDD&descSize=14&descAlignY=55&descColor=BBA0CC" width="100%">
+</picture>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/versión-1.0.0-137DC5?style=for-the-badge" alt="Versión" />
-  <img src="https://img.shields.io/badge/licencia-MIT-122562?style=for-the-badge" alt="Licencia" />
-  <img src="https://img.shields.io/badge/entregables-24-FFD700?style=for-the-badge" alt="Entregables" />
-  <img src="https://img.shields.io/badge/pipeline-completo-BBA0CC?style=for-the-badge" alt="Pipeline" />
+  <img src="https://img.shields.io/badge/MIT-22D3EE?style=flat-square" alt="MIT">
+  <img src="https://img.shields.io/badge/24_entregables-6366F1?style=flat-square" alt="24 entregables">
 </p>
 
----
+# Nexus Architecture Deep Dive
 
-## Acerca de Nexus Architecture Deep Dive
+> Discovery arquitectónico completo con MAO + SDD
 
-**Nexus Architecture Deep Dive** es un ejercicio de deep dive arquitectónico ejecutado con el ecosistema MAO + SDD. Incluye 24 entregables HTML: desde plan de discovery y mapeo de stakeholders hasta roadmap de solución y handover operativo.
-
-Este repositorio sirve como ejemplo real del pipeline MetodologIA en acción, demostrando cómo los plugins trabajan en conjunto para producir un análisis arquitectónico completo.
+Ejercicio de deep dive arquitectónico ejecutado con el ecosistema MAO + SDD. 24 entregables HTML desde plan de discovery hasta handover operativo.
 
 ---
 
-## Características principales
-
-- **24 entregables HTML interactivos** — Cada uno autocontenido con navegación interna
-- **Pipeline completo de discovery ejecutado** — Del plan inicial al handover final
-- **Plan de discovery → Stakeholder map → AS-IS → Flujos → Escenarios → Roadmap → Handover** — Secuencia completa
-- **Arquitectura TO-BE con ADRs** — Decisiones arquitectónicas documentadas y trazables
-- **Gap Analysis Heat Map** — Visualización de brechas entre estado actual y objetivo
-- **Risk Register** — Registro de riesgos con impacto y mitigación
-- **Reconciliación cross-document** — Consistencia verificada entre los 24 entregables
-
----
-
-## Instalación
+## 🚀 Instalación Rápida
 
 ```bash
-# Clonar el repositorio
 git clone https://github.com/JaviMontano/jm-nexus-deep-dive.git
-cd jm-nexus-deep-dive
-
-# Abrir los HTML directamente en el navegador
-open entregables/01_discovery_plan.html
+# Abrir los HTML en el navegador
 ```
 
----
+## 🔑 Qué Hace
 
-## Entregables incluidos
+- 24 entregables HTML interactivos
+- Pipeline completo de discovery ejecutado de principio a fin
+- De plan de discovery a handover operativo
+- Arquitectura TO-BE con ADRs documentados
+- Gap Analysis Heat Map
+- Risk Register y reconciliación cross-documento
 
-| # | Entregable | Descripción |
-|---|-----------|-------------|
-| 01 | Plan de Discovery | Alcance, objetivos y cronograma |
-| 02 | Stakeholder Map | Mapa de interesados con influencia e interés |
-| 03 | AS-IS Architecture | Estado actual de la arquitectura |
-| 04 | Flujos de Proceso | Mapeo de flujos críticos del negocio |
-| 05 | Análisis de Escenarios | Evaluación de alternativas arquitectónicas |
-| 06 | Gap Analysis | Brechas entre AS-IS y TO-BE |
-| 07 | Heat Map | Visualización de criticidad por componente |
-| 08 | Risk Register | Riesgos con probabilidad, impacto y mitigación |
-| 09 | ADRs | Architecture Decision Records |
-| 10 | TO-BE Architecture | Arquitectura objetivo propuesta |
-| 11-20 | Entregables complementarios | Análisis de datos, seguridad, integraciones, rendimiento |
-| 21 | Roadmap de Solución | Plan de implementación por fases |
-| 22 | Estimación de Esfuerzo | FTE-meses por componente |
-| 23 | Reconciliación Cross-Document | Verificación de consistencia |
-| 24 | Handover Operativo | Paquete de transferencia al equipo |
-
----
-
-## Pipeline utilizado
+## 📐 Arquitectura
 
 ```
-MAO Discovery          SDD Specification        Síntesis
-┌───────────┐       ┌───────────┐       ┌───────────┐
-│Stakeholders│       │  Specify  │       │  Roadmap  │
-│AS-IS       │  →    │  Design   │  →    │  Handover │
-│Flujos      │       │  Decide   │       │  ADRs     │
-│Gaps        │       │  Validate │       │  Reconcil.│
-└───────────┘       └───────────┘       └───────────┘
+Plan → Stakeholders → AS-IS → Flujos → Escenarios → Feasibility → Roadmap → Spec → Pitch → Handover + 14 anexos
 ```
 
+## 🔗 Parte del Ecosistema JM Labs / MetodologIA
+
+| Repo | Descripción |
+|------|-------------|
+| [**mao-discovery-framework**](https://github.com/JaviMontano/mao-discovery-framework) | MAO Discovery |
+| [**mao-sdd**](https://github.com/JaviMontano/mao-sdd) | SDD |
+| [**mao-sovereign-architect**](https://github.com/JaviMontano/mao-sovereign-architect) | Sovereign Architect |
+| [**jm-adk-alfa**](https://github.com/JaviMontano/jm-adk-alfa) | ADK Alfa |
+
+## 👤 Autor
+
+<img src="https://github.com/ejemplo-deo-repo/mao-brand-assets/blob/main/team_javier-montano.webp?raw=true" width="80" align="left" style="margin-right:1rem;">
+
+**Javier Montaño** — Founder JM Labs & MetodologIA<br>
+40.000 horas convirtiendo retos en casos de éxito.<br>
+[GitHub](https://github.com/JaviMontano) · [MetodologIA](https://metodologia.info) · [LinkedIn](https://co.linkedin.com/in/javier-andr%C3%A9s-monta%C3%B1o-guzm%C3%A1n-35b02756/en)
+
+<br clear="both">
+
+## 📄 Licencia
+
+MIT — © 2026 Javier Montaño · JM Labs
+
 ---
 
-## Parte del Ecosistema MetodologIA / JM Labs
+<details>
+<summary><b>🇬🇧 English</b></summary>
+<br>
 
-Este deep dive fue producido con las herramientas del ecosistema:
+# Nexus Architecture Deep Dive
 
-| Repositorio | Descripción |
-|-------------|-------------|
-| [mao-discovery-framework](https://github.com/JaviMontano/mao-discovery-framework) | Framework de discovery utilizado para las fases iniciales |
-| [mao-sdd](https://github.com/JaviMontano/mao-sdd) | Specification-Driven Development para la fase de diseño |
-| [mao-sovereign-architect](https://github.com/JaviMontano/mao-sovereign-architect) | Agentes de arquitectura para las decisiones técnicas |
-| [jm-adk-alfa](https://github.com/JaviMontano/jm-adk-alfa) | Kit de desarrollo agéntico que orquestó el pipeline |
+> Complete architectural discovery with MAO + SDD
+
+Architectural deep dive exercise executed with the MAO + SDD ecosystem. 24 HTML deliverables from discovery plan to operational handover.
+
+### What It Does
+
+- 24 interactive HTML deliverables
+- Full discovery pipeline executed end-to-end
+- From discovery plan to operational handover
+- TO-BE Architecture with documented ADRs
+- Gap Analysis Heat Map
+- Risk Register and cross-document reconciliation
+
+### Architecture
+
+```
+Plan → Stakeholders → AS-IS → Flows → Scenarios → Feasibility → Roadmap → Spec → Pitch → Handover + 14 annexes
+```
+
+### Part of the JM Labs / MetodologIA Ecosystem
+
+| Repo | Description |
+|------|-------------|
+| [**mao-discovery-framework**](https://github.com/JaviMontano/mao-discovery-framework) | MAO Discovery |
+| [**mao-sdd**](https://github.com/JaviMontano/mao-sdd) | SDD |
+| [**mao-sovereign-architect**](https://github.com/JaviMontano/mao-sovereign-architect) | Sovereign Architect |
+| [**jm-adk-alfa**](https://github.com/JaviMontano/jm-adk-alfa) | ADK Alfa |
 
 ---
 
-## Licencia
+<sub>Created by <a href="https://github.com/JaviMontano">Javier Montaño</a> · JM Labs / MetodologIA · MIT</sub>
 
-Este proyecto está licenciado bajo **MIT**. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+</details>
 
----
-
-<p align="center">
-  Creado por <a href="https://github.com/JaviMontano">Javier Montaño</a> · JM Labs / MetodologIA · MIT
-</p>
-
-<p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:122562,100:BBA0CC&height=120&section=footer" alt="Footer" />
-</p>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://capsule-render.vercel.app/api?type=waving&color=0:122562,100:137DC5&height=100&section=footer">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:122562,100:137DC5&height=100&section=footer" width="100%">
+</picture>
